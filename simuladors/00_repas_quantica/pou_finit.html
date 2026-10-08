@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Electró en un pou de potencial finit</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<style>
+  h1{ font-size:1.2rem; margin:0 0 4px; }
+  p.sub{ color:var(--muted); font-size:.85rem; margin:0 0 18px; }
+  .panel{ margin-bottom:16px; }
+  .controls{ display:flex; flex-direction:column; align-items:stretch; gap:6px; }
+  .controls + .controls{ margin-top:14px; }
+  .controls label{ font-family:var(--font-mono); font-size:.76rem; color:var(--muted); }
+  input[type=range]{ width:100%; accent-color:var(--accent); }
+  .botons-run{ display:flex; gap:8px; margin-bottom:4px; }
+  .botons-run button{
+    flex:1; font-family:var(--font-mono); font-size:.8rem; font-weight:700;
+    padding:9px 10px; border-radius:6px; border:1.5px solid var(--uabgreen);
+    background:var(--uabgreen); color:#fff; cursor:pointer;
+  }
+  .botons-run button.secundari{ background:var(--surface); color:var(--uabgreen-dark); }
+  .readout{ display:flex; flex-direction:column; gap:8px; font-family:var(--font-mono); font-size:.78rem; }
+  .readout .item{ color:var(--ink-2); display:flex; justify-content:space-between; gap:8px; }
+  .readout .item .lbl{ min-width:0; overflow-wrap:break-word; }
+  .readout .item b{ color:var(--ink); font-variant-numeric:tabular-nums; flex-shrink:0; white-space:nowrap; }
+  .note{ font-size:.85rem; color:var(--ink-2); line-height:1.5; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+
+  .canvas-fila{ display:flex; flex-wrap:wrap; gap:14px; justify-content:center; }
+  .canvas-item{ flex:1 1 320px; max-width:640px; text-align:center; }
+  canvas{ background:var(--surface-2); border:1px solid var(--border); border-radius:6px; display:block; width:100%; aspect-ratio:8/5; }
+
+  .n-row{ display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .n-btn{
+    flex:1 1 34px; min-width:34px; padding:6px 0;
+    border:1px solid var(--border); border-radius:4px;
+    background:var(--surface); font-size:.8rem; cursor:pointer;
+    color:var(--muted); text-align:center; transition:all .15s;
+    font-family:var(--font-mono);
+  }
+  .n-btn:hover{ border-color:var(--uabgreen); color:var(--uabgreen-dark); }
+  .n-btn.active{ background:var(--uabgreen); border-color:var(--uabgreen); color:#fff; font-weight:700; }
+
+  .modes{ display:flex; gap:8px; }
+  .modes button{
+    flex:1; font-family:var(--font-mono); font-size:.76rem; padding:6px 8px;
+    border:1px solid var(--border); border-radius:5px; background:var(--surface);
+    color:var(--muted); cursor:pointer;
+  }
+  .modes button.active{ background:var(--uabgreen); border-color:var(--uabgreen); color:#fff; font-weight:700; }
+
+  /* ---- Disposició de dues columnes ---- */
+  .layout{ display:flex; align-items:flex-start; gap:22px; max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
+  .columna-grafics{ flex:1; min-width:0; }
+  .barra-lateral{
+    width:280px; flex-shrink:0;
+    position:sticky; top:20px;
+    max-height:calc(100vh - 40px); overflow-y:auto;
+  }
+  .barra-lateral h2{ font-family:var(--font-mono); letter-spacing:.03em; }
+  @media (max-width:820px){
+    .layout{ flex-direction:column; gap:0; }
+    .barra-lateral{ display:contents; }
+    .barra-lateral h2{
+      width:100%; margin:0; order:-3;
+      border:2px solid var(--uabgreen); border-bottom:none;
+    }
+    .controls-sticky{
+      order:-2; width:100%;
+      position:sticky; top:0; z-index:20;
+      background:var(--surface);
+      padding:14px 22px 10px;
+      border-left:2px solid var(--uabgreen);
+      border-right:2px solid var(--uabgreen);
+      border-bottom:2px solid var(--uabgreen);
+      box-shadow:0 4px 8px -4px rgba(0,0,0,.15);
+    }
+    .controls-rest{
+      order:-1; width:100%;
+      background:var(--surface);
+      padding:14px 22px 18px;
+      border:2px solid var(--uabgreen); border-top:none;
+      border-radius:0 0 8px 8px;
+      margin-bottom:16px;
+    }
+    .layout{ gap:0; }
+    .columna-grafics{ order:0; }
+  }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 19 L3 6 L8 6 M21 19 L21 6 L16 6" stroke-width="1.8"/><path d="M3 19 L21 19" stroke-width="1.2" opacity=".5"/><path d="M5 13 Q8 7 11 13 T17 13" stroke-width="1.6"/></svg>Repàs: Quàntica</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="layout">
+  <div class="columna-grafics">
+    <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="9.5"/>
+        <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+      </svg>
+      Vídeo d'introducció
+    </a>
+    <h1>Electró lliure en un pou de potencial finit</h1>
+    <p class="sub">Repàs previ al Tema 6: resol l'equació de Schrödinger per a un electró confinat en un pou de potencial de profunditat <b>finita</b> — a diferència del pou infinit (parets dures), aquí la funció d'ona "s'escapa" cap a la regió classicament prohibida. Tria la forma del pou (quadrat, parabòlic o un híbrid asimètric), l'amplada i la profunditat, i observa com canvien el nombre d'estats lligats i la seva forma.</p>
+
+    <div class="panel">
+      <h2>1. Nivells d'energia i funció d'ona</h2>
+      <div class="canvas-fila">
+        <div class="canvas-item">
+          <canvas id="chartPou"></canvas>
+        </div>
+      </div>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Cada línia discontínua és un estat lligat possible; la ressaltada és la que tens seleccionada, dibuixada entre els seus dos punts de retorn clàssics (on E=V(x)). Fixa't que la funció d'ona no és zero fora d'aquest interval — decau exponencialment cap a la regió on, clàssicament, l'electró no hi podria ser mai. Compara el pou quadrat amb el parabòlic: al parabòlic els nivells són gairebé equiespaiats (l'oscil·lador harmònic), mentre que al quadrat s'atapeeixen a mesura que puges. Amb el pou asimètric, la funció d'ona ja no és ni parella ni senar — deixa de tenir cap simetria definida.</div>
+      </details>
+      <div class="note" id="notaComparacio"></div>
+    </div>
+  </div>
+
+  <aside class="barra-lateral">
+    <h2>Controls</h2>
+    <div class="controls-sticky">
+      <div class="controls">
+        <label for="lSlider">Amplada del pou L = <span id="lVal">1.00</span> nm</label>
+        <input type="range" id="lSlider" min="0.2" max="3" value="1" step="0.02">
+      </div>
+      <div class="controls">
+        <label for="v0Slider">Profunditat del pou V<sub>0</sub> = <span id="v0Val">5.0</span> eV</label>
+        <input type="range" id="v0Slider" min="0.5" max="15" value="5" step="0.1">
+      </div>
+      <div class="controls">
+        <label>Forma del pou</label>
+        <div class="modes" id="shapeRow">
+          <button id="btnSquare" class="active">Quadrat</button>
+          <button id="btnParab">Parabòlic</button>
+          <button id="btnAsym">Asimètric</button>
+        </div>
+      </div>
+      <div class="controls">
+        <label>Nombre de nodes de &psi;(x)</label>
+        <div class="n-row" id="nodeRow"></div>
+      </div>
+    </div>
+    <div class="controls-rest">
+      <div class="controls">
+        <label>Es mostra</label>
+        <div class="modes">
+          <button id="btnPsi" class="active">&psi;(x)</button>
+          <button id="btnPsi2">|&psi;(x)|&sup2;</button>
+        </div>
+      </div>
+      <div class="readout" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+        <span class="item"><span class="lbl">Funció seleccionada</span><b id="ro-n">—</b></span>
+        <span class="item"><span class="lbl">Energia E<sub>n</sub> (des del fons)</span><b id="ro-en">—</b></span>
+        <span class="item"><span class="lbl">Lligadura (V<sub>0</sub>&minus;E<sub>n</sub>)</span><b id="ro-lig">—</b></span>
+        <span class="item"><span class="lbl">Nombre total d'estats lligats</span><b id="ro-ntot">—</b></span>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Repàs de quàntica</div>
+
+<script>
+(function(){
+  // ---- Constants físiques ----
+  const HBAR = 1.054571817e-34; // J s
+  const ME   = 9.1093837015e-31; // kg
+  const EV   = 1.602176634e-19; // J
+
+  // Constant que apareix a E = C k^2 (amb k en nm^-1, E en eV): C = hbar^2/(2m)
+  const C = (HBAR*HBAR/(2*ME)) / EV * 1e18; // eV·nm^2 (≈0.0381)
+
+  const els = {
+    l: document.getElementById('lSlider'), lVal: document.getElementById('lVal'),
+    v0: document.getElementById('v0Slider'), v0Val: document.getElementById('v0Val'),
+    nodeRow: document.getElementById('nodeRow')
+  };
+  const btnPsi = document.getElementById('btnPsi');
+  const btnPsi2 = document.getElementById('btnPsi2');
+  const btnSquare = document.getElementById('btnSquare');
+  const btnParab = document.getElementById('btnParab');
+  const btnAsym = document.getElementById('btnAsym');
+  const roN = document.getElementById('ro-n');
+  const roEn = document.getElementById('ro-en');
+  const roLig = document.getElementById('ro-lig');
+  const roNtot = document.getElementById('ro-ntot');
+  const notaComparacio = document.getElementById('notaComparacio');
+
+  let selectedNodes = 0;
+  let showMode = 'psi'; // 'psi' | 'psi2'
+  let shape = 'square'; // 'square' | 'parabolic' | 'asymmetric'
+
+  function params(){
+    return { L: Number(els.l.value), V0: Number(els.v0.value) };
+  }
+
+  // ---- Potencial V(x) per a cada forma de pou ----
+  // Totes tres comparteixen la mateixa amplada L i profunditat V0, de manera
+  // que es poden comparar directament: només canvia la forma "de fons".
+  function potential(x, L, V0){
+    const h = L/2;
+    if (shape === 'square'){
+      return Math.abs(x) < h ? 0 : V0;
+    }
+    if (shape === 'parabolic'){
+      if (Math.abs(x) >= h) return V0;
+      return V0*(x/h)*(x/h);
+    }
+    // asimètric: quadrat (pla) a l'esquerra, parabòlic a la dreta
+    if (x <= -h) return V0;
+    if (x < 0) return 0;
+    if (x < h) return V0*(x/h)*(x/h);
+    return V0;
+  }
+
+  // ---- Diagonalització de Jacobi cíclica (O(n^3) per volta, en comptes de
+  // buscar el màxim element fora de la diagonal a cada rotació com fa una
+  // Jacobi "clàssica" — imprescindible per a matrius d'n~100, com aquí, on
+  // buscar el màxim a cada pas seria massa lent per a un ús interactiu). ----
+  function jacobiEigenCyclic(A_in, n, sweeps){
+    const A = A_in.slice();
+    const V = new Array(n*n).fill(0);
+    for (let i=0;i<n;i++) V[i*n+i] = 1;
+    for (let sweep=0; sweep<sweeps; sweep++){
+      for (let p=0; p<n-1; p++){
+        for (let q=p+1; q<n; q++){
+          const apq = A[p*n+q];
+          if (Math.abs(apq) < 1e-13) continue;
+          const app = A[p*n+p], aqq = A[q*n+q];
+          const theta = 0.5*Math.atan2(2*apq, aqq-app);
+          const c = Math.cos(theta), s = Math.sin(theta);
+          for (let r=0;r<n;r++){
+            if (r!==p && r!==q){
+              const arp = A[r*n+p], arq = A[r*n+q];
+              A[r*n+p] = A[p*n+r] = c*arp - s*arq;
+              A[r*n+q] = A[q*n+r] = s*arp + c*arq;
+            }
+          }
+          A[p*n+p] = c*c*app - 2*s*c*apq + s*s*aqq;
+          A[q*n+q] = s*s*app + 2*s*c*apq + c*c*aqq;
+          A[p*n+q] = A[q*n+p] = 0;
+          for (let r=0;r<n;r++){
+            const vrp = V[r*n+p], vrq = V[r*n+q];
+            V[r*n+p] = c*vrp - s*vrq;
+            V[r*n+q] = s*vrp + c*vrq;
+          }
+        }
+      }
+    }
+    const vals = [], vecs = [];
+    for (let i=0;i<n;i++){
+      vals.push(A[i*n+i]);
+      const col = []; for (let j=0;j<n;j++) col.push(V[j*n+i]);
+      vecs.push(col);
+    }
+    const idx = vals.map((_,i)=>i).sort((a,b)=>vals[a]-vals[b]);
+    return { values: idx.map(i=>vals[i]), vectors: idx.map(i=>vecs[i]) };
+  }
+
+  // ---- Resolució numèrica de Schrödinger sobre una graella (mètode de
+  // diferències finites) — funciona per a qualsevol forma de V(x), a
+  // diferència del mètode analític (equació transcendent) que només val per
+  // al pou quadrat. Condicions de contorn: psi=0 als extrems del domini
+  // (parets dures llunyanes, prou lluny perquè no distorsionin els estats
+  // lligats reals, que decauen molt abans d'arribar-hi). ----
+  const N_GRID = 90;
+  function solveGrid(L, V0){
+    const margin = Math.max(1.0, 6*Math.sqrt(C/V0));
+    const xMin = -L/2-margin, xMax = L/2+margin;
+    const n = N_GRID;
+    const dx = (xMax-xMin)/(n+1);
+    const xs = new Array(n);
+    for (let i=0;i<n;i++) xs[i] = xMin + (i+1)*dx;
+
+    const t = C/(dx*dx); // terme cinètic (eV)
+    const H = new Array(n*n).fill(0);
+    for (let i=0;i<n;i++){
+      H[i*n+i] = 2*t + potential(xs[i], L, V0);
+      if (i>0){ H[i*n+i-1] = -t; H[(i-1)*n+i] = -t; }
+    }
+
+    const res = jacobiEigenCyclic(H, n, 10);
+    const states = [];
+    for (let s=0; s<n; s++){
+      const E = res.values[s];
+      if (E >= V0*0.999) break; // per sobre del pou: estats de "capsa", no lligats
+      const vecRaw = res.vectors[s];
+      // Normalitza perquè sum(psi_i^2)*dx ~ 1 (aproxima integral(|psi|^2 dx)=1)
+      let norm2 = 0; for (let i=0;i<n;i++) norm2 += vecRaw[i]*vecRaw[i];
+      const scale = norm2>0 ? 1/Math.sqrt(norm2*dx) : 1;
+      const psi = vecRaw.map(v=>v*scale);
+      // Compta nodes: canvis de signe per sobre d'un llindar (evita soroll numèric)
+      const amax = Math.max(...psi.map(Math.abs));
+      const thresh = amax*0.02;
+      let nodes = 0, lastSign = 0;
+      for (let i=0;i<n;i++){
+        if (Math.abs(psi[i]) < thresh) continue;
+        const sgn = psi[i]>0 ? 1 : -1;
+        if (lastSign!==0 && sgn!==lastSign) nodes++;
+        lastSign = sgn;
+      }
+      states.push({ nodes, E, psi, xs, dx, xMin, xMax });
+    }
+    // Reordena per nombre de nodes (hauria de coincidir amb l'ordre d'energia,
+    // però per seguretat numèrica es reindexa explícitament 0,1,2,...)
+    states.sort((a,b)=>a.E-b.E);
+    states.forEach((st,i)=>{ st.nodes = i; });
+    return states;
+  }
+
+  function turningPoints(L, V0, E){
+    const xMin=-L/2-1.0, xMax=L/2+1.0, M=400;
+    let left=null, right=null;
+    for (let i=0;i<=M;i++){
+      const x = xMin+(xMax-xMin)*i/M;
+      if (potential(x,L,V0) <= E){
+        if (left===null) left=x;
+        right = x;
+      }
+    }
+    return left===null ? [xMin,xMax] : [left,right];
+  }
+
+  // ---- Canvas ----
+  const canvas = document.getElementById('chartPou');
+  function fitCanvas(c){
+    const dpr = window.devicePixelRatio || 1;
+    const w = c.clientWidth, h = c.clientHeight;
+    if (c.width !== Math.round(w*dpr) || c.height !== Math.round(h*dpr)){
+      c.width = Math.round(w*dpr); c.height = Math.round(h*dpr);
+    }
+  }
+  window.addEventListener('resize', () => fitCanvas(canvas));
+
+  function rebuildNodeButtons(states, keepIfPossible){
+    const prevSelected = selectedNodes;
+    els.nodeRow.innerHTML = '';
+    states.forEach((st) => {
+      const b = document.createElement('button');
+      b.className = 'n-btn' + (st.nodes===selectedNodes ? ' active' : '');
+      b.textContent = st.nodes;
+      b.title = 'n = ' + (st.nodes+1);
+      b.addEventListener('click', () => { selectedNodes = st.nodes; requestUpdate(); });
+      els.nodeRow.appendChild(b);
+    });
+    if (keepIfPossible && states.some(s=>s.nodes===prevSelected)) selectedNodes = prevSelected;
+    else if (states.length) selectedNodes = Math.min(selectedNodes, states[states.length-1].nodes);
+  }
+
+  function draw(states, sel, L, V0){
+    fitCanvas(canvas);
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0,0,W,H);
+
+    const margin = 1.0; // nm de marge visible
+    const xMin = -L/2-margin, xMax = L/2+margin;
+    const yMin = 0, yMax = V0*1.15;
+
+    const pad = { l: W*0.10, r: W*0.04, t: H*0.06, b: H*0.10 };
+    const pw = W-pad.l-pad.r, ph = H-pad.t-pad.b;
+    const xpx = x => pad.l + (x-xMin)/(xMax-xMin)*pw;
+    const ypx = E => pad.t + ph - (E-yMin)/(yMax-yMin)*ph;
+
+    // Eixos
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l,pad.t); ctx.lineTo(pad.l,pad.t+ph); ctx.lineTo(pad.l+pw,pad.t+ph); ctx.stroke();
+
+    // Potencial V(x), mostrejat (vàlid per a qualsevol forma)
+    const uabgreen = getComputedStyle(document.documentElement).getPropertyValue('--uabgreen').trim();
+    ctx.strokeStyle = uabgreen; ctx.lineWidth = Math.max(W*0.004,1.5);
+    ctx.beginPath();
+    const nSampV = 300;
+    for (let i=0;i<=nSampV;i++){
+      const x = xMin+(xMax-xMin)*i/nSampV;
+      const v = Math.min(potential(x,L,V0), yMax);
+      const xp = xpx(x), yp = ypx(v);
+      if (i===0) ctx.moveTo(xp,yp); else ctx.lineTo(xp,yp);
+    }
+    ctx.stroke();
+
+    // Nivells d'energia, dibuixats entre els punts de retorn clàssics (E=V(x))
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    const d1 = getComputedStyle(document.documentElement).getPropertyValue('--d1').trim() || '#B5541E';
+    states.forEach(st => {
+      const isSel = st.nodes===sel.nodes;
+      const [xl,xr] = turningPoints(L, V0, st.E);
+      ctx.strokeStyle = isSel ? accent : 'rgba(120,120,120,0.45)';
+      ctx.lineWidth = isSel ? Math.max(W*0.0028,1.4) : 1;
+      ctx.setLineDash(isSel ? [] : [4,3]);
+      ctx.beginPath(); ctx.moveTo(xpx(xl), ypx(st.E)); ctx.lineTo(xpx(xr), ypx(st.E)); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    // Funció d'ona seleccionada (mostrejada directament de la graella numèrica)
+    if (sel){
+      const spacing = states.length>1 ? Math.min(...states.slice(1).map((s,i)=>s.E-states[i].E)) : V0*0.5;
+      const scaleY = 0.42*Math.max(spacing, V0*0.12);
+      const maxSq = Math.max(...sel.psi.map(v=>v*v));
+      ctx.strokeStyle = d1; ctx.lineWidth = Math.max(W*0.0035,1.6);
+      ctx.lineJoin='round'; ctx.lineCap='round';
+      ctx.beginPath();
+      for (let i=0;i<sel.xs.length;i++){
+        const x = sel.xs[i];
+        const y = showMode==='psi'
+          ? sel.E + scaleY*sel.psi[i]
+          : sel.E + scaleY*2.2*(sel.psi[i]*sel.psi[i])/maxSq;
+        const xp = xpx(x), yp = ypx(y);
+        if (i===0) ctx.moveTo(xp,yp); else ctx.lineTo(xp,yp);
+      }
+      ctx.stroke();
+
+      // Línia de base (zero) de la funció d'ona, per referència
+      ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 1; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(xpx(xMin), ypx(sel.E)); ctx.lineTo(xpx(xMax), ypx(sel.E)); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Etiquetes eix
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();
+    ctx.font = Math.max(W*0.022,10)+'px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('x (nm)', pad.l+pw/2, H-6);
+    ctx.save(); ctx.translate(pad.l*0.32, pad.t+ph/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('Energia (eV)', 0, 0); ctx.restore();
+
+    ctx.textAlign='right';
+    ctx.fillText('0', pad.l-6, ypx(0)+4);
+    ctx.fillText(V0.toFixed(1), pad.l-6, ypx(V0)+4);
+  }
+
+  function update(){
+    const P = params();
+    els.lVal.textContent = P.L.toFixed(2);
+    els.v0Val.textContent = P.V0.toFixed(1);
+
+    const states = solveGrid(P.L, P.V0);
+    rebuildNodeButtons(states, true);
+    const sel = states.find(s=>s.nodes===selectedNodes) || states[0];
+
+    draw(states, sel, P.L, P.V0);
+
+    if (sel){
+      roN.textContent = 'n = ' + (sel.nodes+1) + ' (' + sel.nodes + ' node' + (sel.nodes===1?'':'s') + ')';
+      roEn.textContent = sel.E.toFixed(3) + ' eV';
+      roLig.textContent = (P.V0-sel.E).toFixed(3) + ' eV';
+    } else {
+      roN.textContent = '—'; roEn.textContent = '—'; roLig.textContent = '—';
+    }
+    roNtot.textContent = states.length;
+
+    if (sel){
+      const nq = sel.nodes+1;
+      if (shape==='square'){
+        const Einf = nq*nq*Math.PI*Math.PI*C/(P.L*P.L);
+        notaComparacio.innerHTML =
+          '<strong>Comparació amb el pou infinit:</strong> per a la mateixa amplada, un pou de parets dures donaria ' +
+          '<code>E<sub>'+nq+'</sub><sup>&infin;</sup> = '+Einf.toFixed(3)+' eV</code> — sempre més gran que el valor del pou finit ' +
+          '(<code>'+sel.E.toFixed(3)+' eV</code>), perquè aquí la funció d\'ona disposa d\'una mica més d\'espai efectiu ' +
+          '(el que "sobresurt" cap a les parets) per acomodar-se amb menys energia cinètica.';
+      } else if (shape==='parabolic'){
+        const Eharm = (4*sel.nodes+2)*Math.sqrt(P.V0*C)/P.L;
+        notaComparacio.innerHTML =
+          '<strong>Comparació amb l\'oscil·lador harmònic ideal:</strong> si la paràbola no es tallés mai a V<sub>0</sub> ' +
+          '(pou infinitament profund), els nivells estarien perfectament equiespaiats, amb ' +
+          '<code>E<sub>'+nq+'</sub><sup>harm</sup> = '+Eharm.toFixed(3)+' eV</code> — comparat amb ' +
+          '<code>'+sel.E.toFixed(3)+' eV</code> aquí. Com més amunt (més a prop de V<sub>0</sub>), més s\'allunya el pou ' +
+          'real d\'aquesta idealització, perquè la paràbola es "talla" en sec a l\'alçada V<sub>0</sub>.';
+      } else {
+        notaComparacio.innerHTML =
+          '<strong>Sense solució analítica simple:</strong> aquest pou no és ni parell ni senar, així que no hi ha una ' +
+          'equació transcendent senzilla per als nivells — l\'energia i la funció d\'ona d\'aquest gràfic es calculen ' +
+          'numèricament, diagonalitzant l\'equació de Schrödinger discretitzada sobre una graella. Fixa\'t que ' +
+          '&psi;(x) ja no és simètrica ni antisimètrica respecte de x=0: el pendent suau de la banda parabòlica ' +
+          '(dreta) deixa "fugir" una mica més la funció d\'ona que la paret abrupta de la banda quadrada (esquerra).';
+      }
+    } else {
+      notaComparacio.innerHTML = '';
+    }
+  }
+
+  // Recalcula com a màxim un cop per fotograma (evita re-diagonalitzar la
+  // matriu — cost no trivial per a una graella d'n~90 — a cada esdeveniment
+  // 'input' individual mentre s'arrossega un slider).
+  let dirty = true;
+  function requestUpdate(){ dirty = true; }
+  function frameLoop(){
+    if (dirty){ dirty = false; update(); }
+    requestAnimationFrame(frameLoop);
+  }
+
+  els.l.addEventListener('input', requestUpdate);
+  els.v0.addEventListener('input', requestUpdate);
+  btnPsi.addEventListener('click', () => { showMode='psi'; btnPsi.classList.add('active'); btnPsi2.classList.remove('active'); requestUpdate(); });
+  btnPsi2.addEventListener('click', () => { showMode='psi2'; btnPsi2.classList.add('active'); btnPsi.classList.remove('active'); requestUpdate(); });
+  function selectShape(newShape, btn){
+    shape = newShape;
+    [btnSquare,btnParab,btnAsym].forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    requestUpdate();
+  }
+  btnSquare.addEventListener('click', () => selectShape('square', btnSquare));
+  btnParab.addEventListener('click', () => selectShape('parabolic', btnParab));
+  btnAsym.addEventListener('click', () => selectShape('asymmetric', btnAsym));
+
+  fitCanvas(canvas);
+  requestAnimationFrame(frameLoop);
+})();
+</script>
+</body>
+</html>

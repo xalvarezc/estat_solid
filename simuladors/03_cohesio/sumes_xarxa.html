@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Sumes de xarxa de Lennard-Jones</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Del parell al cristall: sumes de xarxa de Lennard-Jones</h1>
+  <p class="sub">Un àtom d'un cristall de gas noble no té un sol veí: en té 12 de primers, 6 de segons, 24 de tercers… Aquí sumem el potencial de Lennard-Jones capa a capa per a quatre estructures, veiem quant aporta cada capa i com en surten la distància d'equilibri, l'energia de cohesió i el mòdul de compressibilitat del sòlid, sense ajustar res al sòlid.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Estructura</div>
+      <div class="grup-btn" id="grupEst">
+        <button type="button" class="btn-opcio" data-v="sc">SC</button>
+        <button type="button" class="btn-opcio" data-v="bcc">BCC</button>
+        <button type="button" class="btn-opcio" data-v="fcc">FCC</button>
+        <button type="button" class="btn-opcio" data-v="hcp">HCP</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Capes de veïns</div>
+      <div class="control-group">
+        <label class="control-label" for="slK">Capes incloses <span class="val" id="valK">3</span></label>
+        <input type="range" class="slider" id="slK" min="1" max="12" step="1" value="3">
+      </div>
+      <p class="hint">També pots clicar una fila de la taula de capes o arrossegar la línia vermella de la gràfica de convergència.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Unitats físiques</div>
+      <div class="control-group">
+        <label class="control-label" for="selGas">Gas noble (ε i σ mesurats al gas)</label>
+        <select class="sel-input" id="selGas">
+          <option value="Ne">Ne (ε = 3.1 meV, σ = 2.74 Å)</option>
+          <option value="Ar">Ar (ε = 10.4 meV, σ = 3.40 Å)</option>
+          <option value="Kr">Kr (ε = 14.0 meV, σ = 3.65 Å)</option>
+          <option value="Xe">Xe (ε = 20.0 meV, σ = 3.98 Å)</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Un parell d'àtoms i un àtom dins del cristall</div>
+        <canvas id="canvasE" width="420" height="320"></canvas>
+        <p class="plot-desc" style="max-width:420px;">En gris, el potencial d'un sol parell. En verd, l'energia per àtom del cristall: té un pou unes 8.6 vegades més profund, i el mínim és una mica més a prop.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Veïns inclosos a la suma (arrossega per girar)</div>
+        <canvas id="canvas3d" width="340" height="320" class="girable"></canvas>
+        <p class="plot-desc" style="max-width:340px;">L'àtom de referència és el negre. Cada color és una capa de veïns a la mateixa distància.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Convergència de les sumes de xarxa</div>
+        <canvas id="canvasC" width="780" height="280" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:780px;">A₁₂ (vermell) gairebé no canvia després de la primera capa; A₆ (blau) necessita més capes, perquè l'atracció arriba més lluny. Les línies discontínues són els valors finals.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Capes de veïns (clica-les per incloure-les)</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th>capa</th><th>p</th><th>nre. de veïns</th><th>contribució a A₆</th><th>A₆ acumulat</th><th>contribució a A₁₂</th><th>A₁₂ acumulat</th></tr></thead>
+            <tbody id="capesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Les quatre estructures</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th class="esq">estructura</th><th>z</th><th>A₁₂</th><th>A₆</th><th>r₀/σ</th><th>e₀/ε</th><th>B σ³/ε</th></tr></thead>
+            <tbody id="estBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">La FCC dels apunts: A₁₂ = 12.13188, A₆ = 14.45392, r₀ = 1.090 σ, e₀ = −8.61 ε, B = 75 ε/σ³. Fixa't en les quatre últimes xifres de la FCC i la HCP.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>En un cristall, cada àtom interacciona amb tots els altres. Si la interacció és de parells, l'energia per àtom és <strong>e(r) = ½ Σ V(p<sub>j</sub> r)</strong>, on p<sub>j</sub> és la distància a l'àtom j en unitats de la distància a primers veïns.</p>
+      <p>Amb el potencial de Lennard-Jones, tota la geometria queda en dues <strong>sumes de xarxa</strong>, A₁₂ = Σ p<sub>j</sub><sup>−12</sup> i A₆ = Σ p<sub>j</sub><sup>−6</sup>, que es calculen una sola vegada per a cada estructura.</p>
+      <p>D'aquí surten r₀ = (2A₁₂/A₆)<sup>1/6</sup> σ, e₀ = −A₆²/(2A₁₂) ε i B = 4A₆²/(g A₁₂) · ε/r₀³, sense cap paràmetre ajustat al sòlid.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Amb una sola capa, A₁₂ ja és pràcticament el total: és el nombre de primers veïns (12 a la FCC). A₆, en canvi, només n'és el 83 %.</p>
+          <p><strong>2.</strong> Compara la corba del parell i la del cristall: el pou és unes 8.6 vegades més profund (12 veïns, cada parell compartit entre dos, més els veïns llunyans) i el mínim és més a prop (1.090σ en lloc de 1.122σ): els veïns llunyans, que només atrauen, estrenyen el cristall.</p>
+          <p><strong>3.</strong> Canvia d'estructura: com més veïns propers, més profund és el pou. La SC té només 6 primers veïns i és la menys lligada.</p>
+          <p><strong>4.</strong> Compara la FCC amb la HCP a la taula: tenen els mateixos 12 primers veïns i les sumes només difereixen a la quarta xifra decimal. El model prediu que la HCP és lleugerament més estable, però els gasos nobles cristal·litzen en FCC: la diferència és tan petita que la decideixen efectes que el model no inclou.</p>
+          <p><strong>5.</strong> Tria el neó i després el xenó: les mateixes sumes, però ε i σ diferents, donen sòlids molt diferents.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./sumes_xarxa.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

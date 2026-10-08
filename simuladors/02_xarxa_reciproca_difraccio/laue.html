@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Mètode de Laue</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="./laue.css">
+<style>
+  .intro-laue{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-laue h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-laue p.sub{ color:var(--muted); font-size:.88rem; max-width:900px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9" stroke-dasharray="1.5 2" opacity=".4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/></svg>Tema 2: Xarxa recíproca / difracció</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-laue">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>El mètode de Laue — cristall fix, feix policromàtic</h1>
+  <p class="sub">A diferència de la difracció de pols (λ fixa, totes les orientacions), el mètode de Laue fixa l'orientació del cristall i fa servir un feix "blanc" (un rang continu de longituds d'ona). Cada família de plans (hkl) tria, dins d'aquest rang, la λ que li permet complir Bragg, i produeix una taca sobre una pel·lícula plana darrere del cristall — així és com von Laue va demostrar el 1912 que els raigs X difracten en els cristalls.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Left: Controls ═══ -->
+  <aside class="controls-panel">
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Cristall (cúbic)</div>
+      <div class="card-body">
+
+      <div class="control-group">
+        <label class="control-label" for="paramA">Paràmetre de xarxa a (Å)</label>
+        <input type="number" class="num-input" id="paramA" step="0.01" min="0.5" value="4.00">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="zoneAxis">Eix de zona alineat amb el feix</label>
+        <select id="zoneAxis" class="sel-input">
+          <option value="100">[100]</option>
+          <option value="110">[110]</option>
+          <option value="111">[111]</option>
+        </select>
+      </div>
+      <p class="hint">Simulador limitat a xarxa cúbica i a aquests tres eixos de zona, perquè la geometria de rotació es mantingui simple i exacta.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Feix policromàtic</div>
+      <div class="card-body">
+
+      <div class="control-row">
+        <div class="control-group">
+          <label class="control-label" for="lambdaMin">λ mín (Å)</label>
+          <input type="number" class="num-input" id="lambdaMin" step="0.01" min="0.05" value="0.40">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="lambdaMax">λ màx (Å)</label>
+          <input type="number" class="num-input" id="lambdaMax" step="0.05" min="0.1" value="2.00">
+        </div>
+      </div>
+      <p class="hint">Cada (hkl) diffracta només si la λ que li cal per complir Bragg cau dins d'aquest interval.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Pel·lícula (transmissió)</div>
+      <div class="card-body">
+
+      <div class="control-group">
+        <label class="control-label" for="detectorD">Distància cristall–pel·lícula D (cm)</label>
+        <input type="number" class="num-input" id="detectorD" step="0.1" min="0.5" value="4.0">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="hmax">Índex màxim |h|,|k|,|l|</label>
+        <input type="number" class="num-input" id="hmax" step="1" min="1" max="10" value="6">
+      </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══ Center: Film ═══ -->
+  <section class="center-panel">
+
+    <div class="card">
+      <p class="plot-title">Patró de Laue (transmissió)</p>
+      <div class="chart-wrap">
+        <canvas id="filmCanvas"></canvas>
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+      <div class="readout-row">
+        <span>Taques visibles: <strong id="spotCount">—</strong></span>
+      </div>
+      <p class="plot-desc">El punt central (creu) marca on cauria el feix directe — a la pràctica s'hi posa un "beam-stop". Passa el ratolí per una taca per identificar-ne els índexs.</p>
+    </div>
+
+  </section>
+
+  <!-- ═══ Right: Theory ═══ -->
+  <aside class="right-panel">
+    <div class="card theory-box">
+      <h3>Condició de Laue</h3>
+      <p>Amb dispersió elàstica, un pla (hkl) difracta quan:</p>
+      <p><strong>k<sub>f</sub> = k<sub>i</sub> + G<sub>hkl</sub></strong>, amb |k<sub>f</sub>| = |k<sub>i</sub>| = 2π/λ</p>
+      <hr>
+      <h3>Per què cal un feix blanc</h3>
+      <p>Amb el cristall fix, gairebé cap pla no compliria Bragg exactament per a una sola λ. En deixar λ lliure dins un rang, cada (hkl) "es busca" la seva pròpia longitud d'ona &mdash; és l'esfera d'Ewald engruixida en una closca, entre els radis 2π/λ<sub>max</sub> i 2π/λ<sub>min</sub>.</p>
+      <hr>
+      <h3>De l'índex a la taca</h3>
+      <p>La direcció difractada es projecta sobre la pel·lícula plana; les taques més properes al centre corresponen als plans de menor índex (més espaiat, més intensos en un cristall real).</p>
+      <hr>
+      <h3>Simetria visible</h3>
+      <p>El patró de taques reprodueix directament la simetria del cristall vist des de l'eix de zona escollit &mdash; per això el mètode de Laue és, encara avui, la manera més ràpida d'orientar un monocristall a partir de la seva fotografia de difracció.</p>
+      <hr>
+      <h3>Límits d'aquest model</h3>
+      <p>Es modela només la geometria (quines (hkl) diffracten i on cauen), no la intensitat real de cada taca (factor de forma atòmic, absorció, temps d'exposició). Només es considera la geometria de transmissió (pel·lícula darrere del cristall).</p>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 2: Xarxa recíproca / difracció</div>
+
+<script src="./laue.js"></script>
+</body>
+</html>

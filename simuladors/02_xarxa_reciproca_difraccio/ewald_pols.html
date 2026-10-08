@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La condició de Laue i la difracció de pols: girar el cristall</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./ewald_pols.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9" stroke-dasharray="1.5 2" opacity=".4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/></svg>Tema 2: Xarxa recíproca / difracció</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La condició de Laue i la difracció de pols: girar el cristall</h1>
+  <p class="sub">Un cristall 2D rep un feix de longitud d'ona fixa. Hi ha pic només si Δk = k′ − k és un vector G de la xarxa recíproca. Amb el cristall quiet això gairebé mai no passa: cal que l'observador sigui just a l'angle bo. Gira el cristall i l'observador i mira-ho a la vegada al laboratori i a l'espai recíproc. Una mostra de pols és un cristall que té, a la vegada, totes les orientacions. És com fer-lo girar els 360°: cada G recorre una circumferència, i allà on talla la de l'observador apareix un anell de difracció.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+
+    <div class="card">
+      <div class="card-title">El cristall</div>
+      <div class="control-group">
+        <label class="control-label" for="slPhi">Orientació φ <span class="val" id="valPhi">20°</span></label>
+        <input type="range" class="slider" id="slPhi" min="0" max="360" step="0.5" value="20">
+      </div>
+      <button type="button" class="btn" id="btnGira">▶ Gira el cristall 360° (pols)</button>
+      <p class="hint" style="margin-top:6px;">També el pots girar arrossegant-lo, al laboratori o a l'espai recíproc.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">L'observador</div>
+      <div class="control-group">
+        <label class="control-label" for="slTth">Angle de difracció 2θ <span class="val" id="valTth">40°</span></label>
+        <input type="range" class="slider" id="slTth" min="-180" max="180" step="0.1" value="40">
+      </div>
+      <button type="button" class="btn" id="btnEscombra">▶ Escombra 2θ de −180° a 180°</button>
+      <p class="hint" style="margin-top:6px;">També el pots moure arrossegant el detector sobre la seva circumferència, o la punta de k′ sobre la circumferència taronja.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Patró de pols</div>
+      <label class="check-row"><input type="checkbox" id="chkAcc" checked> Acumula el patró mentre gira el cristall</label>
+      <p class="hint">Orientacions ja girades: <b id="cobertura">0%</b>. Amb el 100% tens el patró de pols.</p>
+      <button type="button" class="btn" id="btnReset">Esborra el patró acumulat</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Xarxa i feix</div>
+      <div class="control-group">
+        <label class="control-label" for="selLat">Xarxa</label>
+        <select class="sel-input" id="selLat">
+          <option value="square">Quadrada</option>
+          <option value="rect">Rectangular</option>
+          <option value="hex">Hexagonal</option>
+        </select>
+      </div>
+      <div class="control-row">
+        <div class="control-group">
+          <label class="control-label" for="inA">a (Å)</label>
+          <input type="number" class="num-input" id="inA" value="3" step="0.1" min="0.5">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inLambda">λ (Å)</label>
+          <input type="number" class="num-input" id="inLambda" value="1.5406" step="0.01" min="0.1">
+        </div>
+      </div>
+      <div class="control-group" id="blocRatio">
+        <label class="control-label" for="inRatio">b / a</label>
+        <input type="number" class="num-input" id="inRatio" value="1.4" step="0.05" min="0.3">
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slN">Mida del cristall N (cel·les) <span class="val" id="valN">20</span></label>
+        <input type="range" class="slider" id="slN" min="5" max="60" step="1" value="20">
+      </div>
+      <p class="hint">Com més gran és el cristall, més estrets són els pics: cal encertar més l'angle.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mostra</div>
+      <label class="check-row"><input type="checkbox" id="chkEwald" checked> Circumferència de l'observador (Ewald)</label>
+      <label class="check-row"><input type="checkbox" id="chkOrb" checked> Circumferències de gir dels G</label>
+      <label class="check-row"><input type="checkbox" id="chkPlanes" checked> Plans de Bragg quan hi ha pic</label>
+    </div>
+
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Al laboratori (espai real)</div>
+        <canvas id="canvasLab" width="400" height="400"></canvas>
+        <p class="plot-desc" style="max-width:400px;">El feix k arriba per l'esquerra. El detector es mou sobre la circumferència de l'observador, a un angle 2θ del feix. La circumferència es va pintant amb la intensitat recollida mentre gira el cristall, com una pel·lícula de pols. Quan hi ha pic, en vermell, els plans de Bragg corresponents.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">A l'espai recíproc (construcció d'Ewald)</div>
+        <canvas id="canvasRec" width="400" height="400"></canvas>
+        <p class="plot-desc" style="max-width:400px;">k va de C a l'origen O de la xarxa recíproca. La punta de k′ recorre la circumferència de l'observador (taronja, radi 2π/λ). Els G giren amb el cristall sobre les seves circumferències (gris). Hi ha pic quan la punta de k′ toca un G: Δk = G.</p>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Intensitat que veu l'observador (clica per moure'l)</div>
+        <canvas id="canvasPat" width="780" height="260"></canvas>
+        <div class="llegenda">
+          <span><i style="border-top:2px solid #d62728"></i>amb l'orientació actual del cristall</span>
+          <span><i style="border-top:2px solid #00722b"></i>acumulada mentre gira (pols)</span>
+          <span><i style="border-top:1px dashed #e67e22"></i>anells: 2θ = ±2 arcsin(λ|G|/4π)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Anells de pols (clica una fila per posar-hi l'observador)</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th>#</th><th>(h k)</th><th>nre. de G</th><th>|G| (Å⁻¹)</th><th>d (Å)</th><th>2θ (°)</th></tr></thead>
+            <tbody id="ringBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">Cada fila és una circumferència de gir. Només hi ha anell si |G| &lt; 2k = 4π/λ; si no, la circumferència no talla la de l'observador.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Ara mateix</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>La dispersió és elàstica: <strong>|k′| = |k| = 2π/λ</strong>. Per tant, si dibuixem k′ des del mateix punt C que k, la seva punta només pot ser sobre una circumferència de radi 2π/λ: la <strong>circumferència de l'observador</strong>. Moure el detector és moure la punta de k′ per sobre d'aquesta circumferència.</p>
+      <p>Hi ha pic quan <strong>Δk = k′ − k = G</strong>, és a dir, quan la punta de k′ cau sobre un punt de la xarxa recíproca, que té l'origen O a la punta de k.</p>
+      <p>Girar el cristall un angle φ gira la xarxa recíproca el mateix angle al voltant d'O. Cada G recorre una <strong>circumferència de gir</strong> de radi |G|. Si |G| &lt; 2k, aquesta circumferència talla la de l'observador en dos punts, a 2θ = ±2 arcsin(|G|/2k). És la llei de Bragg, 2d sinθ = λ, amb d = 2π/|G|.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Deixa el cristall quiet i prem "Escombra 2θ". Amb una orientació qualsevol, gairebé mai no hi ha cap pic: la circumferència de l'observador no passa per cap G.</p>
+          <p><strong>2.</strong> Ara gira el cristall a poc a poc amb l'observador quiet. Els G giren per les seves circumferències grises; de tant en tant un travessa la punta de k′ i el detector s'encén.</p>
+          <p><strong>3.</strong> Prem "Gira el cristall 360°". La circumferència del detector es va pintant i el patró acumulat (verd) mostra els pics a ±2θ, com una mostra de pols. Coincideixen amb les marques taronges: on es tallen les circumferències de gir i la de l'observador.</p>
+          <p><strong>4.</strong> Quan hi ha pic, mira els plans vermells del cristall: són perpendiculars a G, estan separats d = 2π/|G| i el feix hi fa un angle θ. És la llei de Bragg vista des del laboratori.</p>
+          <p><strong>5.</strong> Redueix λ. La circumferència de l'observador es fa més gran, en talla més de gir i apareixen més anells. Amb λ gran, si 2k &lt; |G| per a tots els G, no hi ha cap pic.</p>
+          <p><strong>6.</strong> Compara la xarxa quadrada amb l'hexagonal. A l'hexagonal hi ha 6 G per anell en lloc de 4: l'anell acumula més intensitat (la multiplicitat).</p>
+          <p><strong>7.</strong> Puja N. Els pics s'estrenyen: per a un cristall gran cal encertar molt bé l'orientació i l'angle.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./ewald_pols.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

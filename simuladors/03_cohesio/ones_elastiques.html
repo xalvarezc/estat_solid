@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Elasticitat i ones elàstiques</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Elasticitat d'un cristall cúbic: llei de Hooke i ones elàstiques</h1>
+  <p class="sub">Un cristall cúbic respon a les deformacions amb només tres constants elàstiques. Deforma un cub i mira quines tensions apareixen, i fes-hi viatjar ones elàstiques en qualsevol direcció: la velocitat del so depèn de la direcció i del tipus d'ona, i mesurant-la s'obtenen les constants elàstiques.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Material</div>
+      <div class="control-group">
+        <select class="sel-input" id="selMat"></select>
+      </div>
+      <div id="sliders"></div>
+      <label class="check-row"><input type="checkbox" id="chkIso"> Força la isotropia: C₄₄ = ½(C₁₁ − C₁₂)</label>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ona</div>
+      <div class="control-group">
+        <label class="control-label" for="slTheta">Direcció de propagació al pla (001) <span class="val" id="valTheta">0°</span></label>
+        <input type="range" class="slider" id="slTheta" min="0" max="359" step="1" value="0">
+      </div>
+      <div class="grup-btn">
+        <button type="button" class="btn-opcio" data-th="0">[100]</button>
+        <button type="button" class="btn-opcio" data-th="45">[110]</button>
+      </div>
+      <div class="control-label" style="margin-top:6px;">Quina de les tres ones (de la més ràpida a la més lenta)</div>
+      <div class="grup-btn tres" id="grupMode">
+        <button type="button" class="btn-opcio" data-v="0">1a</button>
+        <button type="button" class="btn-opcio" data-v="1">2a</button>
+        <button type="button" class="btn-opcio" data-v="2">3a</button>
+      </div>
+      <button type="button" class="btn" id="btnPlay">❚❚ Atura l'ona</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Deformació del cub</div>
+      <div class="grup-btn" id="grupDef">
+        <button type="button" class="btn-opcio" data-v="uni">Uniaxial</button>
+        <button type="button" class="btn-opcio" data-v="poisson">Amb Poisson</button>
+        <button type="button" class="btn-opcio" data-v="vol">Volumètrica</button>
+        <button type="button" class="btn-opcio" data-v="cis">Cisallament</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slEps">Deformació ε (o γ) <span class="val" id="valEps"></span></label>
+        <input type="range" class="slider" id="slEps" min="-0.02" max="0.02" step="0.0005" value="0.01">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Rigidesa amb un cronòmetre</div>
+      <div class="control-group">
+        <label class="control-label" for="inL">Gruix de la mostra (mm)</label>
+        <input type="number" class="num-input" id="inL" value="5" step="0.5" min="0.1">
+      </div>
+      <p class="hint">La taula de direccions dona el temps que triga cada pols a travessar la mostra.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Velocitat del so en funció de la direcció</div>
+        <canvas id="canvasPolar" width="380" height="380" class="girable"></canvas>
+        <p class="plot-desc" style="max-width:380px;">Les tres ones del pla (001). Clica o arrossega per triar la direcció. En un material isòtrop les tres corbes són cercles.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">L'ona triada, àtom a àtom</div>
+        <canvas id="canvasOna" width="380" height="380"></canvas>
+        <p class="plot-desc" style="max-width:380px;">Xarxa quadrada vista des de dalt. Si el desplaçament és perpendicular al pla, el color indica si l'àtom puja (vermell) o baixa (blau).</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Llei de Hooke: un cub deformat</div>
+        <canvas id="canvasDef" width="420" height="300"></canvas>
+        <p class="plot-desc" style="max-width:420px;">La deformació es dibuixa exagerada. Els valors de les tensions són a les expressions de sota.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Velocitats en les direccions de simetria</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th class="esq">direcció</th><th>v longitudinal</th><th>v transversal 1</th><th>v transversal 2</th><th>temps de vol L</th><th>temps de vol T₁</th></tr></thead>
+            <tbody id="dirBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">A la [100] les dues transversals són iguals, √(C₄₄/ρ). A la [110] es desdoblen: una polaritzada en z, √(C₄₄/ρ), i l'altra en el pla, √((C₁₁ − C₁₂)/2ρ). Si el material és isòtrop, totes dues coincideixen.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Prop del mínim de la corba de cohesió, un cristall és un conjunt d'àtoms units per molles. A escala macroscòpica això és l'<strong>elasticitat</strong>: la tensió σ és proporcional a la deformació ε (llei de Hooke), i un cristall cúbic només té tres constants, <strong>C₁₁, C₁₂ i C₄₄</strong>.</p>
+      <p>Cúbic no vol dir isòtrop: un material isòtrop compleix C₄₄ = ½(C₁₁ − C₁₂). El quocient <strong>A = 2C₄₄/(C₁₁ − C₁₂)</strong> mesura l'anisotropia: 1.2 al diamant, 3.2 al coure, 1.0 al tungstè.</p>
+      <p>Si la deformació varia d'un punt a un altre, apareixen forces i el cristall vibra: són les <strong>ones elàstiques</strong>, el so. A la direcció [100], v<sub>L</sub> = √(C₁₁/ρ) i v<sub>T</sub> = √(C₄₄/ρ).</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Amb el diamant, mira el diagrama polar: les tres velocitats gairebé no depenen de la direcció, perquè A = 1.2. Canvia al coure (A = 3.2): les corbes es deformen molt.</p>
+          <p><strong>2.</strong> Tria el tungstè (A ≈ 1): les tres corbes són cercles. Activa "Força la isotropia" amb qualsevol altre material i passarà el mateix.</p>
+          <p><strong>3.</strong> A la [100], tria la 1a ona: els àtoms es mouen en la direcció de propagació (longitudinal). Tria la 2a o la 3a: es mouen perpendicularment (transversals). Sempre v_L > v_T, i per això les ones P d'un terratrèmol arriben abans que les S.</p>
+          <p><strong>4.</strong> Gira la direcció a 20° o 30°: les ones ja no són purament longitudinals ni transversals (mira e·n). Només en direccions de simetria ho són.</p>
+          <p><strong>5.</strong> Al cub, compara "Uniaxial" i "Amb Poisson": si els costats són lliures, el material s'estreny en estirar-lo. Al diamant gairebé no (ν = 0.10); al coure força més.</p>
+          <p><strong>6.</strong> Fes una dilatació volumètrica: σ₁ = σ₂ = σ₃ = B·Δ, amb B = (C₁₁ + 2C₁₂)/3. Per al diamant surt 442 GPa, la mateixa B que la corba de cohesió.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./ones_elastiques.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

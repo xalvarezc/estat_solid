@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Condició de Bragg (interferència entre dos plans)</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="./bragg_interferencia.css">
+<style>
+  .intro-bragg{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-bragg h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-bragg p.sub{ color:var(--muted); font-size:.88rem; max-width:900px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9" stroke-dasharray="1.5 2" opacity=".4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/></svg>Tema 2: Xarxa recíproca / difracció</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-bragg">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La condició de Bragg — dos plans, una interferència</h1>
+  <p class="sub">Dos rajos paral·lels de la mateixa ona incident reboten en dos plans consecutius separats per una distància d. El raig que arriba al segon pla recorre un camí extra Δ = 2d sinθ. Mou l'angle d'observació θ i mira com aquesta diferència de camí decideix si els dos rajos reflectits arriben en fase (interferència constructiva) o en oposició de fase (destructiva).</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Left: Controls ═══ -->
+  <aside class="controls-panel">
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Paràmetres</div>
+      <div class="card-body">
+
+      <div class="control-group">
+        <label class="control-label" for="paramD">Espaiat entre plans d (Å) <span class="val" id="paramD_val">3.00</span></label>
+        <input type="range" class="slider" id="paramD" min="1" max="6" step="0.05" value="3.00">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="paramLambda">Longitud d'ona λ (Å) <span class="val" id="paramLambda_val">1.54</span></label>
+        <input type="range" class="slider" id="paramLambda" min="0.3" max="8" step="0.02" value="1.54">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="paramTheta">Angle d'observació θ (°) <span class="val" id="paramTheta_val">20.0</span></label>
+        <input type="range" class="slider" id="paramTheta" min="0.5" max="89.5" step="0.1" value="20.0">
+      </div>
+      <p class="hint">θ es mesura entre el raig incident i el pla (conveni de Bragg), no respecte la normal.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Reproducció</div>
+      <div class="card-body">
+      <button class="btn-play" id="btnPlay" type="button">▶ Escaneja l'angle automàticament</button>
+      <p class="hint">Fes clic per moure θ de 0° a 90° i tornar, en bucle. Torna a fer clic (o mou el control θ) per aturar-ho i ajustar-ho manualment.</p>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══ Center ═══ -->
+  <section class="center-panel">
+
+    <div class="card">
+      <p class="plot-title">Geometria de la reflexió — camí extra del segon raig</p>
+      <div class="canvas-wrap">
+        <canvas id="diagramCanvas" class="wide"></canvas>
+      </div>
+      <div class="readout-row">
+        <span>Δ = 2d sinθ = <strong id="deltaPath">—</strong> Å</span>
+        <span>Δ / λ = <strong id="deltaOverLambda">—</strong></span>
+      </div>
+      <p class="plot-desc">Les línies discontínues mostren la construcció geomètrica clàssica: el segon raig recorre AQ + QB = 2d sinθ de més que el primer.</p>
+    </div>
+
+    <div class="card">
+      <p class="plot-title">Interferència de les dues ones reflectides (en directe)</p>
+      <div class="canvas-wrap">
+        <canvas id="waveCanvas" class="wide"></canvas>
+      </div>
+      <div class="readout-row">
+        <span>Amplitud resultant: <strong id="ampReadout">—</strong> (de 2 màx.)</span>
+        <span id="verdictBadge" class="badge parcial">—</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="plot-title">Intensitat vs angle d'observació (patró complet)</p>
+      <div class="canvas-wrap">
+        <canvas id="intensityCanvas" class="wide"></canvas>
+      </div>
+      <p class="plot-desc">Línies discontínues: angles de Bragg (nλ = 2d sinθ) per a n = 1, 2, 3… El punt marca la θ actual.</p>
+    </div>
+
+  </section>
+
+  <!-- ═══ Right: Theory ═══ -->
+  <aside class="right-panel">
+    <div class="card theory-box">
+      <h3>Camí extra</h3>
+      <p>Un raig es reflecteix al primer pla; un raig paral·lel, part de la mateixa ona, continua fins al segon pla (separat d) i s'hi reflecteix. Traçant les perpendiculars des del primer punt de reflexió cap al segon raig, el camí extra val:</p>
+      <p><strong>Δ = 2d sin&theta;</strong></p>
+      <hr>
+      <h3>Condició de Bragg</h3>
+      <p>Interferència constructiva quan el camí extra és un nombre enter de longituds d'ona:</p>
+      <p><strong>n&lambda; = 2d sin&theta;</strong></p>
+      <p>Si Δ/λ és mig enter (0.5, 1.5…), els dos rajos arriben en oposició de fase i s'anul·len (destructiva).</p>
+      <hr>
+      <h3>De la fase a la intensitat</h3>
+      <p>Amb diferència de fase &delta; = (2&pi;/&lambda;)&middot;Δ, la suma de dues ones d'amplitud A dona una amplitud resultant 2A|cos(&delta;/2)| i una intensitat:</p>
+      <p><strong>I &prop; cos&sup2;(&delta;/2)</strong></p>
+      <hr>
+      <h3>Per què els pics reals són tan estrets</h3>
+      <p>Aquí només hi ha 2 plans, així que la transició constructiva/destructiva és suau. Un cristall real té milions de plans paral·lels: el mateix argument geomètric, repetit per a cada parell, fa que els pics de difracció es tornin extremadament estrets al voltant de la condició de Bragg exacta &mdash; és el que calcula el simulador de <a href="./difraccio_pols.html">difracció de pols</a> per a la xarxa 3D completa.</p>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 2: Xarxa recíproca / difracció</div>
+
+<script src="./bragg_interferencia.js"></script>
+</body>
+</html>

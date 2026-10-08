@@ -1,0 +1,364 @@
+:root {
+  --uab:       #009639;
+  --uab-dark:  #00722b;
+  --uab-light: #e8f5ee;
+  --bg:        #f4f8f5;
+  --panel:     #ffffff;
+  --border:    #c8e6c9;
+  --text:      #1a1a1a;
+  --muted:     #4a6352;
+  --harm-sel:  #e67e22;
+  --pot-col:   #8e44ad;
+  --shadow:    0 1px 6px rgba(0,114,43,0.10);
+  --radius:    8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── Main layout: 3 columns ── */
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+  align-items: flex-start;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+/* L'activity-bar ocupa tota l'amplada i va primer */
+.activity-bar {
+  flex-basis: 100%;
+  order: -1;
+}
+
+/* ── Generic card ── */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 0.70rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--uab-dark);
+  border-bottom: 2px solid var(--uab);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+.plot-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--uab-dark);
+  margin-bottom: 5px;
+}
+.plot-desc {
+  font-size: 0.69rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* ── Títols plegables ── */
+.collapsible-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 5px;
+}
+.collapsible-title:hover { color: var(--uab); }
+.plot-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px; height: 17px;
+  background: var(--uab);
+  color: white;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.plot-tri {
+  font-size: 0.58rem;
+  color: var(--muted);
+}
+.card.collapsed .card-body { display: none; }
+.card.collapsed { padding-bottom: 6px; }
+
+/* ── LEFT: Potential builder ── */
+.controls-panel {
+  width: 230px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+/* Preset buttons */
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.preset-btn {
+  flex: 1;
+  min-width: 80px;
+  padding: 5px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  font-size: 0.74rem;
+  cursor: pointer;
+  color: var(--muted);
+  text-align: center;
+  transition: all 0.15s;
+}
+.preset-btn:hover { background: var(--uab-light); border-color: var(--uab); color: var(--uab-dark); }
+.preset-btn.active { background: var(--uab); border-color: var(--uab); color: white; font-weight: 700; }
+
+/* Single amplitude slider */
+.harm-ctrl { margin-top: 6px; }
+.harm-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.80rem;
+  margin-bottom: 5px;
+  color: var(--muted);
+}
+.harm-label strong { color: var(--harm-sel); font-size: 0.88rem; }
+
+/* Generic slider */
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--harm-sel);
+  cursor: pointer;
+}
+.slider.green::-webkit-slider-thumb { background: var(--uab); }
+
+/* k + band */
+.control-group { margin-bottom: 10px; }
+.control-group:last-child { margin-bottom: 0; }
+.control-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.control-label .val { font-weight: 700; color: var(--uab-dark); min-width: 32px; text-align: right; }
+
+.band-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.band-btn {
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.band-btn.active { background: var(--uab); border-color: var(--uab); color: white; font-weight: 700; }
+
+details { font-size: 0.78rem; }
+details summary { cursor: pointer; color: var(--uab-dark); font-weight: 600; padding: 4px 0; list-style: none; }
+details summary::before { content: "▶ "; font-size: 0.65rem; }
+details[open] summary::before { content: "▼ "; }
+.n-row { display: flex; gap: 6px; margin-top: 6px; }
+.n-btn {
+  flex: 1; padding: 4px 0;
+  border: 1px solid var(--border); border-radius: 4px;
+  background: white; font-size: 0.8rem; cursor: pointer;
+  color: var(--muted); text-align: center; transition: all 0.15s;
+}
+.n-btn.active { background: var(--uab); border-color: var(--uab); color: white; font-weight: 700; }
+
+/* ── CENTER: Real space ── */
+.center-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.canvas-wrap { display: flex; justify-content: center; }
+canvas {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  max-width: 100%;
+  display: block;
+}
+
+/* ── RIGHT: Reciprocal space ── */
+.right-panel {
+  width: 490px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+/* Parella de gràfics costat a costat */
+.plot-row {
+  display: flex;
+  gap: 9px;
+}
+.plot-row > .card { flex: 1; min-width: 0; }
+
+/* ── Activitat guiada ── */
+.activity-bar {
+  flex-basis: 100%;
+  order: -1;
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--uab);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.activity-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.activity-toggle {
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--uab-dark);
+  cursor: pointer;
+  padding: 0;
+  flex: 1;
+  text-align: left;
+}
+.activity-dots { display: flex; gap: 4px; align-items: center; }
+.activity-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s;
+}
+.activity-dot.active { background: var(--uab); }
+.activity-body {
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--border);
+  display: none;
+}
+.activity-title {
+  font-size: 0.80rem;
+  font-weight: 700;
+  color: var(--uab-dark);
+  margin-bottom: 6px;
+}
+.activity-instruction {
+  font-size: 0.83rem;
+  color: var(--text);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.activity-observe-wrap { margin-bottom: 10px; }
+.activity-reveal-btn {
+  font-size: 0.73rem;
+  color: var(--uab);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.activity-reveal-btn:hover { background: var(--uab-light); }
+.activity-observe {
+  font-size: 0.76rem;
+  color: var(--muted);
+  background: var(--uab-light);
+  border-radius: 4px;
+  padding: 6px 10px;
+  line-height: 1.5;
+  margin-top: 6px;
+  display: none;
+}
+.activity-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+.act-btn {
+  padding: 5px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.act-btn:hover:not(:disabled) { background: var(--uab-light); border-color: var(--uab); color: var(--uab-dark); }
+.act-btn:disabled { opacity: 0.35; cursor: default; }
+.act-btn.primary { background: var(--uab); border-color: var(--uab); color: white; font-weight: 700; }
+.act-btn.primary:hover { background: var(--uab-dark); }
+
+/* ── Tablet (1050px) ── */
+@media (max-width: 1050px) {
+  .main-content { flex-wrap: wrap; }
+  .controls-panel { width: 100%; flex-direction: row; flex-wrap: wrap; gap: 9px; }
+  .controls-panel > .card { flex: 1; min-width: 180px; }
+  .right-panel { width: 100%; }
+}
+
+/* ── Mòbil (<700px): columna única, bandes primer ── */
+@media (max-width: 700px) {
+  .main-content {
+    flex-direction: column;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  /* Ordre: bandes → potencial/ona → controls */
+  .right-panel   { width: 100%; order: 1; }
+  .center-panel  { order: 2; }
+  .controls-panel {
+    width: 100%;
+    order: 3;
+    flex-direction: column;
+  }
+  .controls-panel > .card { min-width: unset; }
+
+  /* Paràbola i bandes apilades verticalment (no side-by-side) */
+  .plot-row { flex-direction: column; }
+  .plot-row > .card { flex: none; }
+
+  /* Canvas ocupen tota l'amplada disponible */
+  canvas { width: 100% !important; height: auto !important; }
+}

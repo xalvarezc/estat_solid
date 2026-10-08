@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La corba de cohesió i el mòdul de compressibilitat</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La corba de cohesió i el mòdul de compressibilitat</h1>
+  <p class="sub">Tres mecanismes d'enllaç (van der Waals, iònic i covalent) i una sola corba: l'energia per partícula en funció de la distància entre veïns. El mínim dona el paràmetre de xarxa i l'energia de cohesió, i la seva corbatura dona la rigidesa del cristall, B = e″(r₀)/(9 g r₀). Comprimeix i estira el cristall i mira la pressió que apareix.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Mecanisme d'enllaç</div>
+      <div class="grup-btn tres" id="grupModel">
+        <button type="button" class="btn-opcio" data-v="lj">Van der Waals</button>
+        <button type="button" class="btn-opcio" data-v="ion">Iònic</button>
+        <button type="button" class="btn-opcio" data-v="cov">Covalent</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="selMat">Material</label>
+        <select class="sel-input" id="selMat"></select>
+      </div>
+      <div class="control-group" id="blocEst">
+        <label class="control-label" for="selEst">Estructura</label>
+        <select class="sel-input" id="selEst">
+          <option value="nacl">NaCl (M = 1.7476, g = 1)</option>
+          <option value="cscl">CsCl (M = 1.7627, g = 4/3√3)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Paràmetres del model</div>
+      <div id="sliders"></div>
+      <p class="hint">Si en mous algun, el material passa a ser "personalitzat".</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Comprimeix o estira el cristall</div>
+      <div class="control-group">
+        <label class="control-label" for="slX">r / r₀ − 1 <span class="val" id="valX">0 %</span></label>
+        <input type="range" class="slider" id="slX" min="0.8" max="1.6" step="0.002" value="1">
+      </div>
+      <button type="button" class="btn" id="btnEq">Torna a l'equilibri</button>
+      <p class="hint" style="margin-top:6px;">També pots arrossegar el punt vermell sobre qualsevol de les dues corbes.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mostra</div>
+      <label class="check-row"><input type="checkbox" id="chkParab" checked> Paràbola al mínim</label>
+      <label class="check-row"><input type="checkbox" id="chkComp" checked> Atracció i repulsió per separat</label>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Corba de cohesió e(r)</div>
+        <canvas id="canvasR" width="400" height="330" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:400px;">Energia en funció de la distància entre veïns. Té un mínim perquè una atracció de llarg abast se suma a una repulsió de curt abast. La posició del mínim dona r₀; la profunditat, e₀; la corbatura, B.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">La mateixa corba en funció del volum, e(v)</div>
+        <canvas id="canvasV" width="400" height="330" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:400px;">Amb v = g r³. La pressió és el pendent canviat de signe, P = −de/dv, i la corbatura al mínim és B/v₀: B = v₀ e″(v₀).</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Rigidesa: predicció del model i experiment</div>
+        <canvas id="canvasB" width="780" height="300"></canvas>
+        <p class="plot-desc" style="max-width:780px;">Barres: B predit pel model amb els paràmetres de cada material (el seleccionat, amb els valors actuals dels controls). Ratlla negra: B experimental. En blau, gasos nobles; en lila, iònics; en verd, covalents.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Sigui quin sigui el mecanisme, l'energia per partícula <strong>e(r)</strong> té un mínim: atracció a distància, repulsió de Pauli a prop. Del mínim en surten tres números: <strong>r₀</strong> (el paràmetre de xarxa), <strong>e₀</strong> (l'energia de cohesió) i la <strong>corbatura</strong>.</p>
+      <p>El mòdul de compressibilitat és <strong>B = −V dP/dV = v d²e/dv²</strong>. Amb v = g r³ i al mínim, on de/dr = 0, queda <strong>B = e″(r₀)/(9 g r₀)</strong>, la mateixa fórmula per als tres mecanismes. Només canvien la funció e(r) i el factor geomètric g.</p>
+      <p>Unitats: 1 eV/Å³ = 160.2 GPa.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Mou el punt vermell cap a l'esquerra (comprimir): la pressió es fa positiva i creix molt de pressa, perquè domina la repulsió. Cap a la dreta (estirar), la pressió és negativa i petita.</p>
+          <p><strong>2.</strong> Prop del mínim, la corba i la paràbola taronja coincideixen, i P ≈ −B Δv/v₀. Lluny del mínim, la corba és asimètrica: costa més comprimir que estirar.</p>
+          <p><strong>3.</strong> Mira la gràfica de barres: de l'argó (3 GPa) al diamant (440 GPa) hi ha més de dos ordres de magnitud. Compara la profunditat i la posició del mínim dels tres mecanismes.</p>
+          <p><strong>4.</strong> Al model iònic, puja l'exponent m: l'energia de cohesió gairebé no canvia (factor 1 − 1/m), però B creix com m − 1. Per això el valor de m es dedueix de B mesurat.</p>
+          <p><strong>5.</strong> Al model covalent, B només depèn de n·m·|e₀|/r₀³. Comprova-ho movent n i m amb el producte constant.</p>
+          <p><strong>6.</strong> Als gasos nobles, el neó és el pitjor predit: B i E_coh surten massa grans. És l'efecte del moviment de punt zero dels nuclis lleugers, que el model no inclou.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./corba_cohesio.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

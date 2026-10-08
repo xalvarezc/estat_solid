@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Forces de London</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Forces de London: dos dipols que fluctuen</h1>
+  <p class="sub">Dos àtoms neutres i sense dipol permanent s'atrauen igualment. El model de dos oscil·ladors acoblats dels apunts mostra per què: l'acoblament dipol-dipol canvia les freqüències dels dos modes, i l'energia de punt zero, que és quàntica, baixa. Canvia la distància i mira l'energia, les freqüències i la correlació entre els dos dipols a l'estat fonamental.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Gas noble</div>
+      <select class="sel-input" id="selGas">
+        <option value="Ne">Neó (kα = 0.396 Å³, ħω₀ = 16.8 eV)</option>
+        <option value="Ar">Argó (kα = 1.64 Å³, ħω₀ = 11.8 eV)</option>
+        <option value="Kr">Criptó (kα = 2.48 Å³, ħω₀ = 10.0 eV)</option>
+        <option value="Xe">Xenó (kα = 4.04 Å³, ħω₀ = 8.4 eV)</option>
+      </select>
+      <p class="hint" style="margin-top:6px;">kα és la polaritzabilitat com a volum; per a ħω₀ es pren l'energia de la línia d'absorció òptica més intensa de l'àtom (Kittel), com als apunts.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Distància</div>
+      <div class="control-group">
+        <label class="control-label" for="slR">R <span class="val" id="valR"></span></label>
+        <input type="range" class="slider" id="slR" min="1.5" max="8" step="0.01" value="3.76">
+      </div>
+      <p class="hint">També pots arrossegar la línia vermella d'una de les dues gràfiques.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Estat fonamental</div>
+      <div class="control-group">
+        <label class="control-label" for="slExag">Exagera l'acoblament (només per veure'l) <span class="val" id="valExag">×1</span></label>
+        <input type="range" class="slider" id="slExag" min="1" max="15" step="1" value="1">
+      </div>
+      <button type="button" class="btn" id="btnPlay">❚❚ Atura les mostres</button>
+      <button type="button" class="btn" id="btnReset">Esborra les mostres</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Energia d'interacció entre dos àtoms</div>
+        <canvas id="canvasU" width="440" height="320" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:440px;">En verd, el model de dos oscil·ladors acoblats. En taronja, la seva aproximació −A/R⁶. En blau, l'atracció que s'ajusta a l'experiment, i en gris, el Lennard-Jones complet amb la repulsió.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Freqüències dels dos modes normals</div>
+        <canvas id="canvasW" width="340" height="320" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:340px;">L'acoblament separa la freqüència ω₀ en dues: el mode simètric s'afluixa i l'antisimètric s'endureix.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">L'estat fonamental al pla (x₁, x₂)</div>
+        <canvas id="canvasS" width="340" height="340"></canvas>
+        <p class="plot-desc" style="max-width:340px;">Cada punt és una mesura possible dels desplaçaments dels dos núvols electrònics. Les el·lipses són els contorns de |ψ₀|²: estan estirades en la diagonal x₁ = x₂.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Els dos àtoms, mesura a mesura</div>
+        <canvas id="canvasAt" width="440" height="340"></canvas>
+        <p class="plot-desc" style="max-width:440px;">El núvol electrònic (vermell) es desplaça respecte del nucli (verd). Quan els dos dipols apunten en el mateix sentit s'atrauen; en sentits oposats, es repel·leixen. En mitjana, guanya l'atracció.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Un àtom de gas noble és neutre i esfèric de mitjana, però el seu núvol electrònic <strong>fluctua</strong>. Modelem cada àtom com un oscil·lador: el núvol, lligat al nucli per una molla de freqüència ω₀, amb polaritzabilitat α = e²/C.</p>
+      <p>Dos àtoms a distància R s'acoblen amb una interacció dipol-dipol, <strong>H₁ ≃ −(2ke²/R³) x₁x₂</strong>. L'acoblament separa la freqüència en dos modes, ω<sub>s</sub> = ω₀√(1−y) i ω<sub>a</sub> = ω₀√(1+y).</p>
+      <p>Clàssicament, en repòs, no hi ha força. Però quànticament cada mode té una energia de punt zero ½ħω, i la suma <strong>baixa</strong> respecte de dos àtoms aïllats: <strong>ΔU ≃ −A/R⁶</strong>, la força de London.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Amb l'argó a 3.76 Å, el model dona uns −5.6 meV, com als apunts. L'atracció ajustada a l'experiment (blau) és unes quatre vegades més gran: el model encerta l'ordre de magnitud.</p>
+          <p><strong>2.</strong> Acosta els àtoms: ω_s baixa i ω_a puja. Les dues variacions lineals es cancel·len a l'energia; el que queda és el terme quadràtic, sempre negatiu.</p>
+          <p><strong>3.</strong> Mira les mostres de l'estat fonamental: si exageres l'acoblament (×10), el núvol de punts s'estira al llarg de la diagonal x₁ = x₂. Els dos dipols tendeixen a apuntar en el mateix sentit, i per això ⟨H₁⟩ < 0.</p>
+          <p><strong>4.</strong> Sense exagerar, la correlació és només del 3 % a la distància del sòlid: la força de London és feble, i per això l'argó fon a 84 K.</p>
+          <p><strong>5.</strong> Compara el neó i el xenó: com més gran (més polaritzable) és l'àtom, més forta és l'atracció, i més alt el punt de fusió.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./forces_london.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Grups puntuals i simetria en 3D</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="./simetria_3d.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:900px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M3 19 L9 19 L15 19 M5 13 L11 13 L17 13 M7 7 L13 7 L19 7" opacity=".55"/><path d="M3 19 L5 13 L7 7 M9 19 L11 13 L13 7 M15 19 L17 13 L19 7" opacity=".55"/><circle cx="3" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="11" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="17" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="7" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="13" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="7" r="1.4" fill="currentColor" stroke="none"/></svg>Tema 1: Xarxes cristal·lines</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Grups puntuals dels 7 sistemes cristal·lins</h1>
+  <p class="sub">Tria un sistema cristal·lí i apareixerà la cel·la que el representa, decorada amb un motiu asimètric perquè cada operació es vegi a ull. El desplegable d'operacions és sempre el mateix menú de 46 candidates —el que fa diferent cada sistema és quines d'aquestes són realment una simetria seva (en verd) i quines no (en vermell), comprovat directament sobre la forma, no triat a mà. Mou el lliscador per veure la còpia taronja interpolar de la identitat a l'operació completa.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: Controls ═══ -->
+  <aside class="controls-panel">
+
+    <div class="card">
+      <div class="card-title">1. Grup puntual</div>
+      <div class="control-group">
+        <select class="sel-input" id="selGrup"></select>
+      </div>
+      <p class="hint-sistema" id="hintSistema"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">2. Operació de simetria</div>
+      <p class="hint-sistema">Menú universal (les mateixes 46 operacions per a qualsevol sistema): en <strong style="color:#1a7d2e;">verd</strong> les que SÓN una simetria d'aquest cristall, en <strong style="color:#b23a3a;">vermell</strong> les que no ho són.</p>
+      <div class="control-group">
+        <select class="sel-input" id="selOperacio"></select>
+      </div>
+      <p class="hint-sistema" id="resumValides"></p>
+      <label class="check-row">
+        <input type="checkbox" id="chkElement" checked>
+        Mostra l'eix o el pla de l'operació
+      </label>
+    </div>
+
+    <div class="card">
+      <div class="card-title">3. De la identitat a l'operació</div>
+      <div class="control-group">
+        <label class="control-label">t <span class="val" id="valT">0%</span></label>
+        <input type="range" class="slider" id="sliderT" min="0" max="1" step="0.005" value="0" style="width:100%">
+      </div>
+      <p class="plot-desc" id="progresAngle" style="text-align:left;"></p>
+      <p class="hint-sistema" id="estatOperacio" style="font-weight:600;"></p>
+    </div>
+
+  </aside>
+
+  <!-- ═══ Centre: escena 3D ═══ -->
+  <div class="center-panel">
+    <div class="canvas-wrap">
+      <canvas id="canvas3d" width="480" height="480"></canvas>
+    </div>
+    <p class="plot-desc">Arrossega per girar la vista, roda del ratolí per fer zoom.</p>
+    <div class="llegenda">
+      <span class="propi"><span class="mostra"></span>Original (t = 0)</span>
+      <span class="impropi"><span class="mostra" style="background:#e67e22;"></span>Còpia interpolada (t)</span>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta: teoria ═══ -->
+  <aside class="right-panel">
+    <div class="card theory-box">
+      <div class="card-title">Notació de Schoenflies</div>
+      <p><strong>E</strong> identitat · <strong>C<sub>n</sub></strong> rotació pròpia de 360°/n · <strong>σ</strong> reflexió (pla mirall) · <strong>i</strong> inversió (r → −r) · <strong>S<sub>n</sub></strong> roto-inversió: gira 360°/n i després reflecteix pel pla perpendicular a l'eix.</p>
+      <hr>
+      <p>Les operacions <strong>pròpies</strong> (E, C<sub>n</sub>) només mouen el motiu — mai el converteixen en la seva imatge especular. Les <strong>impròpies</strong> (σ, i, S<sub>n</sub>) sí: fixa't com el motiu de quatre boletes de colors queda "cap per avall" respecte de l'original quan t = 1 en una d'aquestes.</p>
+      <hr>
+      <h3>Principi de Neumann</h3>
+      <p>Cap propietat física pot ser menys simètrica que la xarxa. Compara el <strong>cúbic</strong> (molts eixos equivalents, Oh) amb el <strong>triclínic</strong> (pràcticament cap simetria, Ci): el primer és isòtrop en moltes propietats, el segon gairebé mai.</p>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="./simetria_3d.js"></script>
+</body>
+</html>

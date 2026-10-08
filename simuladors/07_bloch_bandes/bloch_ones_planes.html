@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Combinació d'ones planes (estats de Bloch)</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="./bloch_ones_planes.css">
+<style>
+  .intro-bloch{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-bloch h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-bloch p.sub{ color:var(--muted); font-size:.88rem; max-width:900px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 19 Q12 15 22 19" stroke-width="2.6"/><path d="M2 8 Q12 4 22 8" stroke-width="2.6"/><path d="M12 15 L12 8" stroke-width="1" stroke-dasharray="1.5 1.8" opacity=".5"/></svg>Tema 7: Bloch / bandes</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-bloch">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Combinació d'ones planes — estats de Bloch</h1>
+  <p class="sub">Mètode de l'electró quasi lliure: un potencial periòdic V(x) es descompon en harmònics de Fourier V<sub>n</sub>, i el hamiltonià es diagonalitza en la base de N ones planes properes a k. Ajusta el potencial (esquerra), observa com la matriu H barreja els modes (dreta) i com s'obren els gaps de banda a la vora de la primera zona de Brillouin.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Activitat guiada ═══ -->
+  <div class="activity-bar" id="activity_bar">
+    <div class="activity-header" id="activity_header">
+      <button class="activity-toggle" id="activity_toggle">▶ Activitat: Gap en un potencial cosinus</button>
+      <div class="activity-dots" id="activity_dots"></div>
+    </div>
+    <div class="activity-body" id="activity_body">
+
+      <!-- Menú de selecció d'activitat -->
+      <div id="act_menu">
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;">Tria una activitat:</p>
+        <div id="act_menu_list"></div>
+      </div>
+
+      <!-- Contingut pas a pas (ocult fins que se selecciona una activitat) -->
+      <div id="act_steps" style="display:none;">
+        <button id="act_back" class="act-btn" style="margin-bottom:8px;font-size:0.75rem;">← Tornar al menú</button>
+        <p class="activity-title" id="act_title"></p>
+        <p class="activity-instruction" id="act_instruction"></p>
+        <div class="activity-observe-wrap">
+          <button class="activity-reveal-btn" id="act_reveal">Mostra l'observació esperada ▸</button>
+          <div class="activity-observe" id="act_observe"></div>
+        </div>
+        <div class="activity-nav">
+          <button class="act-btn" id="act_prev">← Anterior</button>
+          <button class="act-btn primary" id="act_next">Següent →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ Left: Constructor de potencial ═══ -->
+  <aside class="controls-panel">
+
+    <div class="card">
+      <div class="card-title">Potencial periòdic</div>
+      <p style="font-size:0.74rem;color:var(--muted);margin-bottom:6px;">Forma predefinida:</p>
+      <div class="preset-row">
+        <button class="preset-btn active" data-preset="cosinus">Cosinus</button>
+        <button class="preset-btn" data-preset="pou_quadrat">Pou quadrat</button>
+        <button class="preset-btn" data-preset="kronig_penney">Kronig-Penney</button>
+        <button class="preset-btn" data-preset="triangular">Triangular</button>
+      </div>
+      <div class="harm-ctrl" id="scale_ctrl" style="margin-top:8px;">
+        <div class="harm-label">
+          <span>Escala</span>
+          <strong id="scale_val">1.50</strong>
+        </div>
+        <input type="range" class="slider" id="scale_slider" min="0" max="50" step="0.1" value="1.5">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Harmònics V<sub>n</sub></div>
+      <canvas id="harmonicCanvas" width="208" height="175"></canvas>
+      <p class="plot-desc" style="margin-bottom:6px;">Clic sobre una barra per seleccionar &nbsp;|&nbsp; <span style="color:#2980b9">■</span> en H &nbsp;<span style="color:#95a5a6">■</span> sols V(x)</p>
+      <div class="harm-ctrl">
+        <div class="harm-label">
+          <span id="harm_label">V<sub>1</sub> (n=1)</span>
+          <strong id="harm_val">1.50</strong>
+        </div>
+        <input type="range" class="slider" id="harm_slider" min="-15" max="15" step="0.1" value="1.5">
+      </div>
+      <details style="margin-top:8px;">
+        <summary>Nombre màxim d'harmònics</summary>
+        <div class="n-row" style="margin-top:6px;">
+          <button class="n-btn nh-btn" data-nh="5">5</button>
+          <button class="n-btn nh-btn" data-nh="10">10</button>
+          <button class="n-btn nh-btn active" data-nh="15">15</button>
+          <button class="n-btn nh-btn" data-nh="20">20</button>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>Nombre d'ones planes N</summary>
+        <div style="margin-top:8px;">
+          <div class="n-row" id="n_row">
+            <button class="n-btn" data-n="3">3</button>
+            <button class="n-btn active" data-n="5">5</button>
+            <button class="n-btn" data-n="7">7</button>
+            <button class="n-btn" data-n="9">9</button>
+          </div>
+          <p style="font-size:0.70rem;color:var(--muted);margin-top:6px;">
+            N ones planes &rarr; N&minus;1 harmònics actius en H; la resta sols en V(x).
+          </p>
+        </div>
+      </details>
+    </div>
+
+  </aside>
+
+  <!-- ═══ Center: Espai real ═══ -->
+  <section class="center-panel">
+
+    <div class="card">
+      <p class="plot-title collapsible-title"><span class="plot-label">A</span><span class="plot-tri">▼</span>Potencial V(x)</p>
+      <div class="card-body">
+        <div class="canvas-wrap">
+          <canvas id="potentialCanvas" width="400" height="130"></canvas>
+        </div>
+        <p class="plot-desc">
+          Línia gruixuda: V(x) = &sum; V<sub>n</sub> cos(nGx).
+          Línies fines: harmònics individuals. <span style="color:#e67e22;font-weight:600;">Taronja</span>: harmònic seleccionat.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="plot-title collapsible-title"><span class="plot-label">B</span><span class="plot-tri">▼</span>Funció d'ona &psi;(x)</p>
+      <div class="card-body">
+        <div class="n-row" style="margin-bottom:6px;">
+          <button class="n-btn active" data-view="planes">Ones planes</button>
+          <button class="n-btn" data-view="bloch">Descomposició Bloch</button>
+        </div>
+        <div id="mode_sel_row" class="n-row" style="margin-bottom:4px;flex-wrap:wrap;display:none;"></div>
+        <p id="wf_formula" style="text-align:center;font-size:0.92rem;margin:2px 0 6px;padding:5px 8px;background:rgba(0,122,51,0.07);border-radius:4px;line-height:1.7;"></p>
+        <div class="canvas-wrap">
+          <canvas id="wavefunctionCanvas" width="400" height="280"></canvas>
+        </div>
+        <p class="plot-desc" id="wf_desc"></p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══ Right: Espai recíproc ═══ -->
+  <aside class="right-panel">
+
+    <div class="plot-row">
+      <div class="card">
+        <p class="plot-title collapsible-title"><span class="plot-label">C</span><span class="plot-tri">▼</span>E(q) = q²</p>
+        <div class="card-body">
+          <div class="canvas-wrap">
+            <canvas id="parabolaCanvas" width="210" height="265"></canvas>
+          </div>
+          <p class="plot-desc">Mida &prop; |c<sub>n</sub>|²</p>
+        </div>
+      </div>
+      <div class="card">
+        <p class="plot-title collapsible-title"><span class="plot-label">D</span><span class="plot-tri">▼</span>Bandes E(k)</p>
+        <div class="card-body">
+          <div class="canvas-wrap">
+            <canvas id="bandCanvas" width="210" height="265"></canvas>
+          </div>
+          <p class="plot-desc">Puntejat: electrons lliures</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:8px 12px;">
+      <div class="control-group" style="margin-bottom:6px;">
+        <label class="control-label" for="k_slider">
+          k / (G/2) <span class="val" id="k_val">0.50</span>
+        </label>
+        <input type="range" class="slider green" id="k_slider" min="0" max="0.999" step="0.001" value="0.5">
+      </div>
+      <div class="control-group" style="margin-bottom:0;">
+        <label class="control-label">Banda mostrada</label>
+        <div class="band-row" id="band_row"></div>
+      </div>
+    </div>
+
+    <div class="plot-row">
+      <div class="card">
+        <p class="plot-title collapsible-title"><span class="plot-label">E</span><span class="plot-tri">▼</span>Matriu H<sub>nn'</sub></p>
+        <div class="card-body">
+          <div class="canvas-wrap">
+            <canvas id="matrixCanvas" width="210" height="210"></canvas>
+          </div>
+          <p class="plot-desc">Diagonal (verd): cinètica. Fora diagonal: V<sub>n</sub>.</p>
+          <div id="matrix_info" style="font-size:0.73rem;color:var(--muted);min-height:28px;margin-top:5px;padding:4px 6px;border-left:3px solid var(--border);line-height:1.5;"></div>
+        </div>
+      </div>
+      <div class="card">
+        <p class="plot-title collapsible-title"><span class="plot-label">F</span><span class="plot-tri">▼</span>Pesos |c<sub>n</sub>|²</p>
+        <div class="card-body">
+          <div class="canvas-wrap">
+            <canvas id="weightsCanvas" width="210" height="140"></canvas>
+          </div>
+          <div id="energy_display" style="font-size:0.73rem;color:var(--muted);line-height:1.8;margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 7: Bloch / bandes</div>
+
+<script src="./bloch_ones_planes.js"></script>
+</body>
+</html>

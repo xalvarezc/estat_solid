@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — L'enllaç covalent: l'ió H₂⁺</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>L'enllaç covalent mínim: l'ió H₂⁺</h1>
+  <p class="sub">Dos protons i un sol electró. Si l'electró es reparteix entre tots dos en una combinació simètrica d'orbitals 1s, la seva energia baixa i la molècula queda lligada; en la combinació antisimètrica, puja. Canvia la distància entre els protons i mira on va la densitat electrònica i com es desdoblen les energies.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Distància entre protons</div>
+      <div class="control-group">
+        <label class="control-label" for="slR">R <span class="val" id="valR"></span></label>
+        <input type="range" class="slider" id="slR" min="0.3" max="4.5" step="0.01" value="1.32">
+      </div>
+      <button type="button" class="btn" id="btnMin">Vés al mínim de l'estat enllaçant</button>
+      <p class="hint" style="margin-top:6px;">També pots arrossegar la línia vermella de la gràfica d'energia.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mapa de densitat</div>
+      <div class="grup-btn" id="grupMapa">
+        <button type="button" class="btn-opcio" data-v="b">|ψ₊|²</button>
+        <button type="button" class="btn-opcio" data-v="a">|ψ₋|²</button>
+        <button type="button" class="btn-opcio" data-v="dif_b">ψ₊: diferència</button>
+        <button type="button" class="btn-opcio" data-v="dif_a">ψ₋: diferència</button>
+      </div>
+      <p class="hint">"Diferència" és la densitat de l'estat menys la de dos àtoms que no interfereixen: on va la càrrega quan es forma l'enllaç.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Energia dels dos estats en funció de R</div>
+        <canvas id="canvasE" width="420" height="320" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:420px;">Respecte d'un àtom d'hidrogen i un protó separats. L'estat enllaçant té un mínim; l'antienllaçant és sempre repulsiu. El punt negre és el valor exacte.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Densitat al llarg de l'eix</div>
+        <canvas id="canvasZ" width="360" height="320"></canvas>
+        <p class="plot-desc" style="max-width:360px;">A l'estat enllaçant la densitat entre els protons és més alta que la de dos àtoms independents; a l'antienllaçant s'anul·la al punt mitjà.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">La densitat electrònica al pla de la molècula</div>
+        <canvas id="canvasMap" width="400" height="280"></canvas>
+        <p class="plot-desc" style="max-width:400px;">Els punts negres són els protons A i B.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Diagrama de nivells</div>
+        <canvas id="canvasNiv" width="380" height="280"></canvas>
+        <p class="plot-desc" style="max-width:380px;">H_AA és l'energia sense bescanvi; la integral de bescanvi la desdobla en E₊ (més avall) i E₋ (més amunt).</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Entre dos àtoms iguals no hi pot haver transferència de càrrega. El que els uneix és un electró <strong>compartit</strong> entre els dos nuclis. El cas més senzill és l'ió H₂⁺: dos protons i un electró.</p>
+      <p>En el model <strong>LCAO</strong>, la funció d'ona és una combinació dels dos orbitals 1s: ψ₊ (simètrica, enllaçant) i ψ₋ (antisimètrica, antienllaçant), amb energies <strong>E± = (H_AA ± H_AB)/(1 ± S)</strong>.</p>
+      <p>La diferència d'energia ve de la <strong>integral de bescanvi</strong> H_AB, que no té anàleg clàssic: existeix perquè l'electró pot ser a prop dels dos protons alhora.</p>
+      <p>És el cas més petit del mètode d'<strong>enllaç fort</strong> (tight binding) del Tema 7: amb N àtoms, els dos nivells es converteixen en una banda.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Prem "Vés al mínim": l'estat enllaçant té un mínim de −1.76 eV a 1.32 Å. El valor exacte és −2.79 eV a 1.06 Å: el model captura el mecanisme, però no els números.</p>
+          <p><strong>2.</strong> Mira la densitat al llarg de l'eix: a l'estat enllaçant, al punt mitjà és gairebé el doble de la de dos àtoms independents; a l'antienllaçant hi ha un node.</p>
+          <p><strong>3.</strong> Tria el mapa "ψ₊: diferència": la càrrega surt de les zones exteriors i s'acumula entre els protons. Amb "ψ₋: diferència", la càrrega fuig del centre.</p>
+          <p><strong>4.</strong> Allunya els protons (R gran): S → 0, la separació entre E₊ i E₋ desapareix i tots dos tendeixen a l'energia de l'àtom aïllat.</p>
+          <p><strong>5.</strong> Acosta'ls molt (R petit): fins i tot l'estat enllaçant puja, perquè domina la repulsió entre protons, que el núvol electrònic ja no pot apantallar.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./enllac_covalent.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

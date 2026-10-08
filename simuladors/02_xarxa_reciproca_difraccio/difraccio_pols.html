@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Difracció de pols (xarxa recíproca 3D)</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="./difraccio_pols.css">
+<style>
+  .intro-difr{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-difr h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-difr p.sub{ color:var(--muted); font-size:.88rem; max-width:900px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9" stroke-dasharray="1.5 2" opacity=".4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/></svg>Tema 2: Xarxa recíproca / difracció</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-difr">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Difracció de pols — de la cel·la unitat als pics</h1>
+  <p class="sub">Tria un sistema cristal·logràfic i un centratge de Bravais, dóna els paràmetres de xarxa a, b, c i els angles α, β, γ, i el simulador calcula la xarxa recíproca, aplica la regla de selecció del centratge i genera el patró de difracció de pols (posició 2θ i intensitat relativa) per a una base d'un sol àtom.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Left: Controls ═══ -->
+  <aside class="controls-panel">
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Sistema i centratge</div>
+      <div class="card-body">
+
+      <div class="control-group">
+        <label class="control-label" for="sistema">Sistema cristal·logràfic</label>
+        <select id="sistema" class="sel-input">
+          <option value="cubic">Cúbic</option>
+          <option value="tetragonal">Tetragonal</option>
+          <option value="ortorombic">Ortoròmbic</option>
+          <option value="hexagonal">Hexagonal</option>
+          <option value="trigonal">Trigonal (rombohèdric)</option>
+          <option value="monoclinic">Monoclínic</option>
+          <option value="triclinic">Triclínic</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="centratge">Centratge de Bravais</label>
+        <select id="centratge" class="sel-input"></select>
+      </div>
+
+      <p class="hint" id="sistemaHint"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Paràmetres de xarxa</div>
+      <div class="card-body">
+
+      <div class="control-row">
+        <div class="control-group">
+          <label class="control-label" for="paramA">a (Å)</label>
+          <input type="number" class="num-input" id="paramA" step="0.01" min="0.1" value="4.00">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="paramB">b (Å)</label>
+          <input type="number" class="num-input" id="paramB" step="0.01" min="0.1" value="4.00">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="paramC">c (Å)</label>
+          <input type="number" class="num-input" id="paramC" step="0.01" min="0.1" value="4.00">
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-group">
+          <label class="control-label" for="paramAlpha">α (°)</label>
+          <input type="number" class="num-input" id="paramAlpha" step="0.1" min="1" max="179" value="90">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="paramBeta">β (°)</label>
+          <input type="number" class="num-input" id="paramBeta" step="0.1" min="1" max="179" value="90">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="paramGamma">γ (°)</label>
+          <input type="number" class="num-input" id="paramGamma" step="0.1" min="1" max="179" value="90">
+        </div>
+      </div>
+      <p class="hint">α = angle entre b i c &nbsp;|&nbsp; β = angle entre a i c &nbsp;|&nbsp; γ = angle entre a i b. Els camps grisos es fixen automàticament segons el sistema triat.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Condicions de difracció</div>
+      <div class="card-body">
+
+      <div class="control-group">
+        <label class="control-label" for="lambda">Longitud d'ona λ (Å)</label>
+        <input type="number" class="num-input" id="lambda" step="0.0001" min="0.05" value="1.5406">
+      </div>
+      <p class="hint" style="margin-top:-4px;margin-bottom:8px;">1.5406 Å &mdash; Cu K&alpha;<sub>1</sub>, el més habitual en difractòmetres de laboratori.</p>
+
+      <div class="control-group">
+        <label class="control-label" for="hmax">Índex màxim |h|,|k|,|l|</label>
+        <input type="number" class="num-input" id="hmax" step="1" min="1" max="8" value="5">
+      </div>
+
+      <label class="check-row">
+        <input type="checkbox" id="mostraPares" checked>
+        Agrupa reflexions equivalents per simetria (mateix d)
+      </label>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══ Center: Chart + table ═══ -->
+  <section class="center-panel">
+
+    <div class="card">
+      <p class="plot-title">Patró de difracció de pols &mdash; intensitat vs 2θ</p>
+      <div class="chart-wrap">
+        <canvas id="diffCanvas"></canvas>
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+      <p class="plot-desc">Alçada de cada pic &prop; multiplicitat (nombre de plans (hkl) equivalents per simetria). Passa el ratolí per identificar cada pic.</p>
+      <div class="empty-state" id="emptyState">Cap pic accessible amb aquesta longitud d'ona i aquesta cel·la &mdash; prova de reduir λ o augmentar els paràmetres de xarxa.</div>
+    </div>
+
+    <div class="card">
+      <p class="plot-title">Llista de reflexions</p>
+      <div class="peak-table-wrap">
+        <table class="peak-table">
+          <thead>
+            <tr><th>h k l</th><th>d (Å)</th><th>2θ (°)</th><th>multiplicitat</th></tr>
+          </thead>
+          <tbody id="peakTableBody"></tbody>
+        </table>
+      </div>
+      <button class="btn-download" id="btnDownload" type="button">Descarrega dades (CSV)</button>
+    </div>
+
+  </section>
+
+  <!-- ═══ Right: Theory ═══ -->
+  <aside class="right-panel">
+    <div class="card theory-box">
+      <h3>De la cel·la a la xarxa recíproca</h3>
+      <p>A partir de a, b, c, α, β, γ es construeixen els vectors directes a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>, i d'aquests els recíprocs:</p>
+      <p><strong>g<sub>i</sub>&middot;a<sub>j</sub> = 2&pi;&delta<sub>ij</sub></strong></p>
+      <p>Cada (hkl) enter dona un punt G<sub>hkl</sub> = h·g&#8321;+k·g&#8322;+l·g&#8323;, amb espaiat d = 2&pi;/|G<sub>hkl</sub>|.</p>
+      <hr>
+      <h3>Llei de Bragg</h3>
+      <p><strong>λ = 2d sin&theta;</strong> &mdash; per a cada d només hi ha reflexió si λ/(2d) &le; 1; si no, el pla és inaccessible amb aquesta longitud d'ona.</p>
+      <hr>
+      <h3>Absències sistemàtiques (centratge)</h3>
+      <p>Amb un sol àtom a la base, el factor d'estructura només depèn del centratge de la xarxa &mdash; ja és responsable de prohibir reflexions:</p>
+      <table>
+        <tr><th>Centratge</th><th>Regla de selecció</th></tr>
+        <tr><td>P</td><td>totes permeses</td></tr>
+        <tr><td>I</td><td>h+k+l parell</td></tr>
+        <tr><td>F</td><td>h,k,l tots parells o tots senars</td></tr>
+        <tr><td>C</td><td>h+k parell</td></tr>
+      </table>
+      <hr>
+      <h3>Límits d'aquest model</h3>
+      <p>Amb un àtom per cel·la, |F<sub>hkl</sub>|&sup2; és igual per a totes les reflexions permeses &mdash; la intensitat mostrada és només la multiplicitat geomètrica. Un cristall real hi afegeix el factor de forma atòmic (decreixent amb l'angle), el factor de Lorentz-polarització i el factor tèrmic (Debye-Waller), no inclosos aquí.</p>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 2: Xarxa recíproca / difracció</div>
+
+<script src="./difraccio_pols.js"></script>
+</body>
+</html>

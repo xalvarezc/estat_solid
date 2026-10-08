@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Densitat d'estats en 1D, 2D i 3D</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<style>
+  :root{
+    --d1:#B5541E; --d1-bg:#F7E7DC;
+    --d2:#33469B; --d2-bg:#E7E9F5;
+    --d3:#2F7A4F; --d3-bg:#E4F2E9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --d1:#E28A54; --d1-bg:#3A2419; --d2:#7C8EE8; --d2-bg:#232A4A; --d3:#6FC492; --d3-bg:#1C3327; }
+  }
+  h1{ font-size:1.2rem; margin:0 0 4px; }
+  p.sub{ color:var(--muted); font-size:.85rem; margin:0 0 18px; }
+  .panel{ margin-bottom:16px; }
+  .controls{ display:flex; flex-direction:column; align-items:stretch; gap:6px; }
+  .controls + .controls{ margin-top:16px; }
+  .controls label{ font-family:var(--font-mono); font-size:.78rem; color:var(--muted); }
+  input[type=range]{ width:100%; accent-color:var(--accent); }
+  .modes{ display:flex; flex-direction:column; gap:8px; font-size:.83rem; }
+  .modes label{ display:flex; align-items:center; gap:6px; cursor:pointer; font-family:var(--font-body); color:var(--ink-2); }
+  .modes input[type=radio]{ accent-color:var(--accent); flex-shrink:0; }
+  .readout{ display:flex; flex-direction:column; gap:8px; font-family:var(--font-mono); font-size:.8rem; }
+  .readout .item{ color:var(--ink-2); display:flex; justify-content:space-between; gap:8px; }
+  .readout .item .lbl{ min-width:0; overflow-wrap:break-word; }
+  .readout .item b{ color:var(--ink); font-variant-numeric:tabular-nums; flex-shrink:0; white-space:nowrap; }
+  .legend{ display:flex; flex-direction:column; gap:6px; font-size:.78rem; color:var(--ink-2); }
+  .legend .dot{ display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:middle; }
+  .note{ font-size:.85rem; color:var(--ink-2); line-height:1.5; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+  svg text{ font-family:var(--font-body); }
+  .axis-label{ font-size:11px; fill:var(--muted); }
+  .curve-label{ font-size:11px; font-weight:600; }
+
+  /* ---- Files de diagrames d'espai k, un per dimensió ---- */
+  .kspace-row{ display:flex; flex-wrap:wrap; gap:16px; margin-top:6px; justify-content:center; }
+  .kspace-item{
+    flex:1 1 220px; min-width:200px; max-width:360px;
+    border:1px solid var(--border); border-radius:8px; padding:12px;
+    background:var(--surface-2);
+  }
+  .kspace-item.amagat{ display:none; }
+  .kspace-item h3{
+    margin:0 0 6px; font-size:.82rem; font-family:var(--font-mono);
+    display:flex; align-items:center; gap:6px;
+  }
+  .kspace-item h3 .dot{ width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+  .kspace-nums{ margin-top:8px; font-family:var(--font-mono); font-size:.76rem; color:var(--ink-2); display:flex; flex-direction:column; gap:3px; }
+  .kspace-nums b{ color:var(--ink); font-variant-numeric:tabular-nums; }
+
+  .gexacte-row{ display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; }
+  .gexacte-item{
+    flex:1 1 200px; border:1px solid var(--border); border-radius:8px; padding:10px 12px;
+    font-family:var(--font-mono); font-size:.78rem; color:var(--ink-2);
+  }
+  .gexacte-item .titol{ font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+  .gexacte-item .dot{ width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+  .gexacte-item b{ color:var(--ink); font-variant-numeric:tabular-nums; }
+
+  /* ---- Disposició de dues columnes: gràfics a l'esquerra (scroll), controls fixos a la dreta ---- */
+  .layout{ display:flex; align-items:flex-start; gap:22px; max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
+  .columna-grafics{ flex:1; min-width:0; }
+  .barra-lateral{
+    width:270px; flex-shrink:0;
+    position:sticky; top:20px;
+    max-height:calc(100vh - 40px); overflow-y:auto;
+  }
+  .barra-lateral h2{ font-family:var(--font-mono); letter-spacing:.03em; }
+  @media (max-width:820px){
+    .layout{ flex-direction:column; gap:0; }
+    .barra-lateral{ display:contents; }
+    .barra-lateral h2{
+      width:100%; margin:0; order:-3;
+      border:2px solid var(--uabgreen); border-bottom:none;
+    }
+    .controls-sticky{
+      order:-2; width:100%;
+      position:sticky; top:0; z-index:20;
+      background:var(--surface);
+      padding:14px 22px 10px;
+      border-left:2px solid var(--uabgreen);
+      border-right:2px solid var(--uabgreen);
+      border-bottom:2px solid var(--uabgreen);
+      box-shadow:0 4px 8px -4px rgba(0,0,0,.15);
+    }
+    .controls-rest{
+      order:-1; width:100%;
+      background:var(--surface);
+      padding:14px 22px 18px;
+      border:2px solid var(--uabgreen); border-top:none;
+      border-radius:0 0 8px 8px;
+      margin-bottom:16px;
+    }
+    .columna-grafics{ order:0; }
+  }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>Tema 6: Electrons</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="layout">
+  <div class="columna-grafics">
+    <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="9.5"/>
+        <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+      </svg>
+      Vídeo d'introducció
+    </a>
+    <h1>Densitat d'estats del gas d'electrons lliures en 1D, 2D i 3D</h1>
+    <p class="sub">Per què g(ε) creix en 3 dimensions, és constant en 2 i divergeix en 1? Les tres es dedueixen del mateix argument geomètric: <code>g(ε)dε = (densitat de punts a l'espai k) × (perímetre/superfície a energia constant) × dk</code>. Mou els controls de la dreta i mira com es construeix aquest producte a cada dimensió.</p>
+
+    <div class="panel">
+      <h2>1. L'espai k a energia constant, capa per capa</h2>
+      <p style="font-size:.85rem; color:var(--ink-2); margin:0 0 4px;">Tria a la dreta quina dimensió vols veure de prop. El <strong>reticle</strong> (punts en 1D, graella de línies en 2D i 3D) té sempre el mateix espaiat constant <strong>h</strong> — cada punt "ocupa" una cel·la unitat d'amplada h (1D), àrea h² (2D) o volum h³ (3D), marcada en el dibuix. Les dues corbes acolorides marquen el "contorn generalitzat" a k i a k+Δk (dos punts / una circumferència / una esfera): la capa acolorida entremig és la que compta. Fixa't com aquesta capa "talla" el reticle: en 1D sempre en toca un grapat fix; en 2D i 3D, com més gran és k, més línies/nodes del reticle hi ha entremig — perquè l'anell (2D) o la closca (3D) es fan més grans. Canvia de dimensió per comparar-ho.</p>
+      <p id="formulaActual" style="font-size:.85rem; font-weight:700; margin:0 0 10px;"></p>
+      <div class="kspace-row">
+        <div class="kspace-item" id="dimbox-1">
+          <h3><span class="dot" style="background:var(--d1);"></span>1D — dos punts</h3>
+          <svg id="chart1D" width="100%" viewBox="0 0 260 130"></svg>
+          <div class="kspace-nums" id="nums1D"></div>
+        </div>
+        <div class="kspace-item" id="dimbox-2">
+          <h3><span class="dot" style="background:var(--d2);"></span>2D — circumferència</h3>
+          <svg id="chart2D" width="100%" viewBox="0 0 260 180"></svg>
+          <div class="kspace-nums" id="nums2D"></div>
+        </div>
+        <div class="kspace-item" id="dimbox-3">
+          <h3><span class="dot" style="background:var(--d3);"></span>3D — esfera (secció)</h3>
+          <svg id="chart3D" width="100%" viewBox="0 0 260 180"></svg>
+          <div class="kspace-nums" id="nums3D"></div>
+        </div>
+      </div>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Mira primer la cel·la unitat (h, h² o h³) marcada al dibuix: és la "mida" que ocupa un sol punt del reticle. Mou "ε" cap a la dreta (k gran) i mira la capa acolorida: en 1D sempre talla el mateix grapat fix de punts; en 2D i 3D, com més gran és k, més "quadrícula" o "malla" queda englobada a la mateixa capa. Després mou "Δk" cap avall: la capa s'aprima i engloba cada cop menys reticle.</div>
+      </details>
+      <div class="note">
+        El <strong>perímetre</strong> (o "superfície" a 3D) és el que canvia de forma amb la dimensió: és <strong>constant</strong> en 1D (sempre 2 punts, es diguin on es diguin), <strong>proporcional a k</strong> en 2D (2πk) i <strong>proporcional a k²</strong> en 3D (4πk²). Dividit per la mida de la cel·la unitat (h, h² o h³), dona la <strong>densitat de punts</strong> — el que es veu al panell següent.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>2. g(k) = Perímetre(k) / h<span class="simbol">ᵈ</span> — densitat en l'espai k</h2>
+      <p style="font-size:.85rem; color:var(--ink-2); margin:0 0 4px;">Dividint el perímetre (o superfície) de cada capa per la mida de la cel·la unitat del reticle (panell 1) s'obté el nombre d'estats <strong>per unitat de k</strong> — la funció g(k), abans de convertir-la a energia. Aquí es veu la forma de g(k) tota sola, en funció de k.</p>
+      <p id="formulaGK" style="font-size:.85rem; font-weight:700; margin:0 0 10px;"></p>
+      <svg id="chartGK" width="100%" height="220" viewBox="0 0 820 220"></svg>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Fixa't en la forma de la corba: plana en 1D (g(k) no depèn de k), una recta en 2D (∝k), una paràbola en 3D (∝k²) — exactament les mateixes formes del perímetre del panell 1, ara dividides per h<span class="simbol">ᵈ</span>. La franja marca la mateixa capa [k, k+Δk].</div>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>3. Per què un Δk constant no dona un Δ<span class="simbol">ε</span> constant</h2>
+      <p style="font-size:.85rem; color:var(--ink-2); margin:0 0 4px;">Aquesta és la <strong>banda d'energia</strong>, ε(k)=k², dibuixada com sempre: k a l'horitzontal, ε a la vertical. A l'eix horitzontal, [k, k+Δk] té sempre la <strong>mateixa amplada</strong> — tu la fixes amb el control (és una capa de gruix fix a l'espai k, com correspon a comptar estats). Però com que la paràbola és molt més <strong>plana</strong> a prop de k=0 i molt més <strong>pendent</strong> lluny, aquest mateix Δk es projecta a un Δε petit a prop de zero i a un Δε gran lluny de zero. No és cap efecte del dibuix: és la forma de la paràbola k².</p>
+      <svg id="chartKcurve" width="100%" height="240" viewBox="0 0 820 240"></svg>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Mou "ε" cap a la vora esquerra (cap a zero). La barra verda de sota (Δk, a l'eix horitzontal) sempre fa la mateixa mida. La barra taronja de l'esquerra (Δε, a l'eix vertical) es fa cada cop més petita — perquè la paràbola és cada cop més plana allà. Aquesta és, literalment, la mateixa raó per la qual g(ε) divergeix en 1D.</div>
+      </details>
+      <div class="note">
+        <strong>Avís:</strong> <strong>Δk és el que tu fixes amb el control</strong> (és constant, no canvia sol — per això la capa fa sempre la mateixa mida a l'espai k, a qualsevol dimensió). El que <em>sí</em> canvia en moure ε és l'interval d'energia <strong>Δε</strong> que aquesta capa cobreix — perquè k=√ε no és lineal: prop d'ε=0 un Δk fix només cobreix un bocinet d'energia, i lluny de zero el mateix Δk en cobreix molta més. Aquest mateix efecte (dε/dk molt petit a prop de 0) és exactament la raó per la qual g(ε) divergeix en 1D.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>4. g(<span class="simbol">ε</span>) = g(k) × dk/d<span class="simbol">ε</span></h2>
+      <svg id="chartG" width="100%" height="260" viewBox="0 0 820 260"></svg>
+      <div class="legend" style="flex-direction:row; flex-wrap:wrap; gap:18px;" id="legendG"></div>
+      <div class="gexacte-row" id="gexacteRow"></div>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">La franja grisa marca l'interval d'energia [ε, ε+Δε] que cobreix la mateixa capa de gruix Δk del panell 1 — fixa't que aquesta franja canvia d'amplada segons on és ε, encara que Δk sigui constant. Fixa't en com "g(ε) estimat" (comptant punts a la capa, panell 1) s'aproxima a "g(ε) exacte" quan fas Δk més petit. Canvia de dimensió (control de la dreta) per veure els tres comportaments per separat: en 1D, porta ε cap a la vora esquerra i mira com la corba creix molt de pressa — és la divergència de van Hove; en 2D la corba és plana; en 3D creix suaument.</div>
+      </details>
+      <div class="note">
+        Aquesta és exactament la mateixa idea que fa servir el simulador de Sommerfeld per comptar electrons: <code>N(ε)=∫g(ε')dε'</code> és sumar totes aquestes capes fines fins arribar a ε. Aquí ho mirem "per dins" — per què g(ε) té la forma que té a cada dimensió, en lloc de donar-la per suposada.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>5. Per què importa: exemples reals</h2>
+      <p style="font-size:.85rem; color:var(--ink-2); line-height:1.6; margin:0;">
+        <strong>3D — metalls massisos:</strong> el cas que ja coneixes de Sommerfeld, g(ε)∝√ε.<br>
+        <strong>2D — grafè i gasos d'electrons en heteroestructures:</strong> g(ε) constant vol dir que, a diferència d'un metall 3D, la densitat d'estats no s'esgota ni s'infla amb l'energia — un tret clau en electrònica 2D.<br>
+        <strong>1D — nanofils i nanotubs de carboni:</strong> les divergències de van Hove (g(ε)→∞ a certes energies) donen lloc a pics molt nítids en els espectres òptics d'aquests materials — es veuen literalment com a línies fines en un experiment.
+      </p>
+    </div>
+  </div>
+
+  <aside class="barra-lateral">
+    <h2>Controls</h2>
+    <div class="controls-sticky">
+      <div class="controls">
+        <label for="eslider">ε = <span id="eval">0.30</span></label>
+        <input type="range" id="eslider" min="0" max="200" value="30" step="1">
+      </div>
+      <div class="controls">
+        <label for="dkslider">Δk (gruix constant a l'espai k) = <span id="dkval">0.08</span></label>
+        <input type="range" id="dkslider" min="2" max="30" value="8" step="1">
+      </div>
+      <div class="modes">
+        <label><input type="radio" name="dim" value="1" checked> Mostra només 1D</label>
+        <label><input type="radio" name="dim" value="2"> Mostra només 2D</label>
+        <label><input type="radio" name="dim" value="3"> Mostra només 3D</label>
+      </div>
+    </div>
+    <div class="controls-rest">
+      <div class="readout" style="padding-top:0;">
+        <span class="item"><span class="lbl">k(ε) = √ε</span><b id="ro-k">0.4472</b></span>
+        <span class="item"><span class="lbl">Δε (derivat, varia)</span><b id="ro-dk">0.0687</b></span>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 6: Electrons</div>
+
+<script>
+(function(){
+  const eslider = document.getElementById('eslider');
+  const dkslider = document.getElementById('dkslider');
+  const eval_ = document.getElementById('eval');
+  const dkval = document.getElementById('dkval');
+  const roK = document.getElementById('ro-k');
+  const roDk = document.getElementById('ro-dk');
+  const gexacteRow = document.getElementById('gexacteRow');
+  const dimRadios = document.getElementsByName('dim');
+  const dimBoxes = { '1': document.getElementById('dimbox-1'), '2': document.getElementById('dimbox-2'), '3': document.getElementById('dimbox-3') };
+
+  const ns = "http://www.w3.org/2000/svg";
+  function el(tag, attrs){ const e = document.createElementNS(ns, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function clearSvg(svg){ while (svg.firstChild) svg.removeChild(svg.firstChild); }
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  function fmt(x, n){ return x.toFixed(n===undefined?4:n); }
+  function fmtG(x){ return isFinite(x) ? fmt(x,3) : '∞'; }
+
+  // EMIN_CURVE: domini mínim NOMÉS per dibuixar la corba g(ε) del panell 3
+  // (g_1D=1/√ε explota a ε=0, cal un tall finit per representar-la). El
+  // control d'ε, en canvi, sí que arriba fins a 0 — als panells 1 i 2 no hi
+  // ha cap divisió per ε, així que ε=0 hi és perfectament vàlid.
+  const EMIN_CURVE = 0.1, EMAX = 2.0;
+  const KMAX = Math.sqrt(EMAX) * 1.08;
+
+  function kOf(e){ return Math.sqrt(e); }
+  // Perímetre/superfície del contorn d'energia constant a cada dimensió
+  function P1(k){ return 2; }
+  function P2(k){ return 2*Math.PI*k; }
+  function P3(k){ return 4*Math.PI*k*k; }
+  // g(ε) exacte = Perímetre(k(ε)) * dk/dε, amb dk/dε = 1/(2√ε) — divergeix a ε=0 en 1D
+  function g1exact(e){ return e<=0 ? Infinity : 1/Math.sqrt(e); }
+  function g2exact(e){ return Math.PI; }
+  function g3exact(e){ return 2*Math.PI*Math.sqrt(e); }
+  // Escala vertical pròpia per a cada dimensió (ara que el gràfic 3 en mostra
+  // només una alhora, no cal compartir una escala pensada per a les tres).
+  function gMaxFor(dimSel){
+    if (dimSel==='1') return g1exact(EMIN_CURVE)*1.08;
+    if (dimSel==='2') return Math.PI*1.3;
+    return g3exact(EMAX)*1.08;
+  }
+
+  // Reticle k: UNA sola constant d'espaiat compartida a les tres dimensions
+  // (com correspon: la mateixa caixa L dona el mateix "quàntum" 2π/L en
+  // qualsevol direcció) — precomputat un sol cop perquè no canviï en moure
+  // els controls. El reticle mostra la densitat de punts; les fronteres del
+  // "contorn generalitzat" (parell de punts / circumferència / esfera) a k0
+  // i k0+dk es dibuixen a part, sense acolorir punts individuals.
+  const A_LATTICE = 0.22;
+  const M2 = Math.ceil(KMAX/A_LATTICE);
+  const H = A_LATTICE; // àlies pedagògic: "h" és la mida de la cel·la unitat del reticle (h, h², h³)
+
+  // g(k) = Perímetre(k) / h^dimensió — densitat d'estats PER UNITAT DE k,
+  // abans de passar a energia (aquest darrer pas és g(ε)=g(k)·dk/dε, panell 4)
+  function gk1(k){ return P1(k)/H; }
+  function gk2(k){ return P2(k)/(H*H); }
+  function gk3(k){ return P3(k)/(H*H*H); }
+  function gkMaxFor(dimSel){
+    if (dimSel==='1') return gk1(0)*1.15;
+    if (dimSel==='2') return gk2(KMAX)*1.08;
+    return gk3(KMAX)*1.08;
+  }
+
+  // ---- Diagrama 1D: dos punts a l'espai k + capa ----
+  function draw1D(k0, k1, colorVar){
+    const svg = document.getElementById('chart1D');
+    clearSvg(svg);
+    const color = css(colorVar);
+    const cx = 130, y = 65, halfw = 100;
+    const scale = halfw / KMAX;
+    const xOf = k => cx + k*scale;
+
+    svg.appendChild(el('line', {x1:cx-halfw-10, y1:y, x2:cx+halfw+10, y2:y, stroke:css('--border'), 'stroke-width':1.5}));
+
+    // reticle: punts a l'espai k, espaiat CONSTANT (la mateixa A_LATTICE que 2D i 3D)
+    const nMax = Math.ceil(KMAX/A_LATTICE);
+    for (let n=-nMax; n<=nMax; n++){
+      const kk = n*A_LATTICE;
+      if (Math.abs(kk) > KMAX) continue;
+      svg.appendChild(el('circle', {cx:xOf(kk), cy:y, r:1.8, fill:css('--muted'), opacity:.75}));
+    }
+    // fronteres del "contorn generalitzat" a k0 i k0+dk (± a banda i banda)
+    [k0, k1].forEach(function(kk){
+      [1,-1].forEach(function(s){
+        svg.appendChild(el('line', {x1:xOf(s*kk), y1:y-8, x2:xOf(s*kk), y2:y+8, stroke:color, 'stroke-width':2}));
+      });
+    });
+    svg.appendChild(el('line', {x1:xOf(k0), y1:y, x2:xOf(k1), y2:y, stroke:color, 'stroke-width':4, opacity:.4}));
+    svg.appendChild(el('line', {x1:xOf(-k1), y1:y, x2:xOf(-k0), y2:y, stroke:color, 'stroke-width':4, opacity:.4}));
+
+    // cel·la unitat: un sol "pas" del reticle, d'amplada h
+    const hy = y + 18;
+    svg.appendChild(el('line', {x1:xOf(0), y1:hy, x2:xOf(A_LATTICE), y2:hy, stroke:css('--muted'), 'stroke-width':1.2}));
+    [0, A_LATTICE].forEach(function(kk){
+      svg.appendChild(el('line', {x1:xOf(kk), y1:hy-4, x2:xOf(kk), y2:hy+4, stroke:css('--muted'), 'stroke-width':1.2}));
+    });
+    const lh = el('text', {x:xOf(A_LATTICE/2), y:hy+15, class:'axis-label', 'text-anchor':'middle'}); lh.textContent='h'; svg.appendChild(lh);
+
+    const lbl = el('text', {x:cx, y:y-16, class:'axis-label', 'text-anchor':'middle'}); lbl.textContent='k'; svg.appendChild(lbl);
+    const lp = el('text', {x:cx, y:108, class:'curve-label', 'text-anchor':'middle', fill:color}); lp.textContent='Perímetre = 2 punts'; svg.appendChild(lp);
+  }
+
+  // ---- Diagrama 2D: reticle quadrat constant (línies) + circumferències a k0 i k0+dk ----
+  function draw2D(k0, k1, colorVar){
+    const svg = document.getElementById('chart2D');
+    clearSvg(svg);
+    const color = css(colorVar);
+    const cx = 130, cy = 100, rmax = 78;
+    const scale = rmax / KMAX;
+
+    // reticle: graella de línies horitzontals i verticals, espaiat CONSTANT
+    for (let n=-M2; n<=M2; n++){
+      const yy = n*A_LATTICE; if (Math.abs(yy) > KMAX) continue;
+      svg.appendChild(el('line', {x1:cx-rmax, y1:cy-yy*scale, x2:cx+rmax, y2:cy-yy*scale, stroke:css('--muted'), 'stroke-width':.5, opacity:.35}));
+    }
+    for (let m=-M2; m<=M2; m++){
+      const xx = m*A_LATTICE; if (Math.abs(xx) > KMAX) continue;
+      svg.appendChild(el('line', {x1:cx+xx*scale, y1:cy-rmax, x2:cx+xx*scale, y2:cy+rmax, stroke:css('--muted'), 'stroke-width':.5, opacity:.35}));
+    }
+
+    // cel·la unitat: una sola casella del reticle, d'àrea h²
+    const hs = A_LATTICE*scale;
+    svg.appendChild(el('rect', {x:cx, y:cy-hs, width:hs, height:hs, fill:css('--muted'), opacity:.3}));
+    const lh2 = el('text', {x:cx+hs+4, y:cy-hs/2+3, class:'axis-label'}); lh2.textContent='h²'; svg.appendChild(lh2);
+
+    // esfera generalitzada (circumferència) a k0 i a k0+dk
+    const rMid = (k0+k1)/2*scale, ringW = Math.max((k1-k0)*scale, 1.5);
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:rMid, fill:'none', stroke:color, 'stroke-width':ringW, opacity:.28}));
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:k0*scale, fill:'none', stroke:color, 'stroke-width':1.8}));
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:k1*scale, fill:'none', stroke:color, 'stroke-width':1.8}));
+
+    const lp = el('text', {x:cx, y:cy+rmax+26, class:'curve-label', 'text-anchor':'middle', fill:color}); lp.textContent='Perímetre = 2πk'; svg.appendChild(lp);
+    const lk = el('text', {x:cx+rmax+8, y:cy+4, class:'axis-label'}); lk.textContent='kx'; svg.appendChild(lk);
+    const lky = el('text', {x:cx+4, y:cy-rmax-10, class:'axis-label'}); lky.textContent='ky'; svg.appendChild(lky);
+  }
+
+  // ---- Diagrama 3D: esfera clàssica (ombrejada + latituds) + reticle pla + esferes a k0 i k0+dk ----
+  function draw3D(k0, k1, colorVar){
+    const svg = document.getElementById('chart3D');
+    clearSvg(svg);
+    const color = css(colorVar);
+    const cx = 130, cy = 100, rmax = 78;
+    const scale = rmax / KMAX;
+    const R = k1*scale;
+
+    // la bola: cercle pla ombrejat — la convenció més reconeixible d'"esfera"
+    // (una projecció isomètrica "correcta" es va provar abans i no es llegia
+    // com una esfera; la prioritat aquí és que es reconegui a simple vista).
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:R, fill:color, opacity:.14}));
+
+    // reticle: graella plana (mateixa A_LATTICE que 1D/2D), molt suau, de fons
+    for (let n=-M2; n<=M2; n++){
+      const yy = n*A_LATTICE; if (Math.abs(yy) > KMAX) continue;
+      svg.appendChild(el('line', {x1:cx-R, y1:cy-yy*scale, x2:cx+R, y2:cy-yy*scale, stroke:css('--muted'), 'stroke-width':.4, opacity:.18}));
+    }
+    for (let m=-M2; m<=M2; m++){
+      const xx = m*A_LATTICE; if (Math.abs(xx) > KMAX) continue;
+      svg.appendChild(el('line', {x1:cx+xx*scale, y1:cy-R, x2:cx+xx*scale, y2:cy+R, stroke:css('--muted'), 'stroke-width':.4, opacity:.18}));
+    }
+    // graella de "globus": 3 línies de latitud (el·lipses vistes de cantó) — la
+    // convenció clàssica que fa que un cercle es llegeixi com una esfera
+    [-0.55, 0, 0.55].forEach(function(f){
+      const h = f*R, halfwv = Math.sqrt(Math.max(R*R - h*h, 0));
+      svg.appendChild(el('ellipse', {cx:cx, cy:cy+h, rx:halfwv, ry:Math.max(R*0.16,1), fill:'none', stroke:color, 'stroke-width':.8, opacity:.55}));
+    });
+    // un meridià vertical, per reforçar la corba en l'altre sentit
+    svg.appendChild(el('ellipse', {cx:cx, cy:cy, rx:Math.max(R*0.16,1), ry:R, fill:'none', stroke:color, 'stroke-width':.8, opacity:.4}));
+
+    // cel·la unitat: icona de cub (el reticle es dibuixa pla, però cada cel·la
+    // representa en realitat un cub de volum h³)
+    (function drawUnitCube(ux, uy, s){
+      const c = [ux, uy];
+      const p0=[ux, uy-s], p1=[ux+s*0.87, uy-s*0.5], p2=[ux+s*0.87, uy+s*0.5], p3=[ux, uy+s], p4=[ux-s*0.87, uy+s*0.5], p5=[ux-s*0.87, uy-s*0.5];
+      function poly(pts, op){
+        const dd = pts.map(function(p,i){ return (i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ')+' Z';
+        svg.appendChild(el('path', {d:dd, fill:color, opacity:op, stroke:color, 'stroke-width':.5}));
+      }
+      poly([p5,p0,p1,c], .6);
+      poly([p5,c,p3,p4], .3);
+      poly([p1,p2,p3,c], .45);
+    })(cx-rmax+18, cy-rmax+22, 11);
+    const lh3 = el('text', {x:cx-rmax+18, y:cy-rmax+48, class:'axis-label', 'text-anchor':'middle'}); lh3.textContent='h³'; svg.appendChild(lh3);
+
+    // esfera generalitzada (contorn) a k0 i a k0+dk
+    const rMid = (k0+k1)/2*scale, ringW = Math.max((k1-k0)*scale, 1.5);
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:rMid, fill:'none', stroke:color, 'stroke-width':ringW, opacity:.3}));
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:k0*scale, fill:'none', stroke:color, 'stroke-width':2}));
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:k1*scale, fill:'none', stroke:color, 'stroke-width':2}));
+
+    const lp = el('text', {x:cx, y:cy+rmax+26, class:'curve-label', 'text-anchor':'middle', fill:color}); lp.textContent='Superfície = 4πk²'; svg.appendChild(lp);
+    const lnote = el('text', {x:cx, y:cy+rmax+42, class:'axis-label', 'text-anchor':'middle'}); lnote.textContent='esfera de radi k, amb reticle constant'; svg.appendChild(lnote);
+  }
+
+  // Informació per dimensió — un sol lloc per no repetir noms/fórmules/colors
+  const DIM_INFO = {
+    '1': {nom:'1D', colorVar:'--d1', P:P1, gk:gk1, gExact:g1exact, formulaP:'Perímetre = 2 (constant)', formulaGK:'g(k) = 2 / h', formulaG:'g(ε) = 1/√ε'},
+    '2': {nom:'2D', colorVar:'--d2', P:P2, gk:gk2, gExact:g2exact, formulaP:'Perímetre = 2πk', formulaGK:'g(k) = 2πk / h²', formulaG:'g(ε) = π (constant)'},
+    '3': {nom:'3D', colorVar:'--d3', P:P3, gk:gk3, gExact:g3exact, formulaP:'Superfície = 4πk²', formulaGK:'g(k) = 4πk² / h³', formulaG:'g(ε) = 2π√ε'}
+  };
+  function dimActual(){
+    for (const r of dimRadios) if (r.checked) return r.value;
+    return '1';
+  }
+
+  // ---- Gràfic de g(ε) per a la dimensió triada ----
+  function drawG(e, de, dimSel){
+    const info = DIM_INFO[dimSel];
+    const svg = document.getElementById('chartG');
+    clearSvg(svg);
+    const W = 820, H = 260, ML = 55, MR = 20, MT = 15, MB = 35;
+    const plotW = W-ML-MR, plotH = H-MT-MB;
+    const GMAX = gMaxFor(dimSel);
+    const xOf = ee => ML + (ee-EMIN_CURVE)/(EMAX-EMIN_CURVE)*plotW;
+    const yOf = g => MT + plotH - (g/GMAX)*plotH;
+
+    // eixos
+    svg.appendChild(el('line', {x1:ML, y1:MT, x2:ML, y2:MT+plotH, stroke:css('--border'), 'stroke-width':1}));
+    svg.appendChild(el('line', {x1:ML, y1:MT+plotH, x2:ML+plotW, y2:MT+plotH, stroke:css('--border'), 'stroke-width':1}));
+    [0,0.5,1,1.5,2].forEach(function(ee){
+      if (ee < EMIN_CURVE) return;
+      const x = xOf(ee);
+      svg.appendChild(el('line', {x1:x, y1:MT, x2:x, y2:MT+plotH, stroke:css('--border'), 'stroke-width':.5, opacity:.5}));
+      const t = el('text', {x:x, y:MT+plotH+16, class:'axis-label', 'text-anchor':'middle'}); t.textContent=ee.toFixed(1); svg.appendChild(t);
+    });
+    const xl = el('text', {x:ML+plotW/2, y:H-4, class:'axis-label', 'text-anchor':'middle'}); xl.textContent='ε'; svg.appendChild(xl);
+    const yl = el('text', {x:14, y:MT+plotH/2, class:'axis-label', 'text-anchor':'middle', transform:'rotate(-90 14 '+(MT+plotH/2)+')'}); yl.textContent='g(ε)'; svg.appendChild(yl);
+
+    // franja [e, e+de] — fixada dins el rang visible (ε pot ser 0, per sota d'EMIN_CURVE)
+    const xs = Math.max(xOf(e), ML), xe = Math.min(xOf(e+de), ML+plotW);
+    svg.appendChild(el('rect', {x:xs, y:MT, width:Math.max(xe-xs,1), height:plotH, fill:css('--ink'), opacity:.08}));
+
+    // corba de la dimensió triada
+    (function curve(fn, colorVar){
+      const N = 200;
+      let d = '';
+      for (let i=0;i<=N;i++){
+        const ee = EMIN_CURVE + (EMAX-EMIN_CURVE)*i/N;
+        const g = Math.min(fn(ee), GMAX);
+        const x = xOf(ee), y = yOf(g);
+        d += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+      }
+      svg.appendChild(el('path', {d:d, fill:'none', stroke:css(colorVar), 'stroke-width':2.5}));
+    })(info.gExact, info.colorVar);
+
+    // marcador vertical a e (fixat a la vora si e < EMIN_CURVE, p.ex. e=0)
+    const xm = Math.max(xOf(e), ML);
+    svg.appendChild(el('line', {x1:xm, y1:MT, x2:xm, y2:MT+plotH, stroke:css('--accent'), 'stroke-width':1.5, 'stroke-dasharray':'4,3'}));
+  }
+
+  function fillGexacteRow(e, dk, de, dimSel){
+    while (gexacteRow.firstChild) gexacteRow.removeChild(gexacteRow.firstChild);
+    const info = DIM_INFO[dimSel];
+    const k0 = kOf(e);
+    const n = info.P(k0) * dk;
+    const gEst = n/de;
+    const item = document.createElement('div');
+    item.className = 'gexacte-item';
+    item.innerHTML =
+      '<div class="titol"><span class="dot" style="background:' + css(info.colorVar) + ';"></span>' + info.nom + '</div>' +
+      '<div>Perímetre × Δk = ' + fmt(n,4) + '</div>' +
+      '<div>g estimat (÷Δε) = <b>' + fmtG(gEst) + '</b></div>' +
+      '<div>g exacte = <b>' + fmtG(info.gExact(e)) + '</b></div>';
+    gexacteRow.appendChild(item);
+  }
+
+  // Textos dinàmics: fórmula del perímetre (panell 1), de g(k) (panell 2) i llegenda de g(ε) (panell 4)
+  function updateDimTexts(dimSel){
+    const info = DIM_INFO[dimSel];
+    const dotHtml = '<span class="dot" style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle;background:' + css(info.colorVar) + ';"></span>';
+    document.getElementById('formulaActual').innerHTML = dotHtml + info.nom + ' — ' + info.formulaP;
+    document.getElementById('formulaGK').innerHTML = dotHtml + info.nom + ' — ' + info.formulaGK;
+    document.getElementById('legendG').innerHTML =
+      '<span><span class="dot" style="background:' + css(info.colorVar) + ';"></span>' + info.nom + ': ' + info.formulaG + '</span>';
+  }
+
+  // ---- Gràfic de g(k) = Perímetre(k)/h^dimensió per a la dimensió triada ----
+  function drawGK(k0, k1, dimSel){
+    const info = DIM_INFO[dimSel];
+    const svg = document.getElementById('chartGK');
+    clearSvg(svg);
+    const W = 820, Hh = 220, ML = 65, MR = 20, MT = 15, MB = 35;
+    const plotW = W-ML-MR, plotH = Hh-MT-MB;
+    const GKMAX = gkMaxFor(dimSel);
+    const xOf = k => ML + (k/KMAX)*plotW;
+    const yOf = g => MT + plotH - (Math.min(g,GKMAX)/GKMAX)*plotH;
+
+    svg.appendChild(el('line', {x1:ML, y1:MT, x2:ML, y2:MT+plotH, stroke:css('--border'), 'stroke-width':1}));
+    svg.appendChild(el('line', {x1:ML, y1:MT+plotH, x2:ML+plotW, y2:MT+plotH, stroke:css('--border'), 'stroke-width':1}));
+    [0,0.5,1,1.5].forEach(function(kk){
+      const x = xOf(kk);
+      svg.appendChild(el('line', {x1:x, y1:MT, x2:x, y2:MT+plotH, stroke:css('--border'), 'stroke-width':.5, opacity:.5}));
+      const t = el('text', {x:x, y:MT+plotH+16, class:'axis-label', 'text-anchor':'middle'}); t.textContent=kk.toFixed(1); svg.appendChild(t);
+    });
+    const xl = el('text', {x:ML+plotW/2, y:Hh-4, class:'axis-label', 'text-anchor':'middle'}); xl.textContent='k'; svg.appendChild(xl);
+    const yl = el('text', {x:14, y:MT+plotH/2, class:'axis-label', 'text-anchor':'middle', transform:'rotate(-90 14 '+(MT+plotH/2)+')'}); yl.textContent='g(k)'; svg.appendChild(yl);
+
+    // franja [k0, k0+Δk]
+    const xs = xOf(k0), xe = xOf(k1);
+    svg.appendChild(el('rect', {x:xs, y:MT, width:Math.max(xe-xs,1), height:plotH, fill:css('--ink'), opacity:.08}));
+
+    // corba g(k)
+    const N = 200; let d = '';
+    for (let i=0;i<=N;i++){
+      const kk = KMAX*i/N;
+      const x = xOf(kk), y = yOf(info.gk(kk));
+      d += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    }
+    svg.appendChild(el('path', {d:d, fill:'none', stroke:css(info.colorVar), 'stroke-width':2.5}));
+
+    // marcador vertical a k0
+    const xm = xOf(k0);
+    svg.appendChild(el('line', {x1:xm, y1:MT, x2:xm, y2:MT+plotH, stroke:css('--accent'), 'stroke-width':1.5, 'stroke-dasharray':'4,3'}));
+  }
+
+  // ---- Diagrama ε(k)=k² (banda d'energia, orientació estàndard) amb línies de construcció ----
+  function drawKCurve(e, dk){
+    const svg = document.getElementById('chartKcurve');
+    clearSvg(svg);
+    const W = 820, H = 240, ML = 74, MR = 20, MT = 15, MB = 55;
+    const plotW = W-ML-MR, plotH = H-MT-MB;
+    const xOf = k => ML + (k/KMAX)*plotW;
+    const yOf = ee => MT + plotH - (ee/EMAX)*plotH;
+
+    svg.appendChild(el('line', {x1:ML, y1:MT, x2:ML, y2:MT+plotH, stroke:css('--border'), 'stroke-width':1}));
+    svg.appendChild(el('line', {x1:ML, y1:MT+plotH, x2:ML+plotW, y2:MT+plotH, stroke:css('--border'), 'stroke-width':1}));
+    [0,0.5,1,1.5].forEach(function(kk){
+      const x = xOf(kk);
+      svg.appendChild(el('line', {x1:x, y1:MT, x2:x, y2:MT+plotH, stroke:css('--border'), 'stroke-width':.5, opacity:.4}));
+      const t = el('text', {x:x, y:MT+plotH+34, class:'axis-label', 'text-anchor':'middle'}); t.textContent=kk.toFixed(1); svg.appendChild(t);
+    });
+    [0,0.5,1,1.5,2].forEach(function(ee){
+      const y = yOf(ee);
+      svg.appendChild(el('line', {x1:ML, y1:y, x2:ML+plotW, y2:y, stroke:css('--border'), 'stroke-width':.5, opacity:.25}));
+      const t = el('text', {x:ML-8, y:y+3, class:'axis-label', 'text-anchor':'end'}); t.textContent=ee.toFixed(1); svg.appendChild(t);
+    });
+    const xl = el('text', {x:ML+plotW/2, y:H-4, class:'axis-label', 'text-anchor':'middle'}); xl.textContent='k'; svg.appendChild(xl);
+    const yl = el('text', {x:16, y:MT+plotH/2, class:'axis-label', 'text-anchor':'middle', transform:'rotate(-90 16 '+(MT+plotH/2)+')'}); yl.textContent='ε'; svg.appendChild(yl);
+
+    // corba banda d'energia ε=k²
+    const N = 200;
+    let d = '';
+    for (let i=0;i<=N;i++){
+      const kk = KMAX*i/N;
+      const x = xOf(kk), y = yOf(Math.min(kk*kk, EMAX*1.3));
+      d += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    }
+    svg.appendChild(el('path', {d:d, fill:'none', stroke:css('--ink-2'), 'stroke-width':2}));
+
+    const k0 = Math.sqrt(e), k1 = k0+dk, e1 = k1*k1;
+    const x0 = xOf(k0), x1 = xOf(k1);
+    const y0 = yOf(e), y1 = yOf(e1);
+
+    // línies de construcció discontínues: k,k+Δk cap a la corba, i d'allà cap a l'eix ε
+    [[x0,y0],[x1,y1]].forEach(function(p){
+      svg.appendChild(el('line', {x1:p[0], y1:MT+plotH, x2:p[0], y2:p[1], stroke:css('--muted'), 'stroke-width':1, 'stroke-dasharray':'3,3'}));
+      svg.appendChild(el('line', {x1:ML, y1:p[1], x2:p[0], y2:p[1], stroke:css('--muted'), 'stroke-width':1, 'stroke-dasharray':'3,3'}));
+      svg.appendChild(el('circle', {cx:p[0], cy:p[1], r:3.5, fill:css('--accent')}));
+    });
+
+    // barra Δk sobre l'eix horitzontal — amplada SEMPRE igual (fixada pel control)
+    svg.appendChild(el('line', {x1:x0, y1:MT+plotH+7, x2:Math.max(x1,x0+3), y2:MT+plotH+7, stroke:css('--d3'), 'stroke-width':5, 'stroke-linecap':'round'}));
+    const ldk = el('text', {x:(x0+x1)/2, y:MT+plotH+20, class:'curve-label', 'text-anchor':'middle', fill:css('--d3')}); ldk.textContent='Δk'; svg.appendChild(ldk);
+
+    // barra Δε sobre l'eix vertical — canvia de mida segons on som
+    svg.appendChild(el('line', {x1:ML-26, y1:y0, x2:ML-26, y2:Math.min(y1,y0-3), stroke:css('--d1'), 'stroke-width':5, 'stroke-linecap':'round'}));
+    const lde = el('text', {x:ML-32, y:(y0+y1)/2+3, class:'curve-label', 'text-anchor':'end', fill:css('--d1')}); lde.textContent='Δε'; svg.appendChild(lde);
+  }
+
+  function updateDimVisibility(sel){
+    Object.keys(dimBoxes).forEach(function(k){
+      dimBoxes[k].classList.toggle('amagat', k !== sel);
+    });
+  }
+
+  function draw(){
+    const e = Number(eslider.value)/100;
+    const dk = Number(dkslider.value)/100;
+    const dimSel = dimActual();
+    eval_.textContent = fmt(e,2);
+    dkval.textContent = fmt(dk,2);
+
+    // Δk és el que es fixa amb el control; Δε (l'interval d'energia que
+    // cobreix aquesta mateixa capa) es deriva d'ell i varia amb ε.
+    const k0 = kOf(e), k1 = k0+dk, e1 = k1*k1, de = e1-e;
+    roK.textContent = fmt(k0,4);
+    roDk.textContent = fmt(de,4);
+
+    updateDimVisibility(dimSel);
+    updateDimTexts(dimSel);
+    draw1D(k0, k1, '--d1');
+    draw2D(k0, k1, '--d2');
+    draw3D(k0, k1, '--d3');
+    drawGK(k0, k1, dimSel);
+    drawKCurve(e, dk);
+    drawG(e, de, dimSel);
+    fillGexacteRow(e, dk, de, dimSel);
+  }
+
+  eslider.addEventListener('input', draw);
+  dkslider.addEventListener('input', draw);
+  for (const r of dimRadios) r.addEventListener('change', draw);
+  draw();
+})();
+</script>
+</body>
+</html>

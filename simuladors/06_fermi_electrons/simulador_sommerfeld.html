@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Expansió de Sommerfeld</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<style>
+  :root{
+    --hole:#2F7A4F; --hole-bg:#E4F2E9;
+    --excited:#B5541E; --excited-bg:#F7E7DC;
+    --bad:#B23A48; --bad-bg:#F8E2E4;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --hole:#6FC492; --hole-bg:#1C3327; --excited:#E28A54; --excited-bg:#3A2419; --bad:#E38791; --bad-bg:#3A2024; }
+  }
+  h1{ font-size:1.2rem; margin:0 0 4px; }
+  p.sub{ color:var(--muted); font-size:.85rem; margin:0 0 18px; }
+  .panel{ margin-bottom:16px; }
+  .controls{ display:flex; flex-direction:column; align-items:stretch; gap:8px; margin-bottom:4px; }
+  .controls label{ font-family:var(--font-mono); font-size:.78rem; color:var(--muted); }
+  input[type=range]{ width:100%; accent-color:var(--accent); }
+  .modes{ display:flex; flex-direction:column; gap:10px; margin-top:14px; font-size:.83rem; }
+  .modes label{ display:flex; align-items:flex-start; gap:6px; cursor:pointer; font-family:var(--font-body); color:var(--ink-2); line-height:1.35; }
+  .modes input[type=radio]{ accent-color:var(--accent); margin-top:3px; flex-shrink:0; }
+  .readout{ display:flex; flex-direction:column; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); font-family:var(--font-mono); font-size:.8rem; }
+  .readout .item{ color:var(--ink-2); display:flex; justify-content:space-between; gap:8px; }
+  .readout .item .lbl{ min-width:0; overflow-wrap:break-word; }
+  .readout .item b{ color:var(--ink); font-variant-numeric:tabular-nums; flex-shrink:0; white-space:nowrap; }
+  .legend{ display:flex; flex-direction:column; gap:6px; font-size:.78rem; color:var(--ink-2); margin-top:14px; }
+  .legend .dot{ display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:middle; }
+  .note{ font-size:.85rem; color:var(--ink-2); line-height:1.5; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+  svg text{ font-family:var(--font-body); }
+  .axis-label{ font-size:11px; fill:var(--muted); }
+  .curve-label{ font-size:11px; font-weight:600; }
+  .badge{ display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:.76rem; font-weight:700; padding:6px 12px; border-radius:999px; margin-top:14px; width:100%; justify-content:center; }
+  .badge.ok{ background:var(--hole-bg); color:var(--hole); }
+  .badge.bad{ background:var(--bad-bg); color:var(--bad); }
+
+  /* ---- Disposició de dues columnes: gràfics a l'esquerra (scroll), controls fixos a la dreta ---- */
+  .layout{ display:flex; align-items:flex-start; gap:22px; max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
+  .columna-grafics{ flex:1; min-width:0; }
+  .barra-lateral{
+    width:270px; flex-shrink:0;
+    position:sticky; top:20px;
+    max-height:calc(100vh - 40px); overflow-y:auto;
+  }
+  .barra-lateral h2{ font-family:var(--font-mono); letter-spacing:.03em; }
+  @media (max-width:820px){
+    /* gap:0 perquè .layout ara conté h2/.controls-sticky/.controls-rest com
+       a filles directes (per sota) — el gap:22px de dalt els separaria amb
+       una franja en blanc no desitjada entre elles. L'espai abans dels
+       gràfics es controla explícitament amb el margin-bottom de .controls-rest. */
+    .layout{ flex-direction:column; gap:0; }
+    /* "Desembolica" l'aside: així els seus fills passen a ser filles directes
+       de .layout, i .controls-sticky pot quedar-se enganxat mentre es fa
+       scroll per TOTA la pàgina (tots els panells), no només per l'alçada
+       curta que ocupava la barra lateral ella sola. */
+    .barra-lateral{ display:contents; }
+    .barra-lateral h2{
+      width:100%; margin:0; order:-3;
+      border:2px solid var(--uabgreen); border-bottom:none;
+    }
+    .controls-sticky{
+      order:-2; width:100%;
+      position:sticky; top:0; z-index:20;
+      background:var(--surface);
+      padding:14px 22px 10px;
+      border-left:2px solid var(--uabgreen);
+      border-right:2px solid var(--uabgreen);
+      border-bottom:2px solid var(--uabgreen);
+      box-shadow:0 4px 8px -4px rgba(0,0,0,.15);
+    }
+    .controls-rest{
+      order:-1; width:100%;
+      background:var(--surface);
+      padding:14px 22px 18px;
+      border:2px solid var(--uabgreen); border-top:none;
+      border-radius:0 0 8px 8px;
+      margin-bottom:16px;
+    }
+    .columna-grafics{ order:0; }
+  }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>Tema 6: Electrons</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="layout">
+  <div class="columna-grafics">
+    <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="9.5"/>
+        <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+      </svg>
+      Vídeo d'introducció
+    </a>
+    <h1>Densitat d'estats, distribució de Fermi-Dirac i conservació de N</h1>
+    <p class="sub">Acompanya la secció "Densitat electrònica i energia a T≠0. Expansió de Sommerfeld" de <code>01_electrons_lliures.tex</code>. Mou el control de la dreta i observa els gràfics alhora. Si és el primer cop que hi entres, mira primer el vídeo d'introducció — cada panell té un requadre "Què has d'observar" que resumeix el que s'hi explica, per si el vols repassar sense tornar a veure'l sencer.</p>
+
+    <div class="panel">
+      <h2>1. Densitat d'estats g(<span class="simbol">ε</span>) — no depèn de T ni de <span class="simbol">μ</span></h2>
+      <svg id="chartG" width="100%" height="170" viewBox="0 0 820 170"></svg>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Aquesta corba és fixa — encara no canvia amb res. Fixa't només en la forma: creix cap amunt, cada cop més a poc a poc. Torna-hi més tard i compara-la amb la corba del panell 4.</div>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>2. Funció de distribució f<sub>FD</sub>(<span class="simbol">ε</span>) — depèn de T i de <span class="simbol">μ</span></h2>
+      <svg id="chartF" width="100%" height="220" viewBox="0 0 820 220"></svg>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Mou el control de T (a la dreta) i mira com s'arrodoneix la cantonada de la corba. Fixa't especialment en la línia vertical blava (μ): compara on és quan T=0 i quan T és gran — es queda sempre al mateix lloc?</div>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>3. Finestra tèrmica −∂f<sub>FD</sub>/∂<span class="simbol">ε</span> — per què només compten els electrons a prop de <span class="simbol">μ</span></h2>
+      <svg id="chartWindow" width="100%" height="190" viewBox="0 0 820 190"></svg>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Torna a moure T. Aquesta corba s'engrandeix o s'estreny? Fixa't que sempre queda centrada exactament sota la línia μ del panell anterior — són la mateixa temperatura, el mateix moment.</div>
+      </details>
+      <div class="note">
+        Aquesta corba és el pas clau de l'apèndix de Sommerfeld del document: com que <code>−∂f<sub>FD</sub>/∂ε</code> només és apreciable en una finestra estreta al voltant de μ (d'amplada ∝T), l'aproximació <code>−∂f<sub>FD</sub>/∂ε ≈ δ(ε−μ)</code> és cada cop millor com més petita és T. L'àrea sota aquesta corba val <strong>exactament 1</strong> per a qualsevol T (és 1−0, el canvi total de f<sub>FD</sub>) — per això, en augmentar T, la corba s'eixampla però també s'abaixa.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>4. g(<span class="simbol">ε</span>)·f<sub>FD</sub>(<span class="simbol">ε</span>) — excés i dèficit d'electrons respecte T=0</h2>
+      <svg id="chartProd" width="100%" height="220" viewBox="0 0 820 220"></svg>
+      <div class="legend" style="flex-direction:row; flex-wrap:wrap; gap:18px;">
+        <span><span class="dot" style="background:var(--muted);"></span>g(ε) a T=0 (referència)</span>
+        <span><span class="dot" style="background:var(--accent);"></span>g(ε)·f<sub>FD</sub>(ε) a la T actual</span>
+        <span><span class="dot" style="background:var(--excited);"></span>excés (electrons excitats, ε&gt;ε<sub>F</sub>)</span>
+        <span><span class="dot" style="background:var(--hole);"></span>dèficit (forats, ε&lt;ε<sub>F</sub>)</span>
+      </div>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Aquí és on hi ha les dues zones de color. Canvia el commutador de dalt entre "μ(T) ajustat" i "μ fix" i mira com canvien les mides de la zona vermella i la verda. Amb quin dels dos modes semblen més iguals entre si?</div>
+      </details>
+      <div class="note">
+        <strong>N<sub>0</sub></strong> (la referència) és l'àrea sota la corba grisa discontínua fins a ε<sub>F</sub>. L'<strong>excés</strong> és l'àrea vermella, ∫ g·f<sub>FD</sub> dε entre ε<sub>F</sub> i l'infinit; el <strong>dèficit</strong> és l'àrea verda, ∫ g·(1−f<sub>FD</sub>) dε entre 0 i ε<sub>F</sub> — la mateixa descomposició que es fa servir a la secció "Densitat electrònica i energia a T≠0" del document. Compara-ho amb l'histograma del panell 5: són els mateixos dos números, aquí en forma d'àrea i allà en forma de barra.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>5. Es conserva el nombre d'electrons?</h2>
+      <svg id="chartHist" width="100%" height="230" viewBox="0 0 820 230"></svg>
+      <div class="legend" style="flex-direction:row; flex-wrap:wrap; gap:18px;">
+        <span><span class="dot" style="background:var(--excited);"></span>electrons excitats (ε&gt;ε<sub>F</sub>)</span>
+        <span><span class="dot" style="background:var(--hole);"></span>forats (ε&lt;ε<sub>F</sub>)</span>
+      </div>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">Compara els dos números de les barres. Amb "μ(T) ajustat" haurien de quedar pràcticament iguals a qualsevol T; amb "μ fix" no. Aquesta és la comprovació numèrica de tot el que has vist als panells anteriors.</div>
+      </details>
+      <div class="note">
+        Amb <strong>μ(T) ajustat</strong>, les dues barres han de ser <strong>exactament iguals</strong>, a qualsevol T — no és una aproximació: μ es calcula aquí resolent numèricament (per bisecció) la condició N(μ,T)=N<sub>0</sub>, així que l'excés i el dèficit es compensen per construcció. Si en canvi fixem <strong>μ=ε<sub>F</sub></strong> i no el deixem moure, la barra vermella creix sempre més ràpid que la verda (perquè g(ε) creix amb ε), i les barres es desequilibren clarament: el sistema guanyaria electrons de la no-res.
+        <br><br>
+        <strong>Nota tècnica:</strong> el document dedueix una fórmula analítica aproximada, μ≈ε<sub>F</sub>−(π²/12)(k<sub>B</sub>T)²/ε<sub>F</sub> (només el primer terme del desenvolupament de Sommerfeld). Aquí es mostra el μ(T) <em>exacte</em>, que coincideix amb la fórmula del document per a T/T_F petita i se'n separa una mica més enllà — la diferència entre tots dos és, precisament, la mida dels termes d'ordre T⁴ que la fórmula del document ignora deliberadament.
+      </div>
+    </div>
+  </div>
+
+  <aside class="barra-lateral">
+    <h2>Controls</h2>
+    <div class="controls-sticky">
+      <div class="controls">
+        <label for="tslider">T / T_F = <span id="tval">0.00</span></label>
+        <input type="range" id="tslider" min="0" max="120" value="0" step="1">
+      </div>
+      <div class="modes">
+        <label><input type="radio" name="mode" value="real" checked> μ(T) ajustat (correcte — conserva N)</label>
+        <label><input type="radio" name="mode" value="fix"> μ fix a ε<sub>F</sub> (incorrecte — NO conserva N)</label>
+      </div>
+    </div>
+    <div class="controls-rest">
+      <div class="readout">
+        <span class="item"><span class="lbl">T/T<sub>F</sub></span><b id="ro-t">0.000</b></span>
+        <span class="item"><span class="lbl">μ/ε<sub>F</sub> emprat</span><b id="ro-mu">1.0000</b></span>
+        <span class="item"><span class="lbl">Electrons ↑</span><b id="ro-above">0.0000</b></span>
+        <span class="item"><span class="lbl">Forats ↓</span><b id="ro-below">0.0000</b></span>
+        <span class="item"><span class="lbl">ΔN</span><b id="ro-deltaN">0.0000</b></span>
+      </div>
+      <div id="badge-conserv" class="badge ok">N ES CONSERVA</div>
+    </div>
+  </aside>
+</div>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 6: Electrons</div>
+
+<script>
+(function(){
+  const slider = document.getElementById('tslider');
+  const tval = document.getElementById('tval');
+  const roT = document.getElementById('ro-t');
+  const roMu = document.getElementById('ro-mu');
+  const roAbove = document.getElementById('ro-above');
+  const roBelow = document.getElementById('ro-below');
+  const roDeltaN = document.getElementById('ro-deltaN');
+  const badge = document.getElementById('badge-conserv');
+  const modeRadios = document.getElementsByName('mode');
+
+  const ns = "http://www.w3.org/2000/svg";
+  function el(tag, attrs){ const e = document.createElementNS(ns, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function clearSvg(svg){ while (svg.firstChild) svg.removeChild(svg.firstChild); }
+
+  const EMAX = 2.0;
+  const N = 260;
+  const g = e => Math.sqrt(Math.max(e,0));
+  const GMAX = g(EMAX) * 1.05;
+
+  function fFD(e, t, mu){
+    if (t <= 1e-6) return e < 1 ? 1 : 0;
+    return 1/(Math.exp((e-mu)/t) + 1);
+  }
+
+  // N(mu,t) = integral de g(e) f_FD(e;mu,t) sobre [0,EMAX] (regla del trapezi)
+  function totalN(mu, t){
+    const step = EMAX/N;
+    let sum = 0;
+    for(let i=0;i<=N;i++){
+      const e = i*EMAX/N;
+      const w = (i===0||i===N) ? 0.5*step : step;
+      sum += g(e)*fFD(e,t,mu)*w;
+    }
+    return sum;
+  }
+  const N0 = totalN(1, 1e-7); // referencia a T=0 (l'argument mu no importa a T=0)
+
+  // Mu EXACTE (autoconsistent): resolt per bisecció perquè N(mu,t)=N0 --> excés=dèficit sempre, no nomes a ordre T^2
+  function muExacte(t){
+    if (t <= 1e-6) return 1;
+    let lo=-3, hi=2;
+    for(let iter=0; iter<60; iter++){
+      const mid=(lo+hi)/2;
+      if (totalN(mid,t) < N0) lo=mid; else hi=mid;
+    }
+    return (lo+hi)/2;
+  }
+  // Aproximacio analitica de Sommerfeld (primer terme, O(T^2)) — la que surt derivada al document, nomes per comparar
+  function muSommerfeld(t){ return 1 - (Math.PI*Math.PI/12)*t*t; }
+
+  function currentMode(){ for (const r of modeRadios) if (r.checked) return r.value; return 'real'; }
+  function muUsed(t){ return currentMode()==='fix' ? 1 : muExacte(t); }
+
+  /* ---------- Panell 1: g(ε), estàtic ---------- */
+  function drawG(){
+    const svg = document.getElementById('chartG');
+    clearSvg(svg);
+    const W=820,H=170, mL=60,mR=20,mT=14,mB=36;
+    const pW=W-mL-mR, pH=H-mT-mB;
+    const xOf = e => mL + (e/EMAX)*pW;
+    const yOf = v => mT + pH - (v/GMAX)*pH;
+    for (let i=0;i<=4;i++){
+      const e=i*EMAX/4;
+      svg.appendChild(el('line',{x1:xOf(e),x2:xOf(e),y1:mT,y2:mT+pH,stroke:'var(--border)','stroke-width':1}));
+      const lbl = el('text',{x:xOf(e),y:mT+pH+16,class:'axis-label','text-anchor':'middle'}); lbl.textContent=e.toFixed(2); svg.appendChild(lbl);
+    }
+    svg.appendChild(el('line',{x1:mL,x2:mL,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+    svg.appendChild(el('line',{x1:mL,x2:mL+pW,y1:mT+pH,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+    let d = `M ${xOf(0)} ${yOf(0)}`;
+    for(let i=0;i<=N;i++){ const e=i*EMAX/N; d += ` L ${xOf(e)} ${yOf(g(e))}`; }
+    const p = el('path',{d, fill:'none', stroke:'var(--accent)', 'stroke-width':2.2});
+    svg.appendChild(p);
+    const eFx = xOf(1);
+    svg.appendChild(el('line',{x1:eFx,x2:eFx,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1,'stroke-dasharray':'2,3'}));
+    const lbl = el('text',{x:eFx+4,y:mT+12,class:'curve-label',fill:'var(--ink-2)'}); lbl.textContent='ε_F'; svg.appendChild(lbl);
+  }
+
+  /* ---------- Panell 2: f_FD(ε), dinamic ---------- */
+  function drawF(t, mu){
+    const svg = document.getElementById('chartF');
+    clearSvg(svg);
+    const W=820,H=220, mL=60,mR=20,mT=14,mB=36;
+    const pW=W-mL-mR, pH=H-mT-mB;
+    const xOf = e => mL + (e/EMAX)*pW;
+    const yOf = v => mT + pH - v*pH; // f va de 0 a 1
+    for (let i=0;i<=4;i++){
+      const e=i*EMAX/4;
+      svg.appendChild(el('line',{x1:xOf(e),x2:xOf(e),y1:mT,y2:mT+pH,stroke:'var(--border)','stroke-width':1}));
+      const lbl = el('text',{x:xOf(e),y:mT+pH+16,class:'axis-label','text-anchor':'middle'}); lbl.textContent=e.toFixed(2); svg.appendChild(lbl);
+    }
+    svg.appendChild(el('line',{x1:mL,x2:mL,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+    svg.appendChild(el('line',{x1:mL,x2:mL+pW,y1:mT+pH,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+    let d = `M ${xOf(0)} ${yOf(fFD(0,t,mu))}`;
+    for(let i=0;i<=N;i++){ const e=i*EMAX/N; d += ` L ${xOf(e)} ${yOf(fFD(e,t,mu))}`; }
+    svg.appendChild(el('path',{d, fill:'none', stroke:'var(--accent)', 'stroke-width':2.2}));
+    const eFx = xOf(1);
+    svg.appendChild(el('line',{x1:eFx,x2:eFx,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1,'stroke-dasharray':'2,3'}));
+    const eflbl = el('text',{x:eFx+4,y:mT+12,class:'curve-label',fill:'var(--ink-2)'}); eflbl.textContent='ε_F'; svg.appendChild(eflbl);
+    const mux = xOf(mu);
+    svg.appendChild(el('line',{x1:mux,x2:mux,y1:mT,y2:mT+pH,stroke:'var(--accent)','stroke-width':1.6}));
+    const mlbl = el('text',{x:mux-4,y:mT+26,class:'curve-label',fill:'var(--accent)','text-anchor':'end'}); mlbl.textContent='μ'; svg.appendChild(mlbl);
+  }
+
+  /* ---------- Panell 3: finestra tèrmica -df_FD/de = f(1-f)/T ---------- */
+  function drawWindow(t, mu){
+    const svg = document.getElementById('chartWindow');
+    clearSvg(svg);
+    const W=820,H=190, mL=60,mR=20,mT=14,mB=36;
+    const pW=W-mL-mR, pH=H-mT-mB;
+    const xOf = e => mL + (e/EMAX)*pW;
+    const tw = Math.max(t, 0.02); // evitem una alcada infinita quan T->0
+    const dfde = e => { const f = fFD(e,tw,mu); return f*(1-f)/tw; };
+    const peak = 0.25/tw;
+    const yMax = peak*1.15;
+    const yOf = v => mT + pH - (v/yMax)*pH;
+
+    for (let i=0;i<=4;i++){
+      const e=i*EMAX/4;
+      svg.appendChild(el('line',{x1:xOf(e),x2:xOf(e),y1:mT,y2:mT+pH,stroke:'var(--border)','stroke-width':1}));
+      const lbl = el('text',{x:xOf(e),y:mT+pH+16,class:'axis-label','text-anchor':'middle'}); lbl.textContent=e.toFixed(2); svg.appendChild(lbl);
+    }
+    svg.appendChild(el('line',{x1:mL,x2:mL,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+    svg.appendChild(el('line',{x1:mL,x2:mL+pW,y1:mT+pH,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+
+    let d = `M ${xOf(0)} ${yOf(dfde(0))}`;
+    for(let i=0;i<=N;i++){ const e=i*EMAX/N; d += ` L ${xOf(e)} ${yOf(dfde(e))}`; }
+    d += ` L ${xOf(EMAX)} ${yOf(0)} L ${xOf(0)} ${yOf(0)} Z`;
+    svg.appendChild(el('path',{d, fill:'var(--accent)', opacity:'0.22', stroke:'none'}));
+
+    let dl = `M ${xOf(0)} ${yOf(dfde(0))}`;
+    for(let i=0;i<=N;i++){ const e=i*EMAX/N; dl += ` L ${xOf(e)} ${yOf(dfde(e))}`; }
+    svg.appendChild(el('path',{d:dl, fill:'none', stroke:'var(--accent)', 'stroke-width':2.2}));
+
+    const eFx = xOf(1);
+    svg.appendChild(el('line',{x1:eFx,x2:eFx,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1,'stroke-dasharray':'2,3'}));
+    const eflbl = el('text',{x:eFx+4,y:mT+12,class:'curve-label',fill:'var(--ink-2)'}); eflbl.textContent='ε_F'; svg.appendChild(eflbl);
+    const mux = xOf(mu);
+    svg.appendChild(el('line',{x1:mux,x2:mux,y1:mT,y2:mT+pH,stroke:'var(--accent)','stroke-width':1.6}));
+    const mlbl = el('text',{x:mux-4,y:mT+26,class:'curve-label',fill:'var(--accent)','text-anchor':'end'}); mlbl.textContent='μ'; svg.appendChild(mlbl);
+  }
+
+  /* ---------- Panell 4: g(ε)·f_FD(ε), amb ombrejat d'excés/dèficit ---------- */
+  function drawProduct(t, mu){
+    const svg = document.getElementById('chartProd');
+    clearSvg(svg);
+    const W=820,H=220, mL=60,mR=20,mT=14,mB=36;
+    const pW=W-mL-mR, pH=H-mT-mB;
+    const xOf = e => mL + (e/EMAX)*pW;
+    const yOf = v => mT + pH - (v/GMAX)*pH;
+
+    for (let i=0;i<=4;i++){
+      const e=i*EMAX/4;
+      svg.appendChild(el('line',{x1:xOf(e),x2:xOf(e),y1:mT,y2:mT+pH,stroke:'var(--border)','stroke-width':1}));
+      const lbl = el('text',{x:xOf(e),y:mT+pH+16,class:'axis-label','text-anchor':'middle'}); lbl.textContent=e.toFixed(2); svg.appendChild(lbl);
+    }
+    svg.appendChild(el('line',{x1:mL,x2:mL,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+    svg.appendChild(el('line',{x1:mL,x2:mL+pW,y1:mT+pH,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1.2}));
+
+    const vRefOf = e => e<=1 ? g(e) : 0;
+    const vCurOf = e => g(e)*fFD(e,t,mu);
+
+    // Ombrejat: dèficit (0..1, top=ref, bottom=cur) i excés (1..EMAX, top=cur, bottom=ref)
+    function fillRegion(eFrom, eTo, useTop){
+      let path = ''; let started=false;
+      for(let i=0;i<=N;i++){
+        const e = i*EMAX/N;
+        if (e<eFrom-1e-9 || e>eTo+1e-9) continue;
+        const vTop = useTop==='ref' ? vRefOf(e) : vCurOf(e);
+        if (!started){ path += `M ${xOf(e)} ${yOf(vTop)}`; started=true; }
+        else path += ` L ${xOf(e)} ${yOf(vTop)}`;
+      }
+      for(let i=N;i>=0;i--){
+        const e = i*EMAX/N;
+        if (e<eFrom-1e-9 || e>eTo+1e-9) continue;
+        const vBot = useTop==='ref' ? vCurOf(e) : vRefOf(e);
+        path += ` L ${xOf(e)} ${yOf(vBot)}`;
+      }
+      path += ' Z';
+      return path;
+    }
+    svg.appendChild(el('path',{d:fillRegion(0,1,'ref'), fill:'var(--hole)', opacity:'0.75', stroke:'none'}));
+    svg.appendChild(el('path',{d:fillRegion(1,EMAX,'cur'), fill:'var(--excited)', opacity:'0.75', stroke:'none'}));
+
+    // Corba de referència (T=0), discontínua
+    let d0 = `M ${xOf(0)} ${yOf(vRefOf(0))}`;
+    for(let i=0;i<=N;i++){ const e=i*EMAX/N; d0 += ` L ${xOf(e)} ${yOf(vRefOf(e))}`; }
+    svg.appendChild(el('path',{d:d0, fill:'none', stroke:'var(--muted)', 'stroke-width':1.6, 'stroke-dasharray':'4,4'}));
+
+    // Corba actual
+    let dC = `M ${xOf(0)} ${yOf(vCurOf(0))}`;
+    for(let i=0;i<=N;i++){ const e=i*EMAX/N; dC += ` L ${xOf(e)} ${yOf(vCurOf(e))}`; }
+    svg.appendChild(el('path',{d:dC, fill:'none', stroke:'var(--accent)', 'stroke-width':2.2}));
+
+    const eFx = xOf(1);
+    svg.appendChild(el('line',{x1:eFx,x2:eFx,y1:mT,y2:mT+pH,stroke:'var(--ink-2)','stroke-width':1,'stroke-dasharray':'2,3'}));
+    const eflbl = el('text',{x:eFx+4,y:mT+12,class:'curve-label',fill:'var(--ink-2)'}); eflbl.textContent='ε_F'; svg.appendChild(eflbl);
+    const mux = xOf(mu);
+    svg.appendChild(el('line',{x1:mux,x2:mux,y1:mT,y2:mT+pH,stroke:'var(--accent)','stroke-width':1.6}));
+    const mlbl = el('text',{x:mux-4,y:mT+26,class:'curve-label',fill:'var(--accent)','text-anchor':'end'}); mlbl.textContent='μ'; svg.appendChild(mlbl);
+  }
+
+  /* ---------- Integrals: electrons per sobre / forats per sota ---------- */
+  function integrals(t, mu){
+    const step = EMAX/N;
+    let above = 0, below = 0;
+    for(let i=0;i<=N;i++){
+      const e = i*EMAX/N;
+      const w = (i===0||i===N) ? 0.5*step : step;
+      const f = fFD(e,t,mu);
+      if (e >= 1) above += g(e)*f*w;
+      else below += g(e)*(1-f)*w;
+    }
+    return {above, below};
+  }
+
+  /* ---------- Panell 5: histograma, escala ABSOLUTA i fixa ---------- */
+  // Escala calibrada al valor mes gran (excés o dèficit) que s'assoleix a la T maxima del control,
+  // comptant els dos modes — així la mida de les barres es pot comparar entre diferents T.
+  const TMAX = parseInt(slider.max,10)/100;
+  function maxExcesDeficitA(t){
+    const muReal = muExacte(t);
+    const muFix = 1;
+    const r1 = integrals(Math.max(t,1e-6), muReal);
+    const r2 = integrals(Math.max(t,1e-6), muFix);
+    return Math.max(r1.above, r1.below, r2.above, r2.below);
+  }
+  const HIST_MAX = maxExcesDeficitA(TMAX) * 1.1;
+
+  function drawHist(above, below){
+    const svg = document.getElementById('chartHist');
+    clearSvg(svg);
+    const W=820,H=230, mL=200,mR=40,mT=20,mB=30;
+    const pW=W-mL-mR, pH=H-mT-mB;
+    const maxV = HIST_MAX;
+    const barH = 46, gap = 40;
+    const y1 = mT+20, y2 = y1+barH+gap;
+    const yAxis = y2+barH+18;
+
+    // eix amb graella, escala absoluta 0..HIST_MAX
+    for (let i=0;i<=4;i++){
+      const v = i*maxV/4;
+      const x = mL + (v/maxV)*pW;
+      svg.appendChild(el('line',{x1:x,x2:x,y1:mT,y2:yAxis,stroke:'var(--border)','stroke-width':1}));
+      const lbl = el('text',{x:x,y:yAxis+16,class:'axis-label','text-anchor':'middle'}); lbl.textContent=v.toFixed(3); svg.appendChild(lbl);
+    }
+    svg.appendChild(el('line',{x1:mL,x2:mL,y1:mT,y2:yAxis,stroke:'var(--ink-2)','stroke-width':1.2}));
+    svg.appendChild(el('line',{x1:mL,x2:mL+pW,y1:yAxis,y2:yAxis,stroke:'var(--ink-2)','stroke-width':1.2}));
+
+    function bar(y, value, color, label){
+      const w = (value/maxV)*pW;
+      svg.appendChild(el('rect',{x:mL, y:y, width:Math.max(w,2), height:barH, fill:color, opacity:'0.75', rx:4}));
+      svg.appendChild(el('rect',{x:mL, y:y, width:pW, height:barH, fill:'none', stroke:'var(--border)', 'stroke-width':1, rx:4}));
+      const lbl = el('text',{x:mL-12, y:y+barH/2+4, 'text-anchor':'end', class:'curve-label', fill:'var(--ink)'});
+      lbl.textContent = label; svg.appendChild(lbl);
+      const vlbl = el('text',{x:mL+Math.max(w,2)+10, y:y+barH/2+4, class:'curve-label', fill:'var(--ink-2)'});
+      vlbl.textContent = value.toFixed(4); svg.appendChild(vlbl);
+    }
+    bar(y1, above, 'var(--excited)', 'Electrons ↑');
+    bar(y2, below, 'var(--hole)', 'Forats ↓');
+  }
+
+  function draw(){
+    const t = parseInt(slider.value,10)/100;
+    tval.textContent = t.toFixed(2);
+    roT.textContent = t.toFixed(3);
+    const mu = muUsed(t);
+    roMu.textContent = mu.toFixed(4);
+
+    drawG();
+    drawF(Math.max(t,1e-6), mu);
+    drawWindow(Math.max(t,1e-6), mu);
+    drawProduct(Math.max(t,1e-6), mu);
+
+    const {above, below} = integrals(Math.max(t,1e-6), mu);
+    drawHist(above, below);
+    roAbove.textContent = above.toFixed(4);
+    roBelow.textContent = below.toFixed(4);
+    const deltaN = above - below;
+    roDeltaN.textContent = (deltaN>=0?'+':'') + deltaN.toFixed(4);
+
+    const tolerance = 0.01 * Math.max(above, below, 0.01);
+    if (Math.abs(deltaN) <= tolerance){
+      badge.textContent = 'N ES CONSERVA'; badge.className = 'badge ok';
+    } else {
+      badge.textContent = 'N NO ES CONSERVA'; badge.className = 'badge bad';
+    }
+  }
+
+  slider.addEventListener('input', draw);
+  for (const r of modeRadios) r.addEventListener('change', draw);
+  draw();
+})();
+</script>
+</body>
+</html>

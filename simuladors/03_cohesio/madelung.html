@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La constant de Madelung</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La constant de Madelung: l'ordre de la suma importa</h1>
+  <p class="sub">L'energia de Coulomb d'un ió en un cristall és la suma de les seves interaccions amb tots els altres ions. Aquí la calculem pas a pas, primer per a una cadena i després per al NaCl i el CsCl, i veiem per què en tres dimensions el resultat depèn de com s'ordenen els termes: sumant per capes esfèriques no s'arriba enlloc, i sumant per blocs neutres s'arriba ràpidament a M = 1.7476.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Estructura</div>
+      <div class="grup-btn tres" id="grupEst">
+        <button type="button" class="btn-opcio" data-v="1d">Cadena 1D</button>
+        <button type="button" class="btn-opcio" data-v="nacl">NaCl</button>
+        <button type="button" class="btn-opcio" data-v="cscl">CsCl</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Regió sumada</div>
+      <div class="control-group">
+        <label class="control-label" for="slR" id="lblR">Radi de la regió sumada <span class="val" id="valR"></span></label>
+        <input type="range" class="slider" id="slR" min="1" max="10" step="0.01" value="3">
+      </div>
+      <button type="button" class="btn" id="btnAnim">▶ Fes créixer la regió</button>
+      <p class="hint" style="margin-top:6px;">També pots arrossegar la línia vermella de la gràfica.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Com es dibuixa la regió</div>
+      <div class="grup-btn" id="grupMet">
+        <button type="button" class="btn-opcio" data-v="esferes">Capes esfèriques</button>
+        <button type="button" class="btn-opcio" data-v="evjen">Blocs neutres</button>
+      </div>
+      <p class="hint">La gràfica mostra sempre els dos mètodes; aquí tries quin es veu a la xarxa.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Sumes parcials de M</div>
+        <canvas id="canvasSum" width="420" height="340" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:420px;">En taronja, sumant capa a capa per distància; en verd, per blocs elèctricament neutres. La línia discontínua és el valor exacte.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Ions inclosos a la suma</div>
+        <canvas id="canvasLat" width="360" height="340"></canvas>
+        <p class="plot-desc" style="max-width:360px;">Blau: càrrega +; vermell: −. L'ió de referència és el del centre (vorejat de negre). Els ions de la vora d'un bloc d'Evjen hi compten amb una fracció.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Capes de veïns (les incloses, ombrejades)</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th>#</th><th>p (distància / r₀)</th><th>nre. d'ions</th><th>càrrega</th><th>contribució</th><th>suma acumulada</th></tr></thead>
+            <tbody id="taulaBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">Al NaCl, les primeres capes donen 6, −2.49, 2.13, −0.87, 9.87…: és la seqüència dels apunts. Cada capa té una càrrega neta gran, d'un signe o de l'altre, i la suma no s'estabilitza.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>L'energia d'un ió en un cristall iònic és la suma de la interacció de Coulomb amb <strong>tots</strong> els altres: com que decau com 1/r, no n'hi ha prou amb els veïns més propers. Tota la geometria queda en un sol número, la <strong>constant de Madelung M</strong>.</p>
+      <p>En una cadena, M = 2 ln 2 = 1.386 i la sèrie convergeix, però molt lentament. En 3D la suma és <strong>condicionalment convergent</strong>: el resultat depèn de l'ordre dels termes, i sumar per capes esfèriques no funciona.</p>
+      <p>El <strong>mètode d'Evjen</strong> suma per cubs neutres: els ions de les cares compten ½, els de les arestes ¼ i els dels vèrtexs ⅛, perquè els comparteixen cubs veïns. Cada bloc té càrrega total zero i la convergència és ràpida.</p>
+      <p>Valors: NaCl 1.7476, CsCl 1.7627, blenda de zinc 1.6381, fluorita 2.5194.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> A la cadena 1D, prem "Fes créixer la regió": la suma terme a terme oscil·la al voltant de 2 ln 2 i s'hi acosta molt a poc a poc. Si els dos ions de la vora compten la meitat, la convergència és molt més ràpida.</p>
+          <p><strong>2.</strong> Al NaCl, mira la corba taronja: salta de 6 a −2.5, a 2.1, a −0.9, a 9.9… i no s'acosta a 1.7476. Mira la taula de capes: cada capa té una càrrega neta que no es compensa.</p>
+          <p><strong>3.</strong> Amb blocs neutres (verd), ja amb el cub més petit (R = 1) M = 1.456, i amb R = 2, 1.752. Compara-ho amb les capes per al mateix radi.</p>
+          <p><strong>4.</strong> Passa al CsCl: la mateixa història, amb M = 1.7627. Les estructures amb un ió de cada signe tenen totes M entre 1.6 i 1.8.</p>
+          <p><strong>5.</strong> Mira el bloc de l'energia: amb M i la repulsió, U(r₀) = 7.81 eV per parell al NaCl. Calcular l'energia de cohesió d'un cristall iònic és, essencialment, calcular M.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./madelung.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

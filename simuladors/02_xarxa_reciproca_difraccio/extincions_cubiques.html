@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — De la cúbica simple a BCC, FCC i diamant: pics que desapareixen</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./extincions_cubiques.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9" stroke-dasharray="1.5 2" opacity=".4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/></svg>Tema 2: Xarxa recíproca / difracció</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>De la cúbica simple a BCC, FCC i diamant: pics que desapareixen</h1>
+  <p class="sub">Les quatre estructures comparteixen la mateixa cel·la cúbica de costat a, i per tant els pics només poden ser a les posicions de la cúbica simple, G = (2π/a)(h,k,l). La diferència és la base: BCC, FCC i diamant afegeixen àtoms dins la cel·la, i el factor d'estructura S = Σ f<sub>j</sub> e<sup>−iG·c<sub>j</sub></sup> fa que algunes reflexions s'anul·lin per interferència. Fes que els àtoms afegits s'assemblin cada cop més al del vèrtex (f₂/f₁ de 0 a 1) i mira com s'apaguen els pics. Compte: mentre no són idèntics, la xarxa de Bravais continua sent cúbica simple. Només quan f₂/f₁ = 1 passa a ser BCC o FCC, i aleshores el mateix resultat es pot obtenir amb la cel·la primitiva.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+
+    <div class="card">
+      <div class="card-title">Estructura</div>
+      <div class="grup-est">
+        <button type="button" class="btn-est" data-est="sc">SC</button>
+        <button type="button" class="btn-est" data-est="bcc">BCC</button>
+        <button type="button" class="btn-est" data-est="fcc">FCC</button>
+        <button type="button" class="btn-est" data-est="dia">Diamant</button>
+      </div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Com de semblants són els àtoms afegits</div>
+      <p class="hint" style="margin-bottom:8px;">Cada control és el quocient entre el factor de forma de l'àtom afegit i el de l'àtom del vèrtex. Amb 1 són àtoms idèntics; entre 0 i 1, àtoms diferents; amb 0, l'àtom no hi és.</p>
+      <div id="blocPesos"></div>
+      <div class="bravais" id="bravais"></div>
+      <button type="button" class="btn" id="btnPlay">▶ Reprodueix el camí des de la SC</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Difracció de pols</div>
+      <div class="control-row">
+        <div class="control-group">
+          <label class="control-label" for="inA">a (Å)</label>
+          <input type="number" class="num-input" id="inA" value="3.36" step="0.01" min="0.5">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inLambda">λ (Å)</label>
+          <input type="number" class="num-input" id="inLambda" value="1.5406" step="0.0001" min="0.1">
+        </div>
+      </div>
+      <p class="hint" style="margin-bottom:8px;">λ = 1.5406 Å és el Cu Kα. Amb a = 3.36 Å surt la cúbica simple de les diapositives; amb a = 5.43 Å, el silici.</p>
+      <div class="control-group">
+        <label class="control-label" for="selAlcada">Alçada dels pics</label>
+        <select class="sel-input" id="selAlcada">
+          <option value="S">|S|² (només la interferència)</option>
+          <option value="mS">multiplicitat × |S|²</option>
+        </select>
+      </div>
+      <label class="check-row"><input type="checkbox" id="chkFase"> Acoloreix els àtoms per la seva fase</label>
+    </div>
+
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Cel·la convencional (arrossega per girar-la)</div>
+        <canvas id="canvasCell" width="360" height="360"></canvas>
+        <p class="plot-desc" style="max-width:360px;"><span class="punt" style="background:#2980b9"></span>vèrtexs (la SC) · <span class="punt" style="background:#e67e22"></span>centre o cares · <span class="punt" style="background:#8e44ad"></span>còpia (¼,¼,¼) del diamant. Els àtoms afegits creixen amb el seu pes.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Fletxes de S per a la reflexió triada</div>
+        <canvas id="canvasPhasor" width="300" height="300"></canvas>
+        <p class="plot-desc" style="max-width:300px;">Una fletxa f<sub>j</sub> e<sup>−iG·c<sub>j</sub></sup> per a cada àtom de la cel·la, una darrere l'altra. En negre, la resultant S. Si les fletxes es tanquen, S = 0 i el pic desapareix.</p>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques per a la reflexió triada</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">El mateix càlcul amb la cel·la primitiva</div>
+        <div id="primitiva"></div>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Patró de difracció de pols (clica un pic per triar-lo)</div>
+        <canvas id="canvasPattern" width="780" height="300"></canvas>
+        <div class="llegenda">
+          <span><i style="border-top:2px solid #00722b"></i>estructura triada</span>
+          <span><i style="border-top:1px dashed #9aa8a0"></i>cúbica simple (punt de partida)</span>
+          <span style="color:#c0392b">× (hkl) ratllat: reflexió prohibida</span>
+          <span id="llegPrim" style="color:#1f5fa8">▼ pic predit amb la cel·la primitiva</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">De la cúbica simple a les altres: quins pics sobreviuen</div>
+        <canvas id="canvasCompare" width="780" height="310"></canvas>
+        <p class="plot-desc" style="max-width:780px;">Les quatre estructures completes (pesos = 1) sobre el mateix eix 2θ. Totes tenen els pics a les posicions de la SC; cada estructura n'elimina uns quants (×). Clica el nom d'una fila per triar-la.</p>
+      </div>
+    </div>
+
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Llista de reflexions (clica una fila per triar-la)</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead>
+              <tr><th>(h k l)</th><th>h²+k²+l²</th><th>d (Å)</th><th>sin θ</th><th>2θ (°)</th><th>mult.</th><th>S</th><th>|S|²/(Σf)²</th><th>(d₁/d)²</th><th>estat</th></tr>
+            </thead>
+            <tbody id="taulaBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">(d₁/d)² = (h²+k²+l²)/(h₁²+k₁²+l₁²), respecte del primer pic permès. És la columna que es compara amb l'experiment per identificar l'estructura.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Reflexió triada</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estatSel"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Treballem sempre amb la <strong>cel·la cúbica convencional</strong>, amb vectors a(1,0,0), a(0,1,0) i a(0,0,1). La seva xarxa recíproca és cúbica simple, <strong>G = (2π/a)(h,k,l)</strong>, i cada pic surt a d = a/√(h²+k²+l²) i sin θ = λ/2d.</p>
+      <p>Les estructures es diferencien per la <strong>base</strong> c<sub>j</sub>: SC, un àtom; BCC, dos; FCC, quatre; diamant, vuit. La intensitat de cada pic és proporcional a |S|², amb</p>
+      <p style="text-align:center;"><strong>S = Σ<sub>j</sub> f<sub>j</sub> e<sup>−2πi(hx<sub>j</sub>+ky<sub>j</sub>+lz<sub>j</sub>)</sup></strong></p>
+      <p>Si S = 0, el pic no hi és encara que G sigui un vector de la xarxa recíproca de la cel·la cúbica. Amb la cel·la <em>primitiva</em> no caldria: aquests G simplement no hi pertanyen.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> A la SC, mira la columna h²+k²+l²: 1, 2, 3, 4, 5, 6, 8… El 7 no hi és perquè no és suma de tres quadrats. Els quocients (d₁/d)² són enters consecutius sense el 7.</p>
+          <p><strong>2.</strong> Tria BCC i prem "Reprodueix". Els pics amb h+k+l senar, com el (100) i el (111), es van apagant fins a desaparèixer. A pesos intermedis, com el CsCl (dos àtoms diferents), només s'afebleixen.</p>
+          <p><strong>3.</strong> A la BCC, la columna (d₁/d)² val 1, 2, 3, 4, 5, 6, 7, 8: ara sí que hi ha un 7, el (321). Així es distingeix una BCC d'una SC.</p>
+          <p><strong>4.</strong> Tria FCC. Sobreviuen els tots parells o tots senars: (111), (200), (220), (311), (222). Els quocients 1, 1.33, 2.67, 3.67 són els de les diapositives.</p>
+          <p><strong>5.</strong> Tria diamant i prem "Reprodueix": primer apareixen els àtoms de les cares (SC → FCC), i després la còpia (¼,¼,¼). Amb la segona desapareixen el (200) i el (222), que la FCC sí que tenia.</p>
+          <p><strong>6.</strong> A la BCC, baixa f<sub>centre</sub>/f<sub>vèrtex</sub> a 0.99. Els pics prohibits gairebé no es veuen, però la xarxa ja és cúbica simple: (½,½,½) porta el vèrtex sobre un àtom diferent. Torna a 1 i mira el bloc de la cel·la primitiva: els mateixos pics, amb un càlcul on no s'anul·la res.</p>
+          <p><strong>7.</strong> Al diamant, deixa les cares a 1 i baixa la còpia: la xarxa continua sent FCC (és la blenda de zinc, com el GaAs), perquè (¼,¼,¼) no era una translació ni abans ni després. El (200) torna a aparèixer feble.</p>
+          <p><strong>8.</strong> Clica un pic prohibit i activa "Acoloreix per fase": la meitat dels àtoms dispersen en fase oposada a l'altra meitat. Les fletxes de S es tanquen sobre elles mateixes.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./extincions_cubiques.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

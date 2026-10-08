@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Laboratori d'elasticitat</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Laboratori d'elasticitat: estira, colpeja i trenca un cristall</h1>
+  <p class="sub">Un cristall de 2000 àtoms units per enllaços que són la corba de cohesió del tema, simulat en directe. Estira'l fins a trencar-lo i mesura'n el mòdul de Young i el de Poisson, cisalla'l, foradeu-lo i mira on es concentra la tensió, o dona-li un cop i mira com hi viatgen les ones P i S. Res de l'elasticitat no està programat: tot surt dels enllaços.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Experiment</div>
+      <div class="grup-btn tres" id="grupMode">
+        <button type="button" class="btn-opcio" data-v="traccio">Tracció</button>
+        <button type="button" class="btn-opcio" data-v="cisalla">Cisallament</button>
+        <button type="button" class="btn-opcio" data-v="ones">Cop de martell</button>
+      </div>
+      <button type="button" class="btn" id="btnPlay">▶ Comença l'assaig</button>
+      <button type="button" class="btn" id="btnReset">↺ Cristall nou</button>
+      <div class="control-group" style="margin-top:8px;">
+        <label class="control-label" for="slRate">Velocitat d'estirada <span class="val" id="valRate"></span></label>
+        <input type="range" class="slider" id="slRate" min="0.002" max="0.05" step="0.001" value="0.012">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ratolí</div>
+      <div class="grup-btn" id="grupEina">
+        <button type="button" class="btn-opcio" data-v="arrossega">Arrossega àtoms</button>
+        <button type="button" class="btn-opcio" data-v="cop">Cop de martell</button>
+      </div>
+      <div id="blocCop">
+        <div class="grup-btn" id="grupCop">
+          <button type="button" class="btn-opcio" data-v="radial">Explosió radial</button>
+          <button type="button" class="btn-opcio" data-v="vertical">Cop vertical</button>
+        </div>
+        <label class="check-row"><input type="checkbox" id="chkCercles" checked> Fronts teòrics v_L t i v_T t</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Defecte</div>
+      <div class="grup-btn tres" id="grupDef">
+        <button type="button" class="btn-opcio" data-v="cap">Cap</button>
+        <button type="button" class="btn-opcio" data-v="forat">Forat</button>
+        <button type="button" class="btn-opcio" data-v="esquerda">Esquerda</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slMida">Radi o llargada <span class="val" id="valMida"></span></label>
+        <input type="range" class="slider" id="slMida" min="2" max="16" step="1" value="6">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Enllaços</div>
+      <div class="grup-btn" id="grupModel">
+        <button type="button" class="btn-opcio" data-v="morse">Morse (es trenquen)</button>
+        <button type="button" class="btn-opcio" data-v="harmonic">Harmònics</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slAlpha">Fragilitat α·a <span class="val" id="valAlpha"></span></label>
+        <input type="range" class="slider" id="slAlpha" min="3" max="12" step="0.5" value="6">
+      </div>
+      <p class="hint">Amb α gran, el pou de la corba de cohesió és més estret i l'enllaç es trenca abans.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Visualització</div>
+      <div class="control-group">
+        <label class="control-label" for="slSpeed">Velocitat de la simulació <span class="val" id="valSpeed"></span></label>
+        <input type="range" class="slider" id="slSpeed" min="1" max="20" step="1" value="8">
+      </div>
+      <div class="grup-btn" id="grupColor">
+        <button type="button" class="btn-opcio" data-v="enllac">Color: estirament</button>
+        <button type="button" class="btn-opcio" data-v="vel">Color: velocitat</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slColor">Escala de color <span class="val" id="valColor"></span></label>
+        <input type="range" class="slider" id="slColor" min="-3" max="-0.7" step="0.05" value="-1.4">
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">El cristall: cada línia és un enllaç, acolorit segons quant està estirat</div>
+        <canvas id="canvasCristall" width="780" height="640"></canvas>
+        <p class="plot-desc" style="max-width:780px;">Arrossega qualsevol àtom amb el ratolí. A tracció i cisallament, les files grises de dalt i de baix són les mordasses de la màquina d'assaig.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Corba tensió-deformació, mesurada en directe</div>
+        <canvas id="canvasCorba" width="780" height="270"></canvas>
+        <p class="plot-desc" style="max-width:780px;">La tensió és la força que fa la mordassa superior dividida per l'amplada del cristall.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Historial d'assajos fins a la ruptura</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th>#</th><th class="esq">assaig</th><th class="esq">defecte</th><th>tensió màxima (k/a)</th><th>deformació al màxim</th><th>mòdul mesurat</th></tr></thead>
+            <tbody id="histBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">Repeteix l'assaig amb esquerdes de llargada diferent: la tensió de ruptura baixa quan l'esquerda s'allarga (Griffith).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Un sòlid és un conjunt d'àtoms units per enllaços. Aquí n'hi ha uns 2000, en una xarxa triangular, i cada enllaç és la <strong>corba de cohesió</strong> d'un parell d'àtoms (potencial de Morse). La simulació resol les equacions de Newton de tots els àtoms alhora, en temps real.</p>
+      <p>Prop del mínim, cada enllaç és una molla de constant <strong>k = V″(a)</strong>. Les constants elàstiques <strong>no s'introdueixen enlloc</strong>: surten del moviment col·lectiu dels àtoms, i les pots mesurar com en un laboratori de materials.</p>
+      <p>La teoria de la xarxa triangular prediu E = 2k/√3, ν = 1/3 i v<sub>L</sub>/v<sub>T</sub> = √3. Lluny del mínim, la força de l'enllaç té un màxim: per això els materials es trenquen.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Tracció sense defectes: prem "Comença l'assaig". Al principi la corba vermella segueix la recta de la teoria (E = 2k/√3), i el mòdul de Poisson mesurat s'acosta a 1/3. Després la corba es doblega (els enllaços surten de la zona parabòlica) fins que el cristall es trenca de cop.</p>
+          <p><strong>2.</strong> Posa un forat i estira: els enllaços més vermells són els del costat del forat. La lectura "concentració" s'acosta a 3, el resultat de Kirsch per a una placa infinita. Mira on comença la fractura.</p>
+          <p><strong>3.</strong> Posa una esquerda i estira: la fractura comença a la punta i avança com un llamp. Repeteix-ho amb esquerdes de 4, 8 i 12 a: la tensió de ruptura de l'historial baixa en allargar l'esquerda.</p>
+          <p><strong>4.</strong> Cop de martell: clica al mig del cristall. Surt un front ràpid (ona P, longitudinal) i un de lent (ona S, transversal). Els cercles de la teoria avancen a v_L i v_T: coincideixen amb els fronts.</p>
+          <p><strong>5.</strong> Amb "Cop vertical", l'ona P surt cap amunt i cap avall i la S cap als costats: és la mateixa física que les ones P i S d'un terratrèmol.</p>
+          <p><strong>6.</strong> Canvia els enllaços a harmònics: el cristall ja no es trenca mai, i la corba tensió-deformació és una recta. Un material real es trenca perquè la corba de cohesió no és una paràbola.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./laboratori_elasticitat.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

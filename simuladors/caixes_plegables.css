@@ -1,0 +1,100 @@
+/* Caixes plegables per als simuladors (vegeu caixes_plegables.js) */
+
+/* ---- Títols clicables amb fletxa ---- */
+.titol-plegable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-left: 16px !important;
+}
+.titol-plegable::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid currentColor;
+  transform: translateY(-60%);
+  transition: transform .15s;
+}
+.plegable.plegada > .titol-plegable::before { transform: translateY(-50%) rotate(-90deg); }
+.titol-plegable:hover { opacity: .8; }
+.titol-plegable:focus-visible { outline: 2px solid var(--uab, #009639); outline-offset: 2px; border-radius: 3px; }
+
+/* Caixa plegada: només queda el títol */
+.plegable.plegada > :not(.titol-plegable) { display: none !important; }
+.card.plegada > .card-title { margin-bottom: 0; border-bottom-color: transparent; padding-bottom: 0; }
+.bloc-canvas.plegada {
+  border: 1px dashed var(--border, #c8e6c9);
+  border-radius: 6px;
+  padding: 4px 10px;
+  background: var(--panel, #fff);
+}
+.bloc-canvas.plegada { align-self: flex-start; width: auto !important; }
+.bloc-canvas.plegada > .plot-title { margin-bottom: 0; }
+/* bloc de gràfica: fletxa centrada amb el títol */
+.bloc-canvas > .titol-plegable { padding-right: 4px; }
+
+/* ---- Panells laterals: fixos en fer scroll i amagables ---- */
+.panell-plegable {
+  position: sticky;
+  top: 8px;
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.boto-panell {
+  font-size: .70rem;
+  font-weight: 700;
+  color: var(--uab-dark, #00722b);
+  background: var(--panel, #fff);
+  border: 1px solid var(--border, #c8e6c9);
+  border-radius: 5px;
+  padding: 3px 8px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+.boto-panell:hover { background: var(--uab-light, #e8f5ee); }
+.panell-plegable.amagat { width: auto !important; flex-shrink: 0; overflow: visible; }
+.panell-plegable.amagat > :not(.boto-panell) { display: none !important; }
+.panell-plegable.amagat > .boto-panell {
+  writing-mode: vertical-rl;
+  padding: 10px 4px;
+  font-size: .74rem;
+  letter-spacing: .5px;
+}
+.controls-panel.amagat > .boto-panell { transform: rotate(180deg); }
+
+/* ---- Barra general ---- */
+.barra-plegables {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: .74rem;
+  color: var(--muted, #4a6352);
+}
+.barra-plegables span { margin-right: auto; }
+.barra-plegables button {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--uab-dark, #00722b);
+  background: #fff;
+  border: 1px solid var(--uab, #009639);
+  border-radius: 5px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.barra-plegables button:hover { background: var(--uab-light, #e8f5ee); }
+
+/* Pantalles estretes: els panells ja no van al costat, sense sticky */
+@media (max-width: 1250px) {
+  .panell-plegable { position: static; max-height: none; overflow: visible; }
+  .panell-plegable.amagat > .boto-panell { writing-mode: horizontal-tb; transform: none; padding: 4px 10px; }
+  .boto-panell { flex-basis: 100%; }
+}
