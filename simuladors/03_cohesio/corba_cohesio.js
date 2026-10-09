@@ -8,7 +8,9 @@
   'use strict';
   const { KE2, EVA3_GPA, fmt, sig, Plot } = Coh;
   const A12 = 12.13188, A6 = 14.45392;
-  const COL = { e: '#00722b', at: '#2980b9', rep: '#d62728', par: '#e67e22', cur: '#ff3b30' };
+  const COL = { e: '#00722b', at: '#2980b9', rep: '#d62728', par: '#e67e22', cur: '#ff3b30', F: '#8e44ad' };
+  // ?lectura=corba (apunts web, secció 1): r0, E_coh, e''(r0) i la força F = −de/dr al punt; sense pressió ni B
+  const NOMES_CORBA = Coh.params().get('lectura') === 'corba';
 
   // ---------------------------------------------------------------
   // Materials (dades dels apunts del Tema 3 i de Kittel, cap. 3)
@@ -81,11 +83,49 @@
   // ---------------------------------------------------------------
   const cR = document.getElementById('canvasR');
   const pR = Plot(cR, { m: { l: 58, r: 14, t: 14, b: 40 } });
+  // Eixos fixos per a cada mecanisme (hi caben tots els materials de la família i la corba actual),
+  // perquè els pous d'una mateixa família es puguin comparar a ull. En canviar de mecanisme,
+  // l'escala canvia amb un zoom animat i una etiqueta en diu el factor.
+  const paramsDe = (mo, m) => mo === 'lj' ? { eps: m.eps, sig: m.sig }
+    : mo === 'ion' ? { est: m.est, r0: m.r0, m: m.m, q: m.q } : { r0: m.r0, e0: m.e0, n: m.n, m: m.m };
+  const familia = mo => MAT[mo].map(m => ({ id: m.id, M: model(mo, paramsDe(mo, m)) }));
+  function eixosDe(mo, M) {
+    const Ms = familia(mo).map(f => f.M).concat(M ? [M] : []);
+    const r0s = Ms.map(m => m.r0), e0min = Math.min(...Ms.map(m => m.e0));
+    return { xmin: 0.78 * Math.min(...r0s), xmax: 2.0 * Math.max(...r0s), ymin: 1.35 * e0min, ymax: -1.0 * e0min };
+  }
+  let eixos = null, anim = null, modelAnt = null, rafPendent = false;
+  function eixosAra(M) {
+    const T = eixosDe(state.model, M);
+    if (eixos && modelAnt && modelAnt !== state.model) anim = { de: eixos, t0: performance.now() };
+    modelAnt = state.model;
+    if (!anim) return T;
+    const de = anim.de, s = Math.min(1, (performance.now() - anim.t0) / 600);
+    const k = s < 0.5 ? 2 * s * s : 1 - 2 * (1 - s) * (1 - s);
+    // interpolació geomètrica: les escales difereixen en ordres de magnitud
+    const geo = c => Math.sign(T[c]) * Math.exp((1 - k) * Math.log(Math.abs(de[c])) + k * Math.log(Math.abs(T[c])));
+    if (s < 1) {
+      if (!rafPendent) { rafPendent = true; requestAnimationFrame(() => { rafPendent = false; drawR(); }); }
+    } else anim = null;
+    return { xmin: geo('xmin'), xmax: geo('xmax'), ymin: geo('ymin'), ymax: geo('ymax') };
+  }
+
   function drawR() {
     const M = cur(), r0 = M.r0, e0 = M.e0, r = state.x * r0;
-    Object.assign(pR, { xmin: 0.78 * r0, xmax: 2.0 * r0, ymin: 1.35 * e0, ymax: -1.0 * e0 });
+    eixos = eixosAra(M);
+    Object.assign(pR, eixos);
     pR.clear();
     pR.axes('r (Å): distància entre veïns més propers', 'e(r) (eV ' + M.unit + ')');
+    // la resta de materials de la família, en gris
+    familia(state.model).forEach(f => {
+      if (f.id === state.mat) return;
+      pR.fn(f.M.e, { col: '#b8bec8', w: 1.5 });
+      pR.text(f.id, f.M.r0, f.M.e0, { dy: 14, align: 'center', col: '#8a919c', font: '10px sans-serif' });
+    });
+    if (state.model !== 'lj') {
+      const f = Math.round(eixosDe(state.model).ymin / eixosDe('lj').ymin);
+      pR.text('eix vertical ×' + f + ' respecte de vdW', pR.xmin, pR.ymax, { dx: 8, dy: 14, col: '#8a919c', font: 'italic 11px sans-serif' });
+    }
     if (state.comp) {
       pR.fn(M.att, { col: COL.at, w: 1.5, dash: [5, 4] });
       pR.fn(M.rep, { col: COL.rep, w: 1.5, dash: [5, 4] });
@@ -98,6 +138,13 @@
     // tangent i punt actual
     const er = M.e(r), sl = deriv(M.e, r);
     pR.fn(x => er + sl * (x - r), { col: COL.cur, w: 1, alpha: 0.6 }, r - 0.12 * r0, r + 0.12 * r0);
+    if (NOMES_CORBA && Math.abs(state.x - 1) > 1e-3) {
+      // força sobre l'àtom, F = −de/dr: sempre cap a l'equilibri
+      const Fref = Math.abs(deriv(M.e, 0.95 * r0)), L = Math.max(12, 70 * Math.min(1, Math.abs(sl) / Fref));
+      const x0 = pR.X(r), y0 = pR.Y(er), dir = sl > 0 ? -1 : 1;
+      Coh.arrow(pR.g, x0, y0, x0 + dir * L, y0, COL.F, 2.5);
+      pR.text('F', r, er, { dx: dir * L / 2 - 4, dy: -8, col: COL.F, font: 'bold 12px sans-serif' });
+    }
     pR.dot(r, er, COL.cur, 6);
     const items = [{ nom: 'e(r)', col: COL.e, w: 2.5 }];
     if (state.comp) items.push({ nom: 'atracció', col: COL.at, dash: [5, 4] }, { nom: 'repulsió', col: COL.rep, dash: [5, 4] });
@@ -215,12 +262,22 @@
       nota: 'Per a deformacions petites, P ≈ −B Δv/v₀: és la definició de B. Si et separes molt del mínim, la paràbola ja no descriu la corba i les dues xifres deixen de coincidir.' });
     Coh.formulas(formEl, rows);
 
+    const fila_r0 = ['r₀ (Å)', fmt(M.r0, 3) + (mt && mt.r0exp ? '  (exp. ' + mt.r0exp + ')' : '')];
+    const fila_E = ['E_coh', state.model === 'ion' ? sig(-2 * M.e0, 3) + ' eV/parell' + (mt ? '  (exp. ' + mt.Eexp + ')' : '')
+      : state.model === 'lj' ? sig(-M.e0 * 1000, 3) + ' meV/àtom' + (mt ? '  (exp. ' + Math.round(mt.Eexp * 1000) + ')' : '')
+      : sig(-M.e0, 3) + ' eV/àtom'];
+    if (NOMES_CORBA) {
+      const F = -deriv(M.e, r), dr = r - M.r0;
+      Coh.readout(lectEl, [fila_r0, fila_E, ['e″(r₀)', sig(M.e2, 3) + ' eV/Å² ' + M.unit],
+        ['r', fmt(r, 3) + ' Å  (' + (dr >= 0 ? '+' : '') + fmt(100 * (state.x - 1), 1) + ' %)'],
+        ['F = −de/dr', (Math.abs(dr) < 1e-6 ? '0' : sig(F, 3)) + ' eV/Å'],
+        ['−e″(r₀) Δr', (Math.abs(dr) < 1e-6 ? '0' : sig(-M.e2 * dr, 3)) + ' eV/Å']]);
+      return;
+    }
     Coh.readout(lectEl, [
-      ['r₀ (Å)', fmt(M.r0, 3) + (mt && mt.r0exp ? '  (exp. ' + mt.r0exp + ')' : '')],
+      fila_r0,
       ['a (Å)', fmt(M.a, 3)],
-      ['E_coh', state.model === 'ion' ? sig(-2 * M.e0, 3) + ' eV/parell' + (mt ? '  (exp. ' + mt.Eexp + ')' : '')
-        : state.model === 'lj' ? sig(-M.e0 * 1000, 3) + ' meV/àtom' + (mt ? '  (exp. ' + Math.round(mt.Eexp * 1000) + ')' : '')
-        : sig(-M.e0, 3) + ' eV/àtom'],
+      fila_E,
       ['B predit', sig(B, 3) + ' GPa'],
       ['B experimental', mt ? mt.Bexp + ' GPa' : '—'],
       ['r actual', fmt(r, 3) + ' Å  (' + fmt(100 * (state.x - 1), 1) + ' %)'],

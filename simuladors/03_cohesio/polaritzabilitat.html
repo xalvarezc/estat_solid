@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Polaritzabilitat d'un àtom</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./cohesio.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="12" r="4" opacity=".85"/><circle cx="17.5" cy="12" r="4" opacity=".85"/><path d="M10.5 12 L11.5 9 L13 15 L13.5 12"/></svg>Tema 3: Cohesió</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Polaritzabilitat: un àtom dins d'un camp elèctric</h1>
+  <p class="sub">Un àtom de gas noble no té dipol, però un camp elèctric li'n crea un: el núvol electrònic es desplaça respecte del nucli fins que la força del camp s'equilibra amb la que el lliga al nucli. Arrossega la fletxa del camp i mira com es desplaça el núvol i quin dipol apareix. És el primer ingredient de la força de London.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Àtom</div>
+      <select class="sel-input" id="selAtom">
+        <option value="He">Heli (kα = 0.205 Å³)</option>
+        <option value="Ne">Neó (kα = 0.396 Å³)</option>
+        <option value="Ar">Argó (kα = 1.64 Å³)</option>
+        <option value="Kr">Criptó (kα = 2.48 Å³)</option>
+        <option value="Xe">Xenó (kα = 4.04 Å³)</option>
+      </select>
+      <p class="hint" style="margin-top:6px;">kα és la polaritzabilitat expressada com un volum, aproximadament el volum de l'àtom.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Camp elèctric</div>
+      <div class="control-group">
+        <label class="control-label" for="slE">Intensitat |E| <span class="val" id="valE"></span></label>
+        <input type="range" class="slider" id="slE" min="0" max="3" step="0.01" value="1.5">
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slTheta">Direcció <span class="val" id="valTheta"></span></label>
+        <input type="range" class="slider" id="slTheta" min="-180" max="180" step="1" value="0">
+      </div>
+      <p class="hint">També pots arrossegar la fletxa blava del camp, a la gràfica.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Visualització</div>
+      <div class="control-group">
+        <label class="control-label" for="slExag">Exagera el desplaçament <span class="val" id="valExag">×1</span></label>
+        <input type="range" class="slider" id="slExag" min="1" max="10" step="1" value="1">
+      </div>
+      <label class="check-row"><input type="checkbox" id="chkMolla" checked> Mostra la molla del model</label>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">L'àtom dins del camp</div>
+        <canvas id="canvasPol" width="440" height="400" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:440px;">Nucli (verd) i núvol electrònic (vermell). Les fletxes blaves del fons són el camp; arrossega la fletxa gran per canviar-lo. La fletxa verda és el dipol induït μ.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Dipol induït en funció del camp</div>
+        <canvas id="canvasMu" width="340" height="300" class="arrossegable"></canvas>
+        <p class="plot-desc" style="max-width:340px;">La relació és lineal, μ = αE, i el pendent és la polaritzabilitat. Les rectes grises són els altres gasos nobles.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Modelem l'àtom com als apunts: tota la càrrega electrònica, <strong>−e</strong>, és una sola partícula lligada al nucli per una molla de constant <strong>C</strong>. Sense camp, el núvol és centrat sobre el nucli i no hi ha dipol.</p>
+      <p>Un camp <strong>E</strong> empeny el núvol, que és negatiu, en sentit <strong>contrari</strong> al camp. S'atura quan la força del camp compensa la de la molla, <strong>eE = Cx</strong>. El dipol, que va de la càrrega negativa a la positiva, apunta en el sentit del camp: <strong>μ = ex = (e²/C) E = αE</strong>.</p>
+      <p>Una molla tova (C petita) vol dir un àtom gran i fàcil de deformar: <strong>α = e²/C</strong>. En unitats gaussianes kα té dimensions de volum, i és aproximadament el volum de l'àtom.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Posa el camp a zero: el núvol torna al nucli i el dipol desapareix. Un àtom de gas noble no té dipol permanent.</p>
+          <p><strong>2.</strong> Gira el camp: el núvol sempre es desplaça en sentit contrari, i el dipol sempre apunta com el camp. L'àtom és esfèric, i la resposta no depèn de la direcció.</p>
+          <p><strong>3.</strong> Dobla el camp: es dobla el desplaçament. La relació és lineal, μ = αE, mentre el desplaçament sigui petit comparat amb la mida de l'àtom.</p>
+          <p><strong>4.</strong> Canvia d'àtom amb el mateix camp: el xenó es deforma vint vegades més que l'heli. Els àtoms grans, amb els electrons exteriors més lluny del nucli, són els més polaritzables, i són també els que s'atrauen més per forces de London.</p>
+          <p><strong>5.</strong> Fixa't en els valors: calen camps d'1 V/Å (10¹⁰ V/m) per desplaçar el núvol una fracció visible de la mida de l'àtom. Un camp així no s'aconsegueix al laboratori, però és el que fa un ió a uns pocs àngstroms.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./cohesio_comu.js"></script>
+<script src="./polaritzabilitat.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

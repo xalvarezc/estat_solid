@@ -4,17 +4,76 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Física de l'Estat Sòlid</title>
+<!-- Portada de https://xalvarezc.github.io/estat_solid/
+     La llista d'apunts (        <li><a class="enllac" href="apunts/03_cohesio/">Tema 3: Cohesió</a></li>) la genera publica_simuladors.sh a partir dels temes publicats. -->
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; color: #222; background: #fff; }
-  h1 { color: #00722b; }
-  a { color: #00722b; }
+  :root {
+    --uabgreen: #009639; --uabgreen-dark: #006B3F;
+    --ink: #1A1D24; --muted: #6B7280; --border: #D6DAE1; --paper: #F6F7F9;
+    --font-body: Seravek, 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: var(--font-body); color: var(--ink); background: #fff; line-height: 1.5; }
+  .capcalera-uab {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 12px 24px; border-bottom: 3px solid var(--uabgreen);
+  }
+  .capcalera-uab img { height: 36px; display: block; }
+  .capcalera-uab .titol-curs { font-weight: 700; }
+  main { max-width: 960px; margin: 0 auto; padding: 40px 16px 56px; }
+  h1 { font-size: 2rem; margin: 0 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 36px; }
+  .blocs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .bloc { border: 1px solid var(--border); border-radius: 12px; padding: 22px 22px 18px; background: #fff; }
+  .bloc h2 { margin: 0 0 4px; font-size: 1.3rem; color: var(--uabgreen-dark); }
+  .bloc p { margin: 0 0 16px; color: var(--muted); font-size: .95rem; }
+  .bloc ul { list-style: none; margin: 0; padding: 0; }
+  .bloc li + li { margin-top: 6px; }
+  a.enllac {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 14px; border-radius: 8px; background: var(--paper);
+    color: var(--ink); text-decoration: none; font-weight: 600;
+  }
+  a.enllac:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+  a.enllac::after { content: "→"; color: var(--uabgreen); }
+  .peu-uab { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 16px; border-top: 1px solid var(--border); }
+  @media (max-width: 560px) {
+    .capcalera-uab { padding: 10px 16px; }
+    .capcalera-uab .titol-curs { font-size: .85rem; }
+    h1 { font-size: 1.6rem; }
+  }
 </style>
 </head>
 <body>
-<h1>Física de l'Estat Sòlid</h1>
-<p>Universitat Autònoma de Barcelona</p>
-<ul>
-  <li><a href="simuladors/">Simuladors</a></li>
-</ul>
+<header class="capcalera-uab">
+  <img src="simuladors/imatges/logotip-versio-3-verd.png" alt="UAB">
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</header>
+
+<main>
+  <h1>Física de l'Estat Sòlid</h1>
+  <p class="sub">Grau en Física · Universitat Autònoma de Barcelona</p>
+
+  <div class="blocs">
+    <section class="bloc">
+      <h2>Apunts</h2>
+      <p>Els apunts de cada tema, amb els simuladors incrustats al costat de la teoria.</p>
+      <ul>
+        <li><a class="enllac" href="apunts/03_cohesio/">Tema 3: Cohesió</a></li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>Simuladors</h2>
+      <p>Tots els simuladors del curs, organitzats per temes, per explorar-los sencers.</p>
+      <ul>
+        <li><a class="enllac" href="simuladors/">Tots els simuladors</a></li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
 </body>
 </html>

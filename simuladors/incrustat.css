@@ -1,0 +1,63 @@
+/* incrustat.css — disposició del mode "incrustat" (vegeu incrustat.js).
+   Només actua quan <html> té la classe .incrustat. */
+
+html.incrustat, html.incrustat body { background: #fff; overflow: hidden; }
+
+html.incrustat .capcalera-uab,
+html.incrustat .intro-sim,
+html.incrustat .peu-uab,
+html.incrustat .video-link,
+html.incrustat .barra-plegables,
+html.incrustat .boto-panell { display: none !important; }
+
+/* caixes plegables (caixes_plegables.js): en una vista incrustada no es pleguen */
+html.incrustat .titol-plegable { pointer-events: none; cursor: default; }
+html.incrustat .titol-plegable::before { display: none !important; }
+
+/* dins del contingut, només el que s'ha demanat i el camí fins a ell */
+html.incrustat main :not(.inc-mostra):not(.inc-cami):not(.inc-mostra *) { display: none !important; }
+html.incrustat .inc-mostra .plot-desc { display: none !important; }
+
+/* canvas a dalt, controls i lectures a sota, tot centrat */
+html.incrustat .main-content {
+  flex-direction: column; align-items: stretch; gap: 8px;
+  padding: 4px 2px 6px; max-width: none;
+}
+html.incrustat .center-panel {
+  order: 1; width: 100%;
+  flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 12px;
+}
+/* totes les gràfiques demanades en una sola fila (que salta de línia), en l'ordre de ?mostra */
+html.incrustat .fila-canvas { display: contents; }
+html.incrustat .controls-panel,
+html.incrustat .right-panel {
+  order: 2; width: 100%; flex-direction: row; flex-wrap: wrap;
+  justify-content: center; align-items: flex-start; gap: 8px;
+}
+html.incrustat .right-panel { order: 3; }
+html.incrustat .controls-panel > .card,
+html.incrustat .right-panel > .card { flex: 0 1 auto; min-width: 200px; max-width: 780px; }
+html.incrustat .control-group { margin-bottom: 0; }
+html.incrustat .control-group.inc-mostra { min-width: 240px; }
+
+/* ?costat=1: gràfiques a l'esquerra, controls i lectures a la dreta (a mòbil, com sempre) */
+@media (min-width: 701px) {
+  html.incrustat.inc-costat .main-content {
+    display: grid; grid-template-columns: auto minmax(220px, 290px);
+    justify-content: center; align-items: start; column-gap: 14px; row-gap: 8px;
+  }
+  html.incrustat.inc-costat .center-panel { grid-column: 1; grid-row: 1 / span 2; width: auto; }
+  html.incrustat.inc-costat .controls-panel,
+  html.incrustat.inc-costat .right-panel {
+    grid-column: 2; width: auto; flex-direction: column; align-items: stretch;
+  }
+  html.incrustat.inc-costat .controls-panel { grid-row: 1; }
+  html.incrustat.inc-costat .right-panel { grid-row: 2; }
+  html.incrustat.inc-costat .controls-panel > .card,
+  html.incrustat.inc-costat .right-panel > .card,
+  html.incrustat.inc-costat .control-group.inc-mostra { min-width: 0; max-width: none; }
+}
+
+@media (max-width: 700px) {
+  html.incrustat canvas { width: 100% !important; height: auto !important; }
+}

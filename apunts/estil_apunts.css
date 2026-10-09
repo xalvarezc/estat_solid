@@ -1,0 +1,169 @@
+/* estil_apunts.css — apunts web de Física de l'Estat Sòlid.
+   Mateixa capçalera i colors que els simuladors (web_simuladors/estil_comu.css)
+   i que els apunts en PDF (estil/uab_curs.sty). Fons sempre blanc, com els simuladors. */
+
+:root {
+  --uabgreen: #009639;
+  --uabgreen-dark: #006B3F;
+  --ink: #1A1D24;
+  --ink-2: #3C4250;
+  --muted: #6B7280;
+  --border: #D6DAE1;
+  --paper: #F6F7F9;
+  --font-body: Seravek, 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* blocs (uab_curs.sty) */
+  --c-definicio: #127C86;     /* TealBlue */
+  --c-calculs: #1E7B3C;       /* ForestGreen */
+  --c-ideaclau: #00722b;      /* uabgreen fosc */
+  --c-avis: #A0001C;          /* accentRed */
+  --c-resum: #333;
+  --c-aprofundeix: #6A2C8C;   /* violet */
+  --c-alsimulador: #9A5B00;   /* accentAmber */
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: 16px; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: #fff; color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.62;
+}
+img, svg { max-width: 100%; }
+
+/* ---- capçalera (igual que els simuladors) ---- */
+.capcalera-uab {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 24px; background: #fff; border-bottom: 1.5pt solid var(--uabgreen);
+}
+.capcalera-uab .logo-bloc img { height: 28px; display: block; }
+.capcalera-uab .tema-actual {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: .92rem; font-weight: 600; color: var(--ink-2);
+}
+.capcalera-uab .tema-actual svg { width: 20px; height: 20px; color: var(--uabgreen); flex-shrink: 0; }
+.capcalera-uab .titol-curs { font-size: .85rem; font-weight: 700; white-space: nowrap; }
+
+.peu-uab {
+  margin-top: 48px; padding: 14px 24px; border-top: 1px solid var(--border);
+  font-size: .8rem; color: var(--muted); text-align: center;
+}
+
+/* ---- disposició: índex lateral + text ---- */
+.pagina {
+  display: grid; grid-template-columns: 250px minmax(0, 880px);
+  gap: 48px; justify-content: center; padding: 0 24px;
+}
+.lateral { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: 32px 0 24px; }
+.apunts { padding-top: 24px; min-width: 0; }
+
+.index-titol {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--uabgreen-dark); border-bottom: 2px solid var(--uabgreen);
+  padding-bottom: 4px; margin-bottom: 8px;
+}
+.index ol { list-style: none; margin: 0; padding: 0; }
+.index ol ol { padding-left: 14px; margin: 2px 0 8px; }
+.index a {
+  display: block; padding: 3px 8px; border-radius: 6px;
+  color: var(--ink-2); text-decoration: none; font-size: .86rem; line-height: 1.35;
+}
+.index > ol > li > a { font-weight: 600; color: var(--ink); }
+.index a:hover { background: var(--paper); }
+.index a.actiu { background: #E7F4EC; color: var(--uabgreen-dark); }
+.index .num { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 4px; }
+
+.index-mobil { display: none; }
+
+/* ---- text ---- */
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 8px 0 28px; }
+h1 .tema-num {
+  display: block; font-size: .9rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--uabgreen);
+}
+h2 {
+  font-size: 1.5rem; line-height: 1.25; margin: 56px 0 14px; padding-bottom: 6px;
+  border-bottom: 2px solid var(--uabgreen);
+}
+h3 { font-size: 1.18rem; margin: 36px 0 10px; }
+h2 .num, h3 .num { color: var(--uabgreen); margin-right: 6px; }
+p { margin: 0 0 14px; }
+.apunts a { color: var(--uabgreen-dark); }
+ol, ul { margin: 6px 0 14px; padding-left: 26px; }
+li { margin-bottom: 4px; }
+.formula { margin: 4px 0 14px; }
+.eq { display: block; }
+
+.katex-display { margin: .8em 0; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+.katex { font-size: 1.08em; }
+
+/* ---- blocs de colors ---- */
+.caixa {
+  --c: var(--c-resum);
+  margin: 22px 0; padding: 12px 18px 4px; border-left: 4px solid var(--c);
+  background: color-mix(in srgb, var(--c) 5%, #fff); border-radius: 0 8px 8px 0;
+}
+.caixa-cap { font-weight: 700; margin-bottom: 8px; line-height: 1.35; }
+.caixa-tipus {
+  color: var(--c); text-transform: uppercase; font-size: .78rem; letter-spacing: 1px; margin-right: 6px;
+}
+.caixa.definicio { --c: var(--c-definicio); }
+.caixa.calculs { --c: var(--c-calculs); }
+.caixa.ideaclau { --c: var(--c-ideaclau); }
+.caixa.avis { --c: var(--c-avis); }
+.caixa.resum { --c: var(--c-resum); }
+.caixa.aprofundeix { --c: var(--c-aprofundeix); }
+.caixa.alsimulador { --c: var(--c-alsimulador); }
+.caixa.alsimulador .sim-incrustat { margin: 4px -8px 14px; }
+
+/* ---- figures ---- */
+figure { margin: 26px 0; }
+figure.tikz { text-align: center; }
+figure.tikz img { height: auto; }
+figure.sim figcaption, figure figcaption {
+  font-size: .9rem; color: var(--ink-2); line-height: 1.5; margin-top: 6px; padding: 0 4px;
+}
+.sim-incrustat {
+  position: relative; border: 1px solid var(--border); border-radius: 10px; background: #fff;
+  overflow: hidden;
+}
+.sim-incrustat iframe { display: block; width: 100%; height: 320px; border: 0; }
+.sim-carregant {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: .9rem; background: var(--paper);
+}
+.sim-incrustat.carregat .sim-carregant { display: none; }
+
+/* ---- taules ---- */
+.taula-wrap { overflow-x: auto; margin: 18px 0; }
+.taula { border-collapse: collapse; margin: 0 auto; font-size: .92rem; }
+.taula th, .taula td { padding: 6px 12px; border-bottom: 1px solid var(--border); text-align: center; }
+.taula thead th { border-bottom: 2px solid var(--ink-2); font-weight: 700; }
+.taula tbody tr:last-child td { border-bottom: 2px solid var(--ink-2); }
+.taula td:first-child, .taula th:first-child { text-align: left; }
+
+/* ---- pantalles estretes ---- */
+@media (max-width: 1100px) {
+  .pagina { grid-template-columns: minmax(0, 880px); gap: 0; }
+  .lateral { display: none; }
+  .index-mobil {
+    display: block; margin: 0 0 24px; padding: 10px 14px;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--paper);
+  }
+  .index-mobil summary { cursor: pointer; font-weight: 700; }
+  .index-mobil .index-titol { display: none; }
+  .index-mobil .index { margin-top: 8px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .pagina { padding: 0 16px; }
+  .capcalera-uab { flex-direction: column; gap: 6px; padding: 10px 16px; text-align: center; }
+  .capcalera-uab .titol-curs { order: -1; }
+  h1 { font-size: 1.7rem; }
+  h2 { font-size: 1.3rem; }
+  .caixa { padding: 10px 12px 2px; }
+  .caixa.alsimulador .sim-incrustat { margin: 4px -4px 12px; }
+}
+.nw { white-space: nowrap; }
+.sims-costat { display: flex; flex-wrap: wrap; gap: 12px; }
+.sims-costat > .sim-incrustat { flex: 1 1 380px; }

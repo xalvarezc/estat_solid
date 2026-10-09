@@ -94,6 +94,16 @@
     // contorns de |ψ0|²
     const y = yEff(), ws = Math.sqrt(1 - y), wa = Math.sqrt(1 + y);
     gS.strokeStyle = '#ccc'; gS.beginPath(); gS.moveTo(cx - W / 2, cy); gS.lineTo(cx + W / 2, cy); gS.moveTo(cx, 0); gS.lineTo(cx, H); gS.stroke();
+    // eixos dels modes normals: x_s al llarg de x₁ = x₂, x_a al llarg de x₁ = −x₂
+    const L = 2.35 * sc / Math.SQRT2;
+    [[1, COL.s, 'xₛ'], [-1, COL.a, 'xₐ']].forEach(([sg, col, nom]) => {
+      gS.setLineDash([6, 4]); gS.strokeStyle = col; gS.lineWidth = 1.3;
+      gS.beginPath(); gS.moveTo(cx - L, cy + sg * L); gS.lineTo(cx + L, cy - sg * L); gS.stroke();
+      gS.setLineDash([]);
+      Coh.arrow(gS, cx + 0.8 * L, cy - sg * 0.8 * L, cx + L, cy - sg * L, col, 1.6);
+      gS.fillStyle = col; gS.font = 'bold 13px sans-serif'; gS.textAlign = 'left';
+      gS.fillText(nom, cx + L + 5, cy - sg * L + 5);
+    });
     [0.5, 1, 1.5].forEach(k => {
       // |ψ|² ∝ exp(−ws xs² − wa xa²): el·lipse de semieixos k/√ws (diagonal) i k/√wa (antidiagonal)
       gS.strokeStyle = 'rgba(0,114,43,0.55)'; gS.lineWidth = 1.2;
