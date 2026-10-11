@@ -35,11 +35,18 @@ body{
 }
 img, svg{ max-width:100%; }
 
-/* ---- Capçalera comuna, igual disposició que myphysicsstyle.sty ---- */
+/* ---- Capçalera comuna del curs: banda verda institucional, fixa, amb ombra suau.
+        El logo és l'oficial de la UAB i no es modifica. ---- */
 .capcalera-uab{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:10px 24px; background:var(--surface);
-  border-bottom:1.5pt solid var(--uabgreen);
+  position:sticky; top:0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
+  padding:9px 24px; background:rgba(255,255,255,.97);
+  border-top:4px solid var(--uabgreen);
+  border-bottom:1px solid #E3E7E3;
+  box-shadow:0 1px 16px rgba(11,61,36,.07);
+}
+@supports (backdrop-filter: blur(6px)){
+  .capcalera-uab{ background:rgba(255,255,255,.88); backdrop-filter:blur(7px); }
 }
 .capcalera-uab .logo-bloc{ display:flex; align-items:center; gap:14px; }
 .capcalera-uab .logo-bloc img{ height:28px; }
@@ -49,10 +56,11 @@ img, svg{ max-width:100%; }
   display:flex; align-items:center; justify-content:center; gap:8px;
 }
 .capcalera-uab .tema-actual svg{ flex-shrink:0; width:20px; height:20px; color:var(--uabgreen); }
-.capcalera-uab .titol-curs{ font-size:.85rem; font-weight:700; color:var(--ink); text-align:right; white-space:nowrap; }
+.capcalera-uab .titol-curs{ font-size:.85rem; font-weight:800; letter-spacing:.01em; color:var(--ink); text-align:right; white-space:nowrap; }
+.capcalera-uab a:has(img){ display:block; line-height:0; }
 
 @media (max-width:640px){
-  .capcalera-uab{ flex-direction:column; gap:6px; text-align:center; }
+  .capcalera-uab{ position:static; flex-direction:column; gap:6px; text-align:center; }
   /* Al mòbil, el títol del curs (Física de l'Estat Sòlid) ha de quedar
      primer, i el tema/capítol actual just a sota, com a subtítol. */
   .capcalera-uab .titol-curs{ order:-1; text-align:center; font-size:1rem; white-space:normal; }

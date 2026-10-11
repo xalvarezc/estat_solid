@@ -23,7 +23,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-padding-top: 16px; }
+html { scroll-padding-top: 76px; }
 html, body { margin: 0; padding: 0; }
 body {
   background: #fff; color: var(--ink);
@@ -31,10 +31,18 @@ body {
 }
 img, svg { max-width: 100%; }
 
-/* ---- capçalera (igual que els simuladors) ---- */
-.capcalera-uab {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 24px; background: #fff; border-bottom: 1.5pt solid var(--uabgreen);
+/* ---- Capçalera comuna del curs: banda verda institucional, fixa, amb ombra suau.
+        El logo és l'oficial de la UAB i no es modifica. (la mateixa dels simuladors) ---- */
+.capcalera-uab{
+  position:sticky; top:0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
+  padding:9px 24px; background:rgba(255,255,255,.97);
+  border-top:4px solid var(--uabgreen);
+  border-bottom:1px solid #E3E7E3;
+  box-shadow:0 1px 16px rgba(11,61,36,.07);
+}
+@supports (backdrop-filter: blur(6px)){
+  .capcalera-uab{ background:rgba(255,255,255,.88); backdrop-filter:blur(7px); }
 }
 .capcalera-uab .logo-bloc img { height: 28px; display: block; }
 .capcalera-uab .tema-actual {
@@ -42,7 +50,8 @@ img, svg { max-width: 100%; }
   font-size: .92rem; font-weight: 600; color: var(--ink-2);
 }
 .capcalera-uab .tema-actual svg { width: 20px; height: 20px; color: var(--uabgreen); flex-shrink: 0; }
-.capcalera-uab .titol-curs { font-size: .85rem; font-weight: 700; white-space: nowrap; }
+.capcalera-uab .titol-curs { font-size: .85rem; font-weight: 800; letter-spacing: .01em; white-space: nowrap; }
+.capcalera-uab .logo-bloc a { display: block; line-height: 0; }
 
 .peu-uab {
   margin-top: 48px; padding: 14px 24px; border-top: 1px solid var(--border);
@@ -54,7 +63,7 @@ img, svg { max-width: 100%; }
   display: grid; grid-template-columns: 250px minmax(0, 880px);
   gap: 48px; justify-content: center; padding: 0 24px;
 }
-.lateral { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: 32px 0 24px; }
+.lateral { position: sticky; top: 58px; align-self: start; max-height: calc(100vh - 58px); overflow-y: auto; padding: 24px 0; }
 .apunts { padding-top: 24px; min-width: 0; }
 
 .index-titol {
@@ -157,7 +166,7 @@ figure.sim figcaption, figure figcaption {
 @media (max-width: 640px) {
   body { font-size: 16px; }
   .pagina { padding: 0 16px; }
-  .capcalera-uab { flex-direction: column; gap: 6px; padding: 10px 16px; text-align: center; }
+  .capcalera-uab { position: static; flex-direction: column; gap: 6px; padding: 10px 16px; text-align: center; }
   .capcalera-uab .titol-curs { order: -1; }
   h1 { font-size: 1.7rem; }
   h2 { font-size: 1.3rem; }

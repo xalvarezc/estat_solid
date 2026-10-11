@@ -4,45 +4,78 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simuladors — Física de l'Estat Sòlid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
 <link rel="stylesheet" href="estil_comu.css">
 <style>
-  h1{ font-size:1.4rem; margin:0 0 4px; }
-  p.sub{ color:var(--muted); font-size:.9rem; margin:0 0 28px; }
+  html{ scroll-padding-top:72px; }
+  :root{
+    --paper:#FBF9F4; --paper-2:#F3EFE4; --vora:#E2DED3; --or:#B8893A;
+    --font-serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  }
+  body{ background:var(--paper); }
+  .contingut{ max-width:980px; }
+
+  .index-cap{ text-align:center; margin:34px 0 26px; }
+  .index-cap .avantitol{
+    font-size:.76rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--uabgreen-dark); margin:0 0 8px;
+  }
+  .index-cap h1{ font-family:var(--font-serif); font-size:2.5rem; font-weight:700; letter-spacing:-.01em; margin:0; color:var(--ink); }
+  .index-cap .orn{ display:flex; align-items:center; justify-content:center; gap:12px; margin:14px 0 8px; color:var(--or); }
+  .index-cap .orn::before, .index-cap .orn::after{ content:""; width:70px; height:1px; background:var(--or); opacity:.6; }
+  .index-cap p.sub{ color:var(--muted); font-size:.95rem; margin:4px auto 0; max-width:46em; }
 
   .tema{
-    border:1px solid var(--border); border-radius:8px; background:var(--surface);
-    margin-bottom:14px; overflow:hidden;
+    border:1px solid var(--vora); border-radius:12px; background:#fff;
+    margin-bottom:16px; overflow:hidden; box-shadow:0 2px 14px rgba(11,61,36,.05);
   }
   .tema-cap{
-    display:flex; align-items:center; gap:16px; padding:14px 18px; cursor:pointer;
+    display:flex; align-items:center; gap:18px; padding:16px 22px; cursor:pointer;
     user-select:none;
   }
-  .tema-cap:hover{ background:var(--surface-2); }
+  .tema-cap:hover{ background:var(--paper); }
   .tema-cap .tema-icona{
-    width:56px; height:56px; border-radius:6px; border:1px solid var(--border);
+    width:54px; height:54px; border-radius:12px; border:1px solid var(--vora);
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
-    background:var(--surface-2); color:var(--uabgreen);
+    background:var(--paper-2); color:var(--uabgreen-dark);
   }
-  .tema-cap .tema-icona svg{ width:32px; height:32px; }
+  .tema-cap .tema-icona svg{ width:30px; height:30px; }
   .tema-info{ flex:1; }
-  .tema-num{ font-family:var(--font-mono); font-size:.72rem; color:var(--accent); letter-spacing:.05em; }
-  .tema-nom{ font-size:1.02rem; font-weight:700; color:var(--ink); }
-  .tema-count{ font-family:var(--font-mono); font-size:.75rem; color:var(--muted); white-space:nowrap; }
+  .tema-num{
+    font-family:var(--font-serif); font-size:.74rem; font-weight:700;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--or);
+  }
+  .tema-nom{ font-family:var(--font-serif); font-size:1.28rem; font-weight:600; color:var(--ink); }
+  .tema-count{
+    font-size:.8rem; font-weight:700; color:var(--uabgreen-dark); white-space:nowrap;
+    border:1.5px solid var(--uabgreen); border-radius:999px; padding:5px 12px;
+  }
+  .tema-count.buida{ color:#9AA1AB; border:1.5px dashed #D5D8DD; font-weight:600; }
   .chevron{ font-size:.8rem; color:var(--muted); transition:transform .2s; }
   .tema.obert .chevron{ transform:rotate(90deg); }
 
   .tema-cos{
     max-height:0; overflow:hidden; transition:max-height .25s ease;
-    border-top:1px solid var(--border);
+    border-top:1px solid var(--vora); background:#fff;
   }
   /* l'alçada de la llista oberta la fixa el JS segons el contingut real (vegeu obre()) */
-  .llista-sim{ list-style:none; margin:0; padding:10px 18px 16px 90px; }
-  .llista-sim li{ padding:8px 0; border-bottom:1px solid var(--border); font-size:.92rem; }
+  .llista-sim{ list-style:none; margin:0; padding:12px 24px 18px 94px; }
+  .llista-sim li{ padding:10px 0; border-bottom:1px dotted var(--vora); font-size:.93rem; }
   .llista-sim li:last-child{ border-bottom:none; }
-  .llista-sim a{ color:var(--accent); text-decoration:none; font-weight:600; }
-  .llista-sim a:hover{ text-decoration:underline; }
-  .llista-sim .desc{ color:var(--muted); font-size:.82rem; display:block; margin-top:2px; }
-  .buit{ padding:14px 18px 16px 90px; color:var(--muted); font-size:.85rem; font-style:italic; }
+  .llista-sim a{ font-family:var(--font-serif); font-size:1.05rem; color:var(--uabgreen-dark); text-decoration:none; font-weight:600; }
+  .llista-sim a:hover{ text-decoration:underline; text-decoration-color:var(--or); text-underline-offset:3px; }
+  .llista-sim .desc{ color:var(--muted); font-size:.84rem; line-height:1.5; display:block; margin-top:3px; }
+  .buit{ padding:14px 24px 18px 94px; color:var(--muted); font-size:.85rem; font-style:italic; }
+
+  @media (max-width:640px){
+    .index-cap h1{ font-size:1.9rem; }
+    .llista-sim, .buit{ padding-left:22px; }
+    .tema-cap{ padding:13px 14px; gap:12px; }
+    .tema-cap .tema-icona{ width:44px; height:44px; }
+    .tema-count{ display:none; }
+  }
 </style>
 </head>
 <body>
@@ -61,8 +94,14 @@
 </div>
 
 <div class="contingut">
-  <h1>Simuladors per tema</h1>
-  <p class="sub">Clica un tema per veure'n els simuladors interactius disponibles.</p>
+  <div class="index-cap">
+    <p class="avantitol">Recursos interactius del curs</p>
+    <h1>Banc de simuladors</h1>
+    <div class="orn" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6H22l-6.2 4.5 2.4 7.6L12 17.2l-6.2 4.5 2.4-7.6L2 9.6h7.6z" opacity=".85"/></svg>
+    </div>
+    <p class="sub">Un apartat per tema, en el mateix ordre que l'índex del curs. Cada simulador resol en directe un dels models dels apunts.</p>
+  </div>
 
   <div id="llista-temes"></div>
 </div>
@@ -93,7 +132,8 @@ TEMES.forEach((t, idx) => {
 
   const count = document.createElement('div');
   count.className = 'tema-count';
-  count.textContent = t.simuladors.length ? `${t.simuladors.length} simulador${t.simuladors.length>1?'s':''}` : 'cap encara';
+  count.textContent = t.simuladors.length ? `${t.simuladors.length} simulador${t.simuladors.length>1?'s':''}` : 'en preparació';
+  if (!t.simuladors.length) count.classList.add('buida');
   cap.appendChild(count);
 
   const chev = document.createElement('div');

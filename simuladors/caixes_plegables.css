@@ -40,8 +40,8 @@
 /* ---- Panells laterals: fixos en fer scroll i amagables ---- */
 .panell-plegable {
   position: sticky;
-  top: 8px;
-  max-height: calc(100vh - 16px);
+  top: 64px;   /* sota la capçalera fixa */
+  max-height: calc(100vh - 72px);
   overflow-y: auto;
   scrollbar-width: thin;
 }
