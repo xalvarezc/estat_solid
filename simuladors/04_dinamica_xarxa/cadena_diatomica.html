@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La cadena diatòmica</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./dinamica.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 L6 16 L7 18 L9 10" opacity=".8"/><path d="M9 10 L11 18 L12 16 L15 20" opacity=".8"/><path d="M15 20 L18 17 L19 19 L21 17" opacity=".8"/><circle cx="3" cy="17" r="1.6" fill="currentColor" stroke="none"/><circle cx="9" cy="10" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="20" r="1.6" fill="currentColor" stroke="none"/><circle cx="21" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Tema 4: Dinàmica de xarxa</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La cadena diatòmica: branques acústica i òptica</h1>
+  <p class="sub">Dos àtoms per cel·la, de masses M₁ i M₂, units per molles alternes C i D. La relació de dispersió té dues branques: l'acústica, que surt de zero com el so, i l'òptica, que neix amb freqüència màxima. Entre totes dues, a la vora de zona, s'obre un buit de freqüències que depèn de les masses i de les molles. Mira com es mou cada àtom en cada branca.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Cadena</div>
+      <div class="control-group">
+        <select class="sel-input" id="selMat"></select>
+      </div>
+      <div id="sliders"></div>
+      <p class="hint" id="notaMat"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ona</div>
+      <div class="control-group">
+        <label class="control-label" for="slQ">Vector d'ona q (en unitats de π/a) <span class="val" id="valQ"></span></label>
+        <input type="range" class="slider" id="slQ" min="-2" max="2" step="0.01" value="0.4">
+      </div>
+      <div class="grup-btn tres">
+        <button type="button" class="btn-opcio" data-q="0.05">q → 0</button>
+        <button type="button" class="btn-opcio" data-q="0.5">q = π/2a</button>
+        <button type="button" class="btn-opcio" data-q="1">vora de zona</button>
+      </div>
+      <div class="control-label" style="margin-top:6px;">Branca</div>
+      <div class="grup-btn" id="grupBranca">
+        <button type="button" class="btn-opcio" data-v="ac">Acústica</button>
+        <button type="button" class="btn-opcio" data-v="opt">Òptica</button>
+      </div>
+      <div class="control-label" style="margin-top:6px;">Com es dibuixa el desplaçament</div>
+      <div class="grup-btn" id="grupVista">
+        <button type="button" class="btn-opcio" data-v="L">Longitudinal</button>
+        <button type="button" class="btn-opcio" data-v="T">Transversal</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slExag">Amplitud (només visual) <span class="val" id="valExag"></span></label>
+        <input type="range" class="slider" id="slExag" min="0.2" max="2" step="0.05" value="1">
+      </div>
+      <button type="button" class="btn" id="btnPlay">❚❚ Atura l'animació</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">El buit de freqüències</div>
+      <div class="control-label">Dibuixa'l en funció de</div>
+      <div class="grup-btn" id="grupBuit">
+        <button type="button" class="btn-opcio" data-v="masses">les masses</button>
+        <button type="button" class="btn-opcio" data-v="molles">les molles</button>
+      </div>
+      <p class="hint">Amb C = D el buit l'obre la diferència de masses; amb M₁ = M₂, la diferència de molles.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mostra</div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkPlegada"> La cadena monoatòmica de pas a/2, a la zona estesa</label>
+      </div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkSo" checked> La recta del so, ω = v<sub>s</sub>|q|</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">La cadena, àtom a àtom</div>
+        <canvas id="canvasCadena" width="780" height="250"></canvas>
+        <p class="plot-desc" style="max-width:780px;">Àtoms 1 (verd, massa M₁) i 2 (taronja, massa M₂), molles C (dins de la cel·la) i D (entre cel·les). Els triangles grisos marquen el centre de masses de cada cel·la: a la branca òptica, prop de q = 0, no es mou.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Relació de dispersió: dues branques</div>
+        <canvas id="canvasDisp" width="400" height="330"></canvas>
+        <p class="plot-desc" style="max-width:400px;">Branca acústica (blau) i òptica (vermell). La franja grisa horitzontal és el buit: cap ona amb aquestes freqüències es pot propagar per la cadena.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Quant es mou cada àtom</div>
+        <canvas id="canvasAmpl" width="400" height="330"></canvas>
+        <p class="plot-desc" style="max-width:400px;">Amplituds normalitzades dels dos àtoms de la cel·la, per a la branca triada (línia contínua) i l'altra (discontínua). A la vora de zona, una de les dues subxarxes es queda quieta.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Com s'obre el buit</div>
+        <canvas id="canvasGap" width="400" height="330"></canvas>
+        <p class="plot-desc" style="max-width:400px;">Les tres freqüències característiques en funció del quocient de masses (amb C = D) o del quocient de molles (amb M₁ = M₂). La zona grisa és el buit.</p>
+      </div>
+      <div class="card formules" style="max-width:400px;">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Amb dos àtoms per cel·la, la matriu dinàmica és 2×2 i per a cada q hi ha <strong>dues</strong> freqüències. La condició de determinant nul dona (M₁ω² − C − D)(M₂ω² − C − D) = C² + D² + 2CD cos qa.</p>
+      <p>La <strong>branca acústica</strong> surt de zero amb el pendent del so; els dos àtoms de la cel·la es mouen junts. La <strong>branca òptica</strong> comença a ω² = (C + D)(1/M₁ + 1/M₂): els dos àtoms vibren en oposició de fase amb el centre de masses quiet. Si tenen càrregues oposades, aquest moviment és un dipol oscil·lant que absorbeix llum infraroja, d'aquí el nom.</p>
+      <p>A la vora de zona, q = π/a, les dues branques valen el que donen les equacions amb cos qa = −1: amb C = D, ω² = 2C/M₁ i 2C/M₂, i cada subxarxa vibra sola. Entre totes dues hi ha el <strong>buit</strong>.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Amb q → 0 a la branca acústica, tota la cel·la es mou en bloc: és el so. A la branca òptica, els dos àtoms van en sentits contraris i el triangle del centre de masses no es mou.</p>
+          <p><strong>2.</strong> Vés a la vora de zona: a cada branca, una de les dues subxarxes es queda quieta. Quina es mou a l'acústica? Compara amb les amplituds de la gràfica.</p>
+          <p><strong>3.</strong> Posa M₂ = M₁ amb C = D: el buit es tanca i les dues branques es toquen. Activa la cadena monoatòmica de pas a/2: les dues branques són la mateixa corba plegada, perquè la cel·la "veritable" és la meitat.</p>
+          <p><strong>4.</strong> Amb masses iguals, fes D &lt; C: el buit es torna a obrir, però ara per les molles. Qualsevol cosa que faci diferents els dos àtoms de la cel·la obre el buit.</p>
+          <p><strong>5.</strong> Surt de la primera zona (q &gt; π/a): les corbes es repeteixen amb període 2π/a, com a la cadena monoatòmica, però ara el període és el de la cel·la de dos àtoms.</p>
+          <p><strong>6.</strong> Tria el NaCl: la freqüència òptica a q = 0 és la que absorbeix l'infraroig (uns 5 THz, 60 µm). El model no inclou les forces de Coulomb de llarg abast, que separen els modes òptics longitudinal i transversal.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./dinamica_comu.js"></script>
+<script src="./cadena_diatomica.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

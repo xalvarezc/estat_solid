@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La matriu dinàmica en tres dimensions</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./dinamica.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 L6 16 L7 18 L9 10" opacity=".8"/><path d="M9 10 L11 18 L12 16 L15 20" opacity=".8"/><path d="M15 20 L18 17 L19 19 L21 17" opacity=".8"/><circle cx="3" cy="17" r="1.6" fill="currentColor" stroke="none"/><circle cx="9" cy="10" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="20" r="1.6" fill="currentColor" stroke="none"/><circle cx="21" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Tema 4: Dinàmica de xarxa</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La matriu dinàmica en tres dimensions: branques acústiques i òptiques d'un cristall real</h1>
+  <p class="sub">Un cristall cúbic (SC, BCC, FCC, CsCl, NaCl o diamant) amb molles centrals entre primers i segons veïns. El simulador construeix la matriu dinàmica D(q), de 3r × 3r per a r àtoms per cel·la, la diagonalitza al llarg de les direccions de simetria de la zona de Brillouin i dibuixa les 3r branques: sempre 3 d'acústiques i 3(r − 1) d'òptiques. Del pendent a l'origen en surten les constants elàstiques del Tema 3.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Cristall</div>
+      <div class="control-group">
+        <label class="control-label" for="selEst">Estructura</label>
+        <select class="sel-input" id="selEst"></select>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="selMat">Material</label>
+        <select class="sel-input" id="selMat"></select>
+      </div>
+      <div id="sliders"></div>
+      <p class="hint" id="notaMat"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Punt de la zona de Brillouin</div>
+      <div class="control-group">
+        <label class="control-label" for="slS">Posició al llarg del camí <span class="val" id="valS"></span></label>
+        <input type="range" class="slider" id="slS" min="0" max="1" step="0.002" value="0.25">
+      </div>
+      <div class="grup-btn tres" id="grupPunts"></div>
+      <p class="hint">També pots clicar sobre la gràfica de les branques.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mostra</div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkNomes100"> Només la direcció [100] (de Γ a la vora)</label>
+      </div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkCar" checked> Colora les branques segons si són longitudinals o transversals</label>
+      </div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkK2" checked> Dibuixa les molles amb els segons veïns a la cel·la</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Relacions de dispersió al llarg de la zona de Brillouin</div>
+        <canvas id="canvasBandes" width="700" height="380"></canvas>
+        <p class="plot-desc" style="max-width:700px;">Cada corba és una branca: a cada q hi ha 3r freqüències. Vermell: desplaçament paral·lel a q (longitudinal); blau: perpendicular (transversal). Les 3 branques de baix surten de zero a Γ (acústiques); les altres, no (òptiques). Clica per triar un q.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">La matriu dinàmica D(q) en aquest punt</div>
+        <canvas id="canvasMatriu" width="340" height="340"></canvas>
+        <p class="plot-desc" style="max-width:340px;">Part real de cada element, en unitats de (2π·THz)². Vermell positiu, blau negatiu; a sota, la part imaginària quan no és zero. Els valors propis són les ω² de les branques.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">La cel·la i les molles</div>
+        <canvas id="canvasCella" width="340" height="340" class="girable"></canvas>
+        <p class="plot-desc" style="max-width:340px;">Cel·la cúbica convencional. Línies contínues: molles k₁ entre primers veïns; discontínues: molles k₂ amb els segons veïns, dibuixades només des d'un àtom. Arrossega per girar.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Els modes en aquest punt de la zona</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th class="esq">branca</th><th>ν (THz)</th><th>tipus</th><th>|e·q̂|² (longitudinal)</th><th>moviment del centre de masses</th><th>|u₁| : |u₂|</th></tr></thead>
+            <tbody id="modesBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">En direccions de simetria com [100] i [111] els modes són purament longitudinals o transversals i els dos transversals són degenerats; en direccions generals es barregen. "Centre de masses" val 1 si tota la cel·la es mou en bloc (acústic pur a q → 0) i 0 si els àtoms de la cel·la es mouen els uns contra els altres (òptic pur).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>En tres dimensions cada àtom té tres components de desplaçament, i amb <strong>r àtoms per cel·la</strong> l'equació de Newton per a una ona plana es converteix en un problema de valors propis 3r × 3r: <strong>D(q) e = ω² e</strong>. La matriu dinàmica suma les constants de força de tots els veïns amb la fase e<sup>iq·d</sup> de cadascun.</p>
+      <p>Aquí les forces són molles centrals: la constant de força d'un parell d'àtoms a distància d és −k d̂d̂ᵀ. Amb això n'hi ha prou per veure l'estructura general: <strong>3 branques acústiques</strong> (ω → 0 a Γ, les tres translacions rígides) i <strong>3(r − 1) òptiques</strong>.</p>
+      <p>El pendent de les branques acústiques a Γ és la velocitat del so, i ρv² és una constant elàstica: C₁₁ de la longitudinal [100], C₄₄ de la transversal [100]. Amb molles centrals sempre surt C₁₂ = C₄₄ (relació de Cauchy), que els materials reals no compleixen gaire: les forces entre àtoms no són només centrals.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Coure: tres branques i prou, totes acústiques. Al llarg de [100] les dues transversals coincideixen (degenerades) i la longitudinal és més alta; a X valen 5.1 i 7.2 THz, molt a prop dels valors mesurats amb neutrons.</p>
+          <p><strong>2.</strong> Mira la matriu a Γ: és tota zeros, perquè una translació rígida no costa res. Mou-te cap a X i mira com creix la diagonal.</p>
+          <p><strong>3.</strong> NaCl: sis branques, tres de noves que no baixen a zero a Γ. A Γ les tres òptiques són degenerades en aquest model; al cristall real la de Coulomb separa la longitudinal (7.9 THz) de les transversals (4.9 THz).</p>
+          <p><strong>4.</strong> Diamant: també sis branques (dos àtoms per cel·la) encara que siguin dos carbonis iguals, amb l'òptica a Γ a 40 THz. A X, acústica i òptica longitudinals es toquen: les dues subxarxes són idèntiques.</p>
+          <p><strong>5.</strong> Posa k₂ = 0 al NaCl o al diamant: apareixen branques transversals de freqüència zero. Amb molles només als primers veïns, cisallar aquests cristalls no costa res. Els segons veïns (o forces no centrals) ho arreglen.</p>
+          <p><strong>6.</strong> Compara C₁₁, C₁₂ i C₄₄ del model amb els experimentals: el model clava C₄₄ (hi hem ajustat k₁) però força C₁₂ = C₄₄. Al coure real C₁₂ és molt més gran que C₄₄: hi ha forces de molts cossos que no són cap molla entre parells.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./dinamica_comu.js"></script>
+<script src="./fonons_3d.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

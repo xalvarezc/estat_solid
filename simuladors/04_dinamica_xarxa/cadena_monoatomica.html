@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La cadena monoatòmica</title>
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./dinamica.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<div class="capcalera-uab">
+  <div class="logo-bloc">
+    <img src="../imatges/logotip-versio-3-verd.png" alt="UAB">
+    <a href="../index.html" class="boto-pill link-tornar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Tots els simuladors
+    </a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 L6 16 L7 18 L9 10" opacity=".8"/><path d="M9 10 L11 18 L12 16 L15 20" opacity=".8"/><path d="M15 20 L18 17 L19 19 L21 17" opacity=".8"/><circle cx="3" cy="17" r="1.6" fill="currentColor" stroke="none"/><circle cx="9" cy="10" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="20" r="1.6" fill="currentColor" stroke="none"/><circle cx="21" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Tema 4: Dinàmica de xarxa</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</div>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La cadena monoatòmica: modes normals, relació de dispersió i zona de Brillouin</h1>
+  <p class="sub">Una fila d'àtoms idèntics units per molles. Tria el vector d'ona i mira com es mouen els àtoms, on cau el punt sobre la relació de dispersió ω(q), i quina velocitat té l'ona: la de fase i la de grup. Surt de la primera zona de Brillouin i comprova que els àtoms fan exactament el mateix. Afegeix molles amb els segons i tercers veïns i recupera les constants de força a partir de la corba.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Material</div>
+      <div class="control-group">
+        <select class="sel-input" id="selMat"></select>
+      </div>
+      <div id="sliders"></div>
+      <p class="hint">Per a una ona al llarg de [100] en un cristall cúbic, cada pla d'àtoms es mou en bloc: la cadena és exacta, amb <em>d</em> la distància entre plans i <em>C</em> la molla efectiva entre plans veïns per àtom.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ona</div>
+      <div class="control-group">
+        <label class="control-label" for="slQ">Vector d'ona q (en unitats de π/d) <span class="val" id="valQ"></span></label>
+        <input type="range" class="slider" id="slQ" min="-3" max="3" step="0.01" value="0.3">
+      </div>
+      <div class="grup-btn">
+        <button type="button" class="btn-opcio" data-q="0.1">q petit</button>
+        <button type="button" class="btn-opcio" data-q="0.5">q = π/2d</button>
+        <button type="button" class="btn-opcio" data-q="1">vora de zona</button>
+        <button type="button" class="btn-opcio" data-q="2">q = 2π/d</button>
+      </div>
+      <div class="control-label" style="margin-top:6px;">Com es dibuixa el desplaçament</div>
+      <div class="grup-btn" id="grupVista">
+        <button type="button" class="btn-opcio" data-v="L">Longitudinal</button>
+        <button type="button" class="btn-opcio" data-v="T">Transversal</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slExag">Amplitud (només visual) <span class="val" id="valExag"></span></label>
+        <input type="range" class="slider" id="slExag" min="0.2" max="2" step="0.05" value="1">
+      </div>
+      <button type="button" class="btn" id="btnPlay">❚❚ Atura l'animació</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Veïns més llunyans</div>
+      <div class="control-group">
+        <label class="control-label" for="slC2">C₂ / C₁ (segons veïns) <span class="val" id="valC2"></span></label>
+        <input type="range" class="slider" id="slC2" min="-0.4" max="1" step="0.01" value="0">
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slC3">C₃ / C₁ (tercers veïns) <span class="val" id="valC3"></span></label>
+        <input type="range" class="slider" id="slC3" min="-0.4" max="0.6" step="0.01" value="0">
+      </div>
+      <button type="button" class="btn" id="btnNomes1">Només primers veïns</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cadena finita</div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkFinita"> Cadena de N cel·les amb condicions periòdiques</label>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slN">N <span class="val" id="valN"></span></label>
+        <input type="range" class="slider" id="slN" min="4" max="40" step="1" value="12">
+      </div>
+      <p class="hint">Només hi ha N vectors d'ona permesos dins de la primera zona: un per cel·la.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mostra</div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkAlias" checked> L'ona equivalent q − 2π/d (o q + 2π/d)</label>
+      </div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkSo" checked> La recta del so, ω = v<sub>s</sub>|q|</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">La cadena, àtom a àtom</div>
+        <canvas id="canvasCadena" width="780" height="250"></canvas>
+        <p class="plot-desc" style="max-width:780px;">Els punts grisos són les posicions d'equilibri, separades <em>d</em>. La corba verda és l'ona u(x) = A cos(qx − ωt) que els àtoms mostregen; la vermella discontínua, l'ona de vector d'ona q ∓ 2π/d, que passa exactament pels mateixos àtoms.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Relació de dispersió ω(q)</div>
+        <canvas id="canvasDisp" width="400" height="330"></canvas>
+        <p class="plot-desc" style="max-width:400px;">La franja verda és la primera zona de Brillouin, −π/d &lt; q ≤ π/d. Fora d'ella la corba es repeteix: no hi ha cap mode nou.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Velocitat de fase i velocitat de grup</div>
+        <canvas id="canvasVel" width="400" height="330"></canvas>
+        <p class="plot-desc" style="max-width:400px;">v<sub>φ</sub> = ω/q (blau) i v<sub>g</sub> = dω/dq (vermell) dins de la primera zona. A la vora de zona v<sub>g</sub> = 0: l'ona és estacionària.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions analítiques</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card bloc-ample">
+        <div class="card-title">Constants de força recuperades de la corba ω(q)</div>
+        <div class="taula-wrap">
+          <table class="taula">
+            <thead><tr><th class="esq">veïns p</th><th>C<sub>p</sub>/C₁ imposat</th><th>C<sub>p</sub>/C₁ de la integral de Fourier</th></tr></thead>
+            <tbody id="cpBody"></tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top:6px;">Si es mesura ω(q) (per exemple amb dispersió inelàstica de neutrons), les constants de força entre plans se'n treuen amb C<sub>p</sub> = −(Md/2π) ∫ ω²(q) cos(pqd) dq sobre la primera zona. La taula ho comprova numèricament amb la corba dibuixada.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Una cadena d'àtoms de massa <strong>M</strong>, separats <strong>d</strong>, units per molles <strong>C</strong> (la corbatura de la corba de cohesió del Tema 3). Newton per a l'àtom n dona M ü<sub>n</sub> = C(u<sub>n+1</sub> + u<sub>n−1</sub> − 2u<sub>n</sub>), i una ona plana u<sub>n</sub> = A e<sup>i(qnd − ωt)</sup> la resol si <strong>ω² = (4C/M) sin²(qd/2)</strong>.</p>
+      <p>La corba és periòdica en q amb període 2π/d: dos vectors d'ona que difereixen en 2π/d desplacen cada àtom exactament igual, perquè només hi ha àtoms a x = nd. Per això n'hi ha prou amb la <strong>primera zona de Brillouin</strong>.</p>
+      <p>Per a q petit, ω ≈ v<sub>s</sub>q amb v<sub>s</sub> = d√(C/M): el so del Tema 3. A la vora de zona, q = π/d, els àtoms veïns es mouen en oposició de fase, la velocitat de grup s'anul·la i l'ona és estacionària.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Amb q petit, la corba verda i els àtoms dibuixen una ona llarga i suau: el so. Mira que el punt és sobre la recta del so i que v<sub>φ</sub> ≈ v<sub>g</sub> ≈ v<sub>s</sub>.</p>
+          <p><strong>2.</strong> Puja q fins a π/d: els àtoms veïns es mouen en sentits contraris, ω és màxima i v<sub>g</sub> = 0. L'ona no viatja: és estacionària.</p>
+          <p><strong>3.</strong> Segueix pujant fins a 2π/d: la corba verda és molt curta, però els àtoms estan tots quiets a la vegada, igual que amb q = 0. Amb q = 2.3π/d els àtoms fan el mateix que amb q = 0.3π/d (corba vermella discontínua). Fora de la primera zona no hi ha res nou.</p>
+          <p><strong>4.</strong> Amb el coure, compara ν<sub>max</sub> = 7.6 THz (longitudinal) i 5.1 THz (transversal) amb els valors mesurats per neutrons a la vora de zona: 7.3 i 5.1 THz. Tot surt de la velocitat del so i de la distància entre plans.</p>
+          <p><strong>5.</strong> Activa la cadena finita: amb N cel·les només hi ha N punts sobre la corba. Un cristall d'un mil·límetre en té milions, i la corba es pot tractar com a contínua.</p>
+          <p><strong>6.</strong> Afegeix C₂ o C₃: la corba deixa de ser un sinus, i la velocitat de grup pot tenir màxims dins de la zona. La taula recupera sempre les constants que has imposat: la forma de la corba conté tota la informació sobre les forces.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./dinamica_comu.js"></script>
+<script src="./cadena_monoatomica.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

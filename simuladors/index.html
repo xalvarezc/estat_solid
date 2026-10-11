@@ -122,7 +122,14 @@ const TEMES = [
     {nom:"Elasticitat d'un cristall cúbic: llei de Hooke i ones elàstiques", href:"03_cohesio/ones_elastiques.html",
      desc:"Constants C₁₁, C₁₂ i C₄₄ de materials reals: deforma un cub i mira les tensions, calcula B, G, E i ν, i fes viatjar ones en qualsevol direcció (equació de Christoffel) per veure com l'anisotropia canvia la velocitat del so."}
   ]},
-  {num:"04", nom:"Dinàmica de xarxa", carpeta:null, simuladors:[]},
+  {num:"04", nom:"Dinàmica de xarxa", carpeta:"04_dinamica_xarxa", simuladors:[
+    {nom:"La cadena monoatòmica: modes normals, relació de dispersió i zona de Brillouin", href:"04_dinamica_xarxa/cadena_monoatomica.html",
+     desc:"Àtoms idèntics units per molles (plans (100) de coure o alumini, o unitats reduïdes). Tria q i mira la cadena, el punt sobre ω(q) i les velocitats de fase i de grup; surt de la primera zona i comprova que els àtoms fan el mateix; afegeix molles amb segons i tercers veïns i recupera les constants de força amb la integral de Fourier."},
+    {nom:"La cadena diatòmica: branques acústica i òptica", href:"04_dinamica_xarxa/cadena_diatomica.html",
+     desc:"Dos àtoms per cel·la amb masses M₁, M₂ i molles alternes C, D: les dues branques, com es mou cada àtom (en fase o en oposició, centre de masses quiet), el buit de freqüències en funció de les masses o de les molles, el plegament de la zona quan els àtoms són iguals, i el NaCl amb la molla ajustada a l'infraroig."},
+    {nom:"La matriu dinàmica en 3D: branques acústiques i òptiques d'un cristall real", href:"04_dinamica_xarxa/fonons_3d.html",
+     desc:"SC, BCC, FCC, CsCl, NaCl i diamant amb molles centrals entre primers i segons veïns ajustades a materials reals (Cu, Al, W, Fe, NaCl, C, Si). Construeix i diagonalitza D(q) al llarg de la zona de Brillouin, mostra la matriu i la cel·la amb les molles, classifica els modes (L/T, acústic/òptic) i en treu C₁₁, C₁₂ i C₄₄ per comparar amb l'experiment."}
+  ]},
   {num:"05", nom:"Fonons", carpeta:null, simuladors:[]},
   {num:"06", nom:"Fermi / electrons", carpeta:"06_fermi_electrons", simuladors:[
     {nom:"Sommerfeld: g(ε), f_FD(ε,T) i el desplaçament de μ", href:"06_fermi_electrons/simulador_sommerfeld.html",
