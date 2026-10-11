@@ -165,5 +165,8 @@ figure.sim figcaption, figure figcaption {
   .caixa.alsimulador .sim-incrustat { margin: 4px -4px 12px; }
 }
 .nw { white-space: nowrap; }
+.peu-figura { display: block; font-size: .9rem; color: var(--ink-2); line-height: 1.5; margin: 6px auto 0; max-width: 95%; text-align: left; }
+.centrat { text-align: center; margin: 22px 0; }
+.centrat img { margin: 2px; vertical-align: middle; }
 .sims-costat { display: flex; flex-wrap: wrap; gap: 12px; }
 .sims-costat > .sim-incrustat { flex: 1 1 380px; }

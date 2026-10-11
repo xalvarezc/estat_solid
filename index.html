@@ -4,77 +4,452 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Física de l'Estat Sòlid</title>
+<meta name="description" content="Apunts i simuladors interactius de Física de l'Estat Sòlid, Grau en Física, Universitat Autònoma de Barcelona.">
 <!-- Portada de https://xalvarezc.github.io/estat_solid/
-     La llista d'apunts la genera publica_simuladors.sh a partir dels temes publicats. -->
+     publica_simuladors.sh hi injecta la llista d'apunts publicats ([{"num": "01", "web": "apunts/01_xarxes_cristallines/", "pdf": "apunts/01_xarxes_cristallines/01_xarxes_cristallines.pdf", "pres": "presentacions/01_xarxes_cristallines.pdf"}, {"num": "02", "web": "apunts/02_xarxa_reciproca/", "pdf": "apunts/02_xarxa_reciproca/02_xarxa_reciproca.pdf", "pres": "presentacions/02_xarxa_reciproca.pdf"}, {"num": "03", "web": "apunts/03_cohesio/", "pdf": "apunts/03_cohesio/03_cohesio.pdf", "pres": "presentacions/03_cohesio.pdf"}, {"num": "04", "web": "apunts/04_dinamica_xarxa/", "pdf": "apunts/04_dinamica_xarxa/04_dinamica_xarxa.pdf", "pres": "presentacions/04_dinamica_xarxa.pdf"}]).
+     Els temes, les icones i els simuladors venen de simuladors/temes.js. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
 <style>
   :root {
-    --uabgreen: #009639; --uabgreen-dark: #006B3F;
-    --ink: #1A1D24; --muted: #6B7280; --border: #D6DAE1; --paper: #F6F7F9;
+    --uabgreen: #009639; --uabgreen-dark: #006B3F; --verd-fosc: #0B3D24; --verd-nit: #082C1A;
+    --ink: #1A1D24; --ink-2: #3C4250; --muted: #6B7280; --border: #E2DED3; --linia: #D6DAE1;
+    --paper: #FBF9F4; --paper-2: #F3EFE4; --blanc: #FFFFFF; --or: #B8893A;
     --font-body: Seravek, 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
   html, body { margin: 0; padding: 0; }
-  body { font-family: var(--font-body); color: var(--ink); background: #fff; line-height: 1.5; }
-  .capcalera-uab {
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    padding: 12px 24px; border-bottom: 3px solid var(--uabgreen);
+  body { font-family: var(--font-body); color: var(--ink); background: var(--paper); line-height: 1.55; }
+  a { color: inherit; }
+  img, svg { max-width: 100%; }
+
+  /* ---------- barra superior (la mateixa capçalera que apunts i simuladors) ---------- */
+  .barra {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 18px;
+    padding: 10px 28px; background: var(--blanc);
+    border-bottom: 1.5pt solid var(--uabgreen);
   }
-  .capcalera-uab img { height: 36px; display: block; }
-  .capcalera-uab .titol-curs { font-weight: 700; }
-  main { max-width: 960px; margin: 0 auto; padding: 40px 16px 56px; }
-  h1 { font-size: 2rem; margin: 0 0 6px; }
-  .sub { color: var(--muted); margin: 0 0 36px; }
-  .blocs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-  .bloc { border: 1px solid var(--border); border-radius: 12px; padding: 22px 22px 18px; background: #fff; }
-  .bloc h2 { margin: 0 0 4px; font-size: 1.3rem; color: var(--uabgreen-dark); }
-  .bloc p { margin: 0 0 16px; color: var(--muted); font-size: .95rem; }
-  .bloc ul { list-style: none; margin: 0; padding: 0; }
-  .bloc li + li { margin-top: 6px; }
-  a.enllac {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 10px 14px; border-radius: 8px; background: var(--paper);
-    color: var(--ink); text-decoration: none; font-weight: 600;
+  .barra img { height: 30px; display: block; }
+  .barra .curs { font-weight: 700; font-size: .95rem; margin-right: auto; white-space: nowrap; }
+  .barra nav { display: flex; gap: 4px; }
+  .barra nav a {
+    text-decoration: none; font-size: .88rem; font-weight: 600; color: var(--ink-2);
+    padding: 6px 12px; border-radius: 999px;
   }
-  a.enllac:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
-  a.enllac::after { content: "→"; color: var(--uabgreen); }
-  .peu-uab { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 16px; border-top: 1px solid var(--border); }
-  @media (max-width: 560px) {
-    .capcalera-uab { padding: 10px 16px; }
-    .capcalera-uab .titol-curs { font-size: .85rem; }
-    h1 { font-size: 1.6rem; }
+  .barra nav a:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+
+  /* ---------- coberta ---------- */
+  .coberta {
+    position: relative; overflow: hidden; color: #fff;
+    background:
+      radial-gradient(1200px 500px at 85% 20%, rgba(0,150,57,.35), transparent 60%),
+      linear-gradient(135deg, var(--verd-nit) 0%, var(--verd-fosc) 55%, var(--uabgreen-dark) 100%);
+  }
+  .coberta::after {           /* llom del llibre */
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 14px;
+    background: linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,0));
+  }
+  .coberta-dins {
+    max-width: 1180px; margin: 0 auto; padding: 64px 40px 72px;
+    display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 40px; align-items: center;
+  }
+  .avantitol {
+    font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: #BFE6CD; margin: 0 0 18px;
+  }
+  .coberta h1 {
+    font-family: var(--font-serif); font-weight: 700; font-size: clamp(2.6rem, 5.4vw, 4.4rem);
+    line-height: 1.02; letter-spacing: -.01em; margin: 0 0 18px;
+  }
+  .filet { width: 84px; height: 3px; background: var(--or); border: 0; margin: 0 0 20px; }
+  .coberta .subtitol {
+    font-family: var(--font-serif); font-style: italic; font-size: 1.25rem; color: #E3F2E8;
+    margin: 0 0 28px; max-width: 34em;
+  }
+  .autoria { font-size: .95rem; color: #CFE8D8; margin: 0 0 30px; }
+  .autoria strong { color: #fff; font-weight: 700; }
+  .botons { display: flex; flex-wrap: wrap; gap: 12px; }
+  .boto {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    font-weight: 700; font-size: .95rem; padding: 11px 20px; border-radius: 999px;
+    transition: transform .15s, background .15s;
+  }
+  .boto:hover { transform: translateY(-1px); }
+  .boto.ple { background: #fff; color: var(--verd-fosc); }
+  .boto.ple:hover { background: #E7F4EC; }
+  .boto.buit { color: #fff; border: 1.5px solid rgba(255,255,255,.55); }
+  .boto.buit:hover { background: rgba(255,255,255,.1); }
+  .boto svg { width: 16px; height: 16px; }
+
+  .il-lustracio { position: relative; }
+  .il-lustracio svg { display: block; width: 100%; height: auto; }
+  .il-lustracio figcaption {
+    position: absolute; right: 6px; bottom: -6px; font-size: .74rem; color: #A9D6B9;
+    font-family: var(--font-serif); font-style: italic;
+  }
+
+  /* ---------- cos del llibre ---------- */
+  .llibre { max-width: 1060px; margin: 0 auto; padding: 0 28px 40px; }
+
+  .com-funciona {
+    position: relative; margin-top: -36px; z-index: 2;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px;
+  }
+  .targeta {
+    background: var(--blanc); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px 22px 18px; box-shadow: 0 10px 30px rgba(11,61,36,.08);
+  }
+  .targeta .ic {
+    width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center;
+    background: #E7F4EC; color: var(--uabgreen-dark); margin-bottom: 12px;
+  }
+  .targeta .ic svg { width: 24px; height: 24px; }
+  .targeta h3 { font-family: var(--font-serif); font-size: 1.2rem; margin: 0 0 6px; }
+  .targeta p { margin: 0; font-size: .93rem; color: var(--ink-2); }
+
+  /* ---------- índex ---------- */
+  .index-cap { text-align: center; margin: 70px 0 10px; }
+  .index-cap .avantitol { color: var(--uabgreen-dark); margin-bottom: 8px; }
+  .index-cap h2 { font-family: var(--font-serif); font-size: 2.6rem; margin: 0; letter-spacing: -.01em; }
+  .index-cap .orn { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 14px 0 6px; color: var(--or); }
+  .index-cap .orn::before, .index-cap .orn::after { content: ""; width: 70px; height: 1px; background: var(--or); opacity: .6; }
+  .index-cap p { color: var(--muted); margin: 6px 0 0; font-size: .95rem; }
+
+  .full {
+    background: var(--blanc); border: 1px solid var(--border); border-radius: 6px;
+    box-shadow: 0 1px 0 var(--border), 0 3px 0 -1px var(--blanc), 0 4px 0 -1px var(--border),
+                0 6px 0 -2px var(--blanc), 0 7px 0 -2px var(--border), 0 20px 40px rgba(0,0,0,.05);
+    padding: 26px 46px 34px; margin-top: 30px;
+  }
+  .part { margin-top: 30px; }
+  .part:first-child { margin-top: 6px; }
+  .part-cap {
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 1px solid var(--linia); padding-bottom: 8px; margin-bottom: 4px;
+  }
+  .part-num {
+    font-family: var(--font-serif); font-size: .82rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--or); white-space: nowrap;
+  }
+  .part-nom { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 600; }
+
+  .capitol {
+    display: grid; grid-template-columns: 64px 44px minmax(0, 1fr) auto; gap: 16px; align-items: center;
+    padding: 16px 8px; border-bottom: 1px dotted var(--linia);
+  }
+  .capitol:last-child { border-bottom: 0; }
+  .cap-num {
+    font-family: var(--font-serif); font-size: 2.3rem; font-weight: 700; line-height: 1;
+    color: var(--uabgreen-dark); text-align: right; font-variant-numeric: oldstyle-nums;
+  }
+  .capitol.preliminar .cap-num { font-size: 1.1rem; font-style: italic; font-weight: 400; color: var(--muted); }
+  .cap-ic {
+    width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center;
+    background: var(--paper-2); color: var(--uabgreen-dark);
+  }
+  .cap-ic svg { width: 26px; height: 26px; }
+  .cap-titol { font-family: var(--font-serif); font-size: 1.22rem; font-weight: 600; margin: 0 0 2px; }
+  .cap-desc { margin: 0; font-size: .9rem; color: var(--muted); }
+  .recursos { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .xip {
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    font-size: .82rem; font-weight: 700; padding: 6px 12px; border-radius: 999px; text-decoration: none;
+  }
+  .xip svg { width: 14px; height: 14px; }
+  a.xip.apunts { background: var(--uabgreen-dark); color: #fff; }
+  a.xip.apunts:hover { background: var(--verd-fosc); }
+  a.xip.sims { border: 1.5px solid var(--uabgreen); color: var(--uabgreen-dark); }
+  a.xip.sims:hover { background: #E7F4EC; }
+  a.xip.baixa { border: 1.5px solid var(--border); color: var(--ink-2); background: var(--paper); }
+  a.xip.baixa:hover { border-color: var(--or); color: var(--ink); background: #FBF4E6; }
+  span.xip.aviat { color: #9AA1AB; border: 1.5px dashed #D5D8DD; font-weight: 600; }
+
+  .estat-llibre { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 18px; color: var(--muted); font-size: .88rem; }
+  .estat-llibre b { color: var(--ink); font-family: var(--font-serif); font-size: 1.15rem; margin-right: 4px; }
+
+  /* ---------- colofó ---------- */
+  .colofo {
+    margin-top: 60px; background: var(--verd-nit); color: #CFE8D8;
+  }
+  .colofo-dins {
+    max-width: 1060px; margin: 0 auto; padding: 34px 28px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px;
+  }
+  .colofo img { height: 34px; filter: brightness(0) invert(1); opacity: .9; }
+  .colofo p { margin: 0; font-size: .88rem; }
+  .colofo .titol-c { font-family: var(--font-serif); font-size: 1.1rem; color: #fff; }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .boto { transition: none; } }
+  @media (max-width: 900px) {
+    .coberta-dins { grid-template-columns: 1fr; padding: 44px 24px 64px; }
+    .il-lustracio { max-width: 460px; margin: 0 auto; width: 100%; }
+    .com-funciona { grid-template-columns: 1fr; }
+    .full { padding: 18px 20px 24px; }
+    .capitol { grid-template-columns: 44px minmax(0, 1fr); row-gap: 10px; }
+    .cap-ic { display: none; }
+    .recursos { grid-column: 2; justify-content: flex-start; }
+    .cap-num { font-size: 1.8rem; }
+  }
+  @media (max-width: 640px) {
+    .barra { padding: 10px 16px; gap: 10px; }
+    .barra .curs { display: none; }
+    .barra nav { margin-left: auto; }
+    .barra nav a { padding: 6px 8px; font-size: .82rem; }
+    .barra nav a.nav-opc { display: none; }
+    .llibre { padding: 0 16px 32px; }
+    .index-cap h2 { font-size: 2rem; }
   }
 </style>
 </head>
 <body>
-<header class="capcalera-uab">
-  <img src="simuladors/imatges/logotip-versio-3-verd.png" alt="UAB">
-  <div class="titol-curs">Física de l'Estat Sòlid</div>
+
+<header class="barra">
+  <a href="./" title="Portada"><img src="simuladors/imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+  <span class="curs">Física de l'Estat Sòlid</span>
+  <nav aria-label="Seccions">
+    <a href="#index">Índex</a>
+    <a href="#com-funciona" class="nav-opc">Organització</a>
+    <a href="simuladors/">Simuladors</a>
+  </nav>
 </header>
 
-<main>
-  <h1>Física de l'Estat Sòlid</h1>
-  <p class="sub">Grau en Física · Universitat Autònoma de Barcelona</p>
-
-  <div class="blocs">
-    <section class="bloc">
-      <h2>Apunts</h2>
-      <p>Els apunts de cada tema, amb els simuladors incrustats al costat de la teoria.</p>
-      <ul>
-        <li><a class="enllac" href="apunts/03_cohesio/">Tema 3: Cohesió</a></li>
-        <li><a class="enllac" href="apunts/04_dinamica_xarxa/">Tema 4: Dinàmica de xarxa</a></li>
-      </ul>
-    </section>
-
-    <section class="bloc">
-      <h2>Simuladors</h2>
-      <p>Tots els simuladors del curs, organitzats per temes, per explorar-los sencers.</p>
-      <ul>
-        <li><a class="enllac" href="simuladors/">Tots els simuladors</a></li>
-      </ul>
-    </section>
+<section class="coberta">
+  <div class="coberta-dins">
+    <div>
+      <p class="avantitol">Grau en Física · Universitat Autònoma de Barcelona</p>
+      <h1>Física de l'Estat Sòlid</h1>
+      <hr class="filet">
+      <p class="subtitol">De l'ordre dels àtoms a les propietats dels materials: apunts, simuladors interactius i material de treball del curs.</p>
+      <p class="autoria"><strong>F. Xavier Àlvarez</strong> · Departament de Física · Curs 2026/27</p>
+      <div class="botons">
+        <a class="boto ple" href="#index">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5C4.7 20 4 19.3 4 18.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5z"/></svg>
+          Índex del curs
+        </a>
+        <a class="boto buit" href="simuladors/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 17c3-9 6-9 9 0s6 9 9 0"/></svg>
+          Banc de simuladors
+        </a>
+      </div>
+    </div>
+    <figure class="il-lustracio" aria-label="Il·lustració: un cristall cúbic centrat en les cares amb els àtoms vibrant, i la seva relació de dispersió">
+      <svg id="cristall" viewBox="0 0 520 430" role="img"></svg>
+      <figcaption>Un cristall FCC i un fonó que el travessa</figcaption>
+    </figure>
   </div>
+</section>
+
+<main class="llibre">
+
+  <section class="com-funciona" id="com-funciona">
+    <article class="targeta">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5C4.7 20 4 19.3 4 18.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5z"/><path d="M6.5 8h2.5M6.5 11h2.5M15 8h2.5M15 11h2.5"/></svg></div>
+      <h3>Apunts</h3>
+      <p>Desenvolupament complet de cada tema, amb les derivacions pas a pas, figures i exemples resolts amb dades de materials reals.</p>
+    </article>
+    <article class="targeta">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5 20V9M10 20V5M15 20v-8M20 20v-5"/></svg></div>
+      <h3>Simuladors</h3>
+      <p>Implementacions interactives dels models del curs, que permeten variar-ne els paràmetres i seguir-ne l'efecte sobre el moviment dels àtoms, les corbes i els valors numèrics.</p>
+    </article>
+    <article class="targeta">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M12 17v3M8.5 20h7"/><path d="M7 11l3-3 2.5 2.5L16 7"/></svg></div>
+      <h3>Presentacions</h3>
+      <p>Les diapositives que es fan servir a classe, en PDF i descarregables des de l'índex, com a guió de cada tema i suport per repassar.</p>
+    </article>
+    <article class="targeta">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M9.5 9.5l5 5"/><path d="M17 4v6M14 7h6"/></svg></div>
+      <h3>Tot integrat</h3>
+      <p>Els simuladors s'incrusten als apunts en el punt on s'introdueix cada concepte, amb els mateixos paràmetres i resultats que el text.</p>
+    </article>
+  </section>
+
+  <section id="index">
+    <div class="index-cap">
+      <p class="avantitol">Taula de continguts</p>
+      <h2>Índex</h2>
+      <div class="orn" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6H22l-6.2 4.5 2.4 7.6L12 17.2l-6.2 4.5 2.4-7.6L2 9.6h7.6z" opacity=".85"/></svg>
+      </div>
+      <div class="estat-llibre" id="estat"></div>
+    </div>
+    <div class="full" id="capitols"></div>
+  </section>
+
 </main>
 
-<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
+<footer class="colofo">
+  <div class="colofo-dins">
+    <div>
+      <p class="titol-c">Física de l'Estat Sòlid</p>
+      <p>F. Xavier Àlvarez · Departament de Física · Universitat Autònoma de Barcelona</p>
+    </div>
+    <img src="simuladors/imatges/logotip-versio-3-verd.png" alt="UAB">
+  </div>
+</footer>
+
+<!-- Apunts web publicats: els escriu publica_simuladors.sh -->
+<script type="application/json" id="apunts-publicats">[{"num": "01", "web": "apunts/01_xarxes_cristallines/", "pdf": "apunts/01_xarxes_cristallines/01_xarxes_cristallines.pdf", "pres": "presentacions/01_xarxes_cristallines.pdf"}, {"num": "02", "web": "apunts/02_xarxa_reciproca/", "pdf": "apunts/02_xarxa_reciproca/02_xarxa_reciproca.pdf", "pres": "presentacions/02_xarxa_reciproca.pdf"}, {"num": "03", "web": "apunts/03_cohesio/", "pdf": "apunts/03_cohesio/03_cohesio.pdf", "pres": "presentacions/03_cohesio.pdf"}, {"num": "04", "web": "apunts/04_dinamica_xarxa/", "pdf": "apunts/04_dinamica_xarxa/04_dinamica_xarxa.pdf", "pres": "presentacions/04_dinamica_xarxa.pdf"}]</script>
+<script src="simuladors/temes.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------
+  // L'estructura del llibre: parts, capítols i una línia de cada tema
+  // ---------------------------------------------------------------
+  const PARTS = [
+    { num: 'Preliminars', nom: 'Abans de començar', temes: [
+      { num: '00', titol: 'Repàs de mecànica quàntica', desc: 'El pou de potencial i les eines quàntiques que farem servir al curs.', preliminar: true }
+    ]},
+    { num: 'Part I', nom: 'L\'ordre dels àtoms', temes: [
+      { num: '01', titol: 'Xarxes cristal·lines', desc: 'Xarxes de Bravais, cel·les primitives i convencionals, simetria i estructures reals.' },
+      { num: '02', titol: 'Xarxa recíproca i difracció', desc: 'Condicions de Bragg i de Laue, factor d\'estructura i zones de Brillouin.' }
+    ]},
+    { num: 'Part II', nom: 'Enllaç i vibracions', temes: [
+      { num: '03', titol: 'Cohesió', desc: 'Van der Waals, cristalls iònics i covalents; mòdul de compressibilitat i elasticitat.' },
+      { num: '04', titol: 'Dinàmica de xarxa', desc: 'Cadenes mono i diatòmica, matriu dinàmica, branques acústiques i òptiques.' },
+      { num: '05', titol: 'Fonons', desc: 'Quantització de les vibracions, models d\'Einstein i de Debye, calor específica.' }
+    ]},
+    { num: 'Part III', nom: 'Els electrons', temes: [
+      { num: '06', titol: 'Gas d\'electrons lliures', desc: 'Models de Drude i de Sommerfeld, densitat d\'estats i nivell de Fermi.' },
+      { num: '07', titol: 'Bandes d\'energia', desc: 'Teorema de Bloch, electró quasi lliure, enllaç fort i bandes prohibides.' },
+      { num: '08', titol: 'Semiconductors', desc: 'Portadors intrínsecs i extrínsecs, dopatge i la unió p-n.' }
+    ]}
+  ];
+
+  const temes = (typeof TEMES !== 'undefined') ? TEMES : [];
+  const icones = (typeof ICONES !== 'undefined') ? ICONES : {};
+  let recursos = [];
+  try { recursos = JSON.parse(document.getElementById('apunts-publicats').textContent); } catch (e) { recursos = []; }
+  const recursosDe = num => recursos.find(a => a.num === num) || {};
+  const simsDe = num => { const t = temes.find(x => x.num === num); return t ? t.simuladors.length : 0; };
+
+  const IC_LLIBRE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5C4.7 20 4 19.3 4 18.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5z"/></svg>';
+  const IC_ONA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 17c3-9 6-9 9 0s6 9 9 0"/></svg>';
+  const IC_BAIXA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>';
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  const cont = document.getElementById('capitols');
+  let nApunts = 0, nSims = 0, nTemes = 0, nPres = 0;
+  PARTS.forEach(part => {
+    const sec = document.createElement('section');
+    sec.className = 'part';
+    sec.innerHTML = '<div class="part-cap"><span class="part-num">' + part.num + '</span><span class="part-nom">' + esc(part.nom) + '</span></div>';
+    part.temes.forEach(c => {
+      const a = recursosDe(c.num), n = simsDe(c.num);
+      if (!c.preliminar) { nTemes++; if (a.web) nApunts++; if (a.pres) nPres++; }
+      nSims += n;
+      const rec = [];
+      rec.push(a.web ? '<a class="xip apunts" href="' + esc(a.web) + '">' + IC_LLIBRE + 'Apunts</a>'
+                     : '<span class="xip aviat" title="Els apunts web d\'aquest tema encara s\'estan preparant">Apunts · en preparació</span>');
+      if (a.pdf) rec.push('<a class="xip baixa" href="' + esc(a.pdf) + '" title="Apunts del tema en PDF, per imprimir o treballar fora de línia" download>' + IC_BAIXA + 'PDF</a>');
+      if (a.pres) rec.push('<a class="xip baixa" href="' + esc(a.pres) + '" title="Diapositives de classe del tema (PDF)" download>' + IC_BAIXA + 'Presentació</a>');
+      rec.push(n ? '<a class="xip sims" href="simuladors/#tema-' + c.num + '">' + IC_ONA + n + ' simulador' + (n > 1 ? 's' : '') + '</a>'
+                 : '<span class="xip aviat">Simuladors · en preparació</span>');
+      const div = document.createElement('div');
+      div.className = 'capitol' + (c.preliminar ? ' preliminar' : '');
+      div.id = 'capitol-' + c.num;
+      div.innerHTML =
+        '<div class="cap-num">' + (c.preliminar ? 'Repàs' : String(+c.num)) + '</div>' +
+        '<div class="cap-ic" aria-hidden="true">' + (icones[c.num] || '') + '</div>' +
+        '<div><p class="cap-titol">' + esc(c.titol) + '</p><p class="cap-desc">' + esc(c.desc) + '</p></div>' +
+        '<div class="recursos">' + rec.join('') + '</div>';
+      sec.appendChild(div);
+    });
+    cont.appendChild(sec);
+  });
+  document.getElementById('estat').innerHTML =
+    '<span><b>' + nTemes + '</b>temes</span>' +
+    '<span><b>' + nApunts + '</b>amb apunts web</span>' +
+    '<span><b>' + nPres + '</b>presentacions</span>' +
+    '<span><b>' + nSims + '</b>simuladors</span>';
+
+  // ---------------------------------------------------------------
+  // Il·lustració: un cristall FCC (2×2×2 cel·les) amb un fonó longitudinal
+  // ---------------------------------------------------------------
+  const svg = document.getElementById('cristall');
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, at, pare) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); (pare || svg).appendChild(e); return e; };
+
+  const defs = el('defs', {});
+  const grad = el('radialGradient', { id: 'atom', cx: '35%', cy: '30%', r: '70%' }, defs);
+  el('stop', { offset: '0%', 'stop-color': '#FFFFFF' }, grad);
+  el('stop', { offset: '45%', 'stop-color': '#B9E8C9' }, grad);
+  el('stop', { offset: '100%', 'stop-color': '#2E9E5B' }, grad);
+  const grad2 = el('radialGradient', { id: 'atomOr', cx: '35%', cy: '30%', r: '70%' }, defs);
+  el('stop', { offset: '0%', 'stop-color': '#FFF6E2' }, grad2);
+  el('stop', { offset: '100%', 'stop-color': '#C79A45' }, grad2);
+
+  // projecció isomètrica: x i y al pla, z amunt
+  const S = 92, CX = 198, CY = 230, C30 = Math.cos(Math.PI / 6), S30 = 0.5;
+  const P = (x, y, z) => [CX + (x - y) * S * C30, CY + (x + y) * S * S30 - z * S];
+
+  // arestes de les cel·les
+  const arestes = el('g', { stroke: 'rgba(255,255,255,0.22)', 'stroke-width': 1.1, fill: 'none' });
+  for (let a = 0; a <= 2; a++) for (let b = 0; b <= 2; b++) {
+    [[[0, a, b], [2, a, b]], [[a, 0, b], [a, 2, b]], [[a, b, 0], [a, b, 2]]].forEach(([p, q]) => {
+      const A = P(...p), B = P(...q);
+      el('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1] }, arestes);
+    });
+  }
+  // un pla (200) ressaltat, com un pla de Bragg
+  const pl = [[1, 0, 0], [1, 2, 0], [1, 2, 2], [1, 0, 2]].map(p => P(...p).join(',')).join(' ');
+  el('polygon', { points: pl, fill: 'rgba(184,137,58,0.10)', stroke: 'rgba(214,176,104,0.55)', 'stroke-dasharray': '4 4' });
+
+  // àtoms FCC: coordenades semienteres amb suma parell
+  const atoms = [];
+  for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) for (let k = 0; k <= 4; k++) {
+    if ((i + j + k) % 2) continue;
+    atoms.push({ x: i / 2, y: j / 2, z: k / 2 });
+  }
+  atoms.sort((a, b) => (a.x + a.y + a.z) - (b.x + b.y + b.z));
+  const gAt = el('g', {});
+  atoms.forEach(a => {
+    const prof = (a.x + a.y + a.z) / 6;                       // 0 = al fons, 1 = davant
+    a.r = 7 + 5 * prof;
+    a.c = el('circle', { r: a.r, fill: a.x === 1 ? 'url(#atomOr)' : 'url(#atom)', opacity: 0.55 + 0.45 * prof }, gAt);
+  });
+
+  // relació de dispersió en un racó
+  const gD = el('g', { transform: 'translate(392,46)' });
+  el('rect', { x: -14, y: -14, width: 136, height: 122, rx: 10, fill: 'rgba(0,0,0,0.18)', stroke: 'rgba(255,255,255,0.18)' }, gD);
+  el('line', { x1: 0, y1: 90, x2: 120, y2: 90, stroke: 'rgba(255,255,255,0.6)', 'stroke-width': 1 }, gD);
+  el('line', { x1: 0, y1: 90, x2: 0, y2: 0, stroke: 'rgba(255,255,255,0.6)', 'stroke-width': 1 }, gD);
+  let dA = '', dO = '';
+  for (let t = 0; t <= 1.0001; t += 0.02) {
+    const x = 6 + 108 * t, ac = 90 - 52 * Math.sin(Math.PI * t / 2), op = 90 - (66 + 10 * Math.cos(Math.PI * t));
+    dA += (t ? 'L' : 'M') + x.toFixed(1) + ' ' + ac.toFixed(1);
+    dO += (t ? 'L' : 'M') + x.toFixed(1) + ' ' + op.toFixed(1);
+  }
+  el('path', { d: dO, stroke: '#E9C27A', 'stroke-width': 2.2, fill: 'none' }, gD);
+  el('path', { d: dA, stroke: '#9FE0B6', 'stroke-width': 2.2, fill: 'none' }, gD);
+  const punt = el('circle', { r: 4, fill: '#fff' }, gD);
+  const txt = (s, x, y, mida, it) => { const e = el('text', { x, y, fill: 'rgba(255,255,255,0.85)', 'font-size': mida, 'font-family': 'Source Serif 4, Georgia, serif', 'font-style': it ? 'italic' : 'normal' }, gD); e.textContent = s; };
+  txt('ω', -9, 4, 13, true); txt('0', -4, 103, 9, false); txt('π/a', 100, 103, 9, false); txt('q', 52, 103, 12, true);
+
+  // animació: ona longitudinal al llarg de x (un fonó), molt suau
+  const quiet = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const kq = Math.PI / 1.0, amp = 0.07;
+  function dibuixa(t) {
+    atoms.forEach(a => {
+      const u = amp * Math.sin(kq * a.x - 1.6 * t);
+      const p = P(a.x + u, a.y, a.z);
+      a.c.setAttribute('cx', p[0].toFixed(2)); a.c.setAttribute('cy', p[1].toFixed(2));
+    });
+    const s = 0.5 + 0.5 * Math.sin(0.35 * t), x = 6 + 108 * s;
+    punt.setAttribute('cx', x.toFixed(1)); punt.setAttribute('cy', (90 - 52 * Math.sin(Math.PI * s / 2)).toFixed(1));
+  }
+  let visible = true;
+  if ('IntersectionObserver' in window) new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(svg);
+  function bucle(ms) { if (visible) dibuixa(ms / 1000); requestAnimationFrame(bucle); }
+  dibuixa(0.8);
+  if (!quiet) requestAnimationFrame(bucle);
+})();
+</script>
 </body>
 </html>

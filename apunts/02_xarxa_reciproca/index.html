@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema 2: Xarxa recíproca i difracció — Apunts</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="../estil_apunts.css">
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="logo-bloc">
+    <a href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="UAB"></a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9" stroke-dasharray="1.5 2" opacity=".4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/></svg>Tema 2: Xarxa recíproca i difracció</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</header>
+
+<div class="pagina">
+  <aside class="lateral">
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#s1"><span class="num">1</span> Sèries de Fourier en una xarxa periòdica</a><ol>
+<li><a href="#s1-1"><span class="num">1.1</span> Repàs: sèries de Fourier en 1D</a></li>
+<li><a href="#s1-2"><span class="num">1.2</span> Forma exponencial i condició de realitat</a></li>
+<li><a href="#s1-3"><span class="num">1.3</span> Generalització a una xarxa de Bravais</a></li>
+</ol></li>
+<li><a href="#sec:reciproca"><span class="num">2</span> La xarxa recíproca</a><ol>
+<li><a href="#s2-1"><span class="num">2.1</span> Sèrie de Fourier sobre la xarxa recíproca</a></li>
+</ol></li>
+<li><a href="#sec:laue"><span class="num">3</span> Difracció: el model de Laue</a><ol>
+<li><a href="#s3-1"><span class="num">3.1</span> Amplitud dispersada per un objecte qualsevol</a></li>
+<li><a href="#s3-2"><span class="num">3.2</span> L'amplitud dispersada per un cristall</a></li>
+<li><a href="#s3-3"><span class="num">3.3</span> Àtoms puntuals: una delta a cada àtom</a></li>
+<li><a href="#s3-4"><span class="num">3.4</span> La condició de Laue</a></li>
+<li><a href="#s3-5"><span class="num">3.5</span> Equivalència amb la llei de Bragg</a></li>
+</ol></li>
+<li><a href="#s4"><span class="num">4</span> Factor de forma atòmic i factor d'estructura</a><ol>
+<li><a href="#sec:forma"><span class="num">4.1</span> Factor de forma atòmic</a></li>
+<li><a href="#sec:estructura"><span class="num">4.2</span> Factor d'estructura</a></li>
+</ol></li>
+</ol></nav>
+  </aside>
+
+  <article class="apunts">
+    <h1><span class="tema-num">Tema 2</span>Xarxa recíproca i difracció</h1>
+    <details class="index-mobil">
+      <summary>Índex</summary>
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#s1"><span class="num">1</span> Sèries de Fourier en una xarxa periòdica</a><ol>
+<li><a href="#s1-1"><span class="num">1.1</span> Repàs: sèries de Fourier en 1D</a></li>
+<li><a href="#s1-2"><span class="num">1.2</span> Forma exponencial i condició de realitat</a></li>
+<li><a href="#s1-3"><span class="num">1.3</span> Generalització a una xarxa de Bravais</a></li>
+</ol></li>
+<li><a href="#sec:reciproca"><span class="num">2</span> La xarxa recíproca</a><ol>
+<li><a href="#s2-1"><span class="num">2.1</span> Sèrie de Fourier sobre la xarxa recíproca</a></li>
+</ol></li>
+<li><a href="#sec:laue"><span class="num">3</span> Difracció: el model de Laue</a><ol>
+<li><a href="#s3-1"><span class="num">3.1</span> Amplitud dispersada per un objecte qualsevol</a></li>
+<li><a href="#s3-2"><span class="num">3.2</span> L'amplitud dispersada per un cristall</a></li>
+<li><a href="#s3-3"><span class="num">3.3</span> Àtoms puntuals: una delta a cada àtom</a></li>
+<li><a href="#s3-4"><span class="num">3.4</span> La condició de Laue</a></li>
+<li><a href="#s3-5"><span class="num">3.5</span> Equivalència amb la llei de Bragg</a></li>
+</ol></li>
+<li><a href="#s4"><span class="num">4</span> Factor de forma atòmic i factor d'estructura</a><ol>
+<li><a href="#sec:forma"><span class="num">4.1</span> Factor de forma atòmic</a></li>
+<li><a href="#sec:estructura"><span class="num">4.2</span> Factor d'estructura</a></li>
+</ol></li>
+</ol></nav>
+    </details>
+<h2 id="s1"><span class="num">1</span> Sèries de Fourier en una xarxa periòdica</h2>
+<h3 id="s1-1"><span class="num">1.1</span> Repàs: sèries de Fourier en 1D</h3>
+<p>Una funció periòdica en una dimensió, <span class="nw">\(n(x+a)=n(x)\),</span> es pot escriure com una suma de sinus i cosinus amb els períodes que hi caben exactament, <span class="nw">\(a\),</span> <span class="nw">\(a/2\),</span> <span class="nw">\(a/3\),</span> …:
+<span class="eq" id="eq:fourier_trig">\[n(x) = A_0 + \sum_{p=1}^{\infty} \left[A_p \cos\!\left(\frac{2\pi}{a}px\right) + B_p \sin\!\left(\frac{2\pi}{a}px\right)\right]. \tag{1}\]</span>
+La periodicitat es comprova substituint <span class="nw">\(x\to x+a\):</span> l'argument de cada funció augmenta en <span class="nw">\(2\pi p\),</span> que no la canvia. Per a una densitat física, \(n(x)\) és real i els coeficients <span class="nw">\(A_p\),</span> \(B_p\) també ho són. Els coeficients s'obtenen multiplicant per \(\cos(2\pi p'x/a)\) o \(\sin(2\pi p'x/a)\) i integrant sobre un període; com que \(\int_0^a\cos^2=\int_0^a\sin^2=a/2\) i totes les integrals de productes creuats s'anul·len,
+\[A_0=\frac1a\int_0^a n(x)\,dx,\]
+\[A_p = \frac{2}{a}\int_0^a n(x)\cos\!\left(\frac{2\pi}{a}px\right)dx, \qquad
+B_p = \frac{2}{a}\int_0^a n(x)\sin\!\left(\frac{2\pi}{a}px\right)dx .\]</p>
+<h3 id="s1-2"><span class="num">1.2</span> Forma exponencial i condició de realitat</h3>
+<p>La mateixa sèrie s'escriu de manera molt més compacta amb exponencials complexes. Amb la fórmula d'Euler, \(\cos\phi=\tfrac12(e^{i\phi}+e^{-i\phi})\) i <span class="nw">\(\sin\phi=\tfrac1{2i}(e^{i\phi}-e^{-i\phi})\),</span> cada terme de l'equació <a href="#eq:fourier_trig">(1)</a> es converteix en dues exponencials, una amb \(+p\) i una amb \(-p\) (escrivim <span class="nw">\(\phi_p=2\pi px/a\)):</span>
+\[A_p\cos\phi_p+B_p\sin\phi_p=\frac{A_p-iB_p}{2}\,e^{i\phi_p}+\frac{A_p+iB_p}{2}\,e^{-i\phi_p} .\]
+Agrupant tots els termes per l'enter que apareix a l'exponent, <span class="nw">\(p=\dots,-2,-1,0,1,2,\dots\),</span> la sèrie queda
+<span class="eq" id="eq:fourier_exp">\[n(x) = \sum_{p=-\infty}^{\infty} c_p\, e^{i2\pi px/a},
+\qquad
+c_0=A_0,\quad c_p=\frac{A_p-iB_p}{2},\quad c_{-p}=\frac{A_p+iB_p}{2}\quad(p\ge1). \tag{2}\]</span>
+Com que \(A_p\) i \(B_p\) són reals, \(c_{-p}\) és exactament el complex conjugat de <span class="nw">\(c_p\),</span> i \(c_0\) és real. Aquesta és la condició que busquem: per a una funció real, els coeficients amb \(p\) i \(-p\) no són independents.</p>
+<p>El mateix resultat es pot obtenir sense passar per la forma trigonomètrica, treballant només amb la sèrie exponencial. El primer pas és calcular els coeficients. Les exponencials són ortogonals en un període: si <span class="nw">\(p\neq p'\),</span> l'integrand dona un nombre enter de voltes completes i
+\[\frac1a\int_0^a e^{i2\pi(p-p')x/a}\,dx=\frac{1}{a}\,\frac{e^{i2\pi(p-p')}-1}{i2\pi(p-p')/a}=0,\]
+mentre que si \(p=p'\) l'integrand val 1 i la integral també. És a dir, <span class="nw">\(\frac1a\int_0^a e^{i2\pi(p-p')x/a}dx=\delta_{pp'}\).</span> Multiplicant l'equació <a href="#eq:fourier_exp">(2)</a> per \(e^{-i2\pi p'x/a}\) i integrant, de tota la suma només sobreviu el terme <span class="nw">\(p=p'\):</span>
+\[c_p = \frac1a\int_0^a n(x)\,e^{-i2\pi px/a}\,dx .\]
+El segon pas és imposar que \(n\) sigui real, <span class="nw">\(n^*(x)=n(x)\).</span> Conjugant la fórmula del coeficient,
+\[c_p^*=\frac1a\int_0^a n^*(x)\,e^{+i2\pi px/a}\,dx=\frac1a\int_0^a n(x)\,e^{-i2\pi(-p)x/a}\,dx=c_{-p} .\]
+Per tant, \(n\) real implica \(c_{-p}=c_p^*\) per a tot \(p\) (i, en particular, \(c_0\) real).</p>
+<p>El recíproc també és cert, i s'hi veu per què aquesta condició assegura que la suma sigui real. Si <span class="nw">\(c_{-p}=c_p^*\),</span> els termes \(p\) i \(-p\) són complexos conjugats l'un de l'altre, i la seva suma és real:
+\[c_p\,e^{i\phi_p}+c_{-p}\,e^{-i\phi_p}=c_p\,e^{i\phi_p}+\big(c_p\,e^{i\phi_p}\big)^*=2\,\mathrm{Re}\big(c_p\,e^{i\phi_p}\big)\]
+\[=2\,\mathrm{Re}(c_p)\cos\phi_p-2\,\mathrm{Im}(c_p)\sin\phi_p .\]
+Comparant amb l'equació <a href="#eq:fourier_trig">(1)</a> es recuperen \(A_p=2\,\mathrm{Re}(c_p)\) i <span class="nw">\(B_p=-2\,\mathrm{Im}(c_p)\),</span> les mateixes relacions de l'equació <a href="#eq:fourier_exp">(2)</a>. En resum, \(n(x)\) és real si i només si <span class="nw">\(c_{-p}=c_p^*\).</span> Quan es descriu una densitat de càrrega real, com farem tot aquest capítol, aquesta condició no és una restricció addicional sinó una conseqüència automàtica de demanar que \(n\) sigui real.</p>
+<h3 id="s1-3"><span class="num">1.3</span> Generalització a una xarxa de Bravais</h3>
+<p>Per generalitzar aquesta idea a una funció \(n(\vec{r})\) amb la periodicitat d'una xarxa de Bravais tridimensional, \(n(\vec{r}+\vec{T})=n(\vec{r})\) per a tot vector de xarxa <span class="nw">\(\vec{T}=n_1\vec a_1+n_2\vec a_2+n_3\vec a_3\),</span> necessitem primer generalitzar el concepte de “freqüència permesa” \(2\pi p/a\) — i això ens porta directament a definir la xarxa recíproca.</p>
+<h2 id="sec:reciproca"><span class="num">2</span> La xarxa recíproca</h2>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Xarxa recíproca</div><p>La xarxa recíproca d'una xarxa de Bravais de vectors primitius \(\vec a_1,\vec a_2,\vec a_3\) és el conjunt de vectors \(\vec G\) que compleixen
+\[e^{i\vec G\cdot\vec T} = 1 \qquad \text{per a tot vector de la xarxa real } \vec T.\]
+Aquest conjunt és, ell mateix, una xarxa de Bravais, generada per
+\[\vec G = l_1\vec b_1 + l_2\vec b_2 + l_3\vec b_3, \qquad l_1,l_2,l_3\in\mathbb Z,\]
+amb vectors primitius recíprocs
+\[\vec b_1 = \frac{2\pi\,(\vec a_2\times\vec a_3)}{\vec a_1\cdot(\vec a_2\times\vec a_3)}, \qquad
+\vec b_2 = \frac{2\pi\,(\vec a_3\times\vec a_1)}{\vec a_1\cdot(\vec a_2\times\vec a_3)}, \qquad
+\vec b_3 = \frac{2\pi\,(\vec a_1\times\vec a_2)}{\vec a_1\cdot(\vec a_2\times\vec a_3)}.\]</p></aside>
+<p>Que aquests vectors compleixen la definició és immediat pel producte triple: <span class="nw">\(\vec b_i\cdot\vec a_j=2\pi\delta_{ij}\),</span> i per tant
+\[\vec G\cdot\vec T = 2\pi(l_1n_1+l_2n_2+l_3n_3) \in 2\pi\mathbb Z \quad\Longrightarrow\quad e^{i\vec G\cdot\vec T}=1.\]
+Per al recíproc (que <em>tot</em> vector que compleix \(\vec G\cdot\vec T=2\pi N\) per a qualsevol \(\vec T\) ha de tenir la forma anterior), n'hi ha prou amb prendre \(\vec T=\vec a_i\) successivament: cada component \(l_i=\vec G\cdot\vec a_i/2\pi\) ha de sortir un enter.</p>
+<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> La recíproca de la recíproca és la xarxa real</div><p>Aplicant la mateixa construcció als vectors \(\vec b_i\) en lloc dels <span class="nw">\(\vec a_i\),</span> es recupera exactament \(\vec a_1,\vec a_2,\vec a_3\) — desenvolupant els productes vectorials creuats es comprova terme a terme. Físicament, això vol dir que “xarxa recíproca” no és una operació que allunyi progressivament d'un objecte físic: aplicada dues vegades, torna al punt de partida.</p></aside>
+<h3 id="s2-1"><span class="num">2.1</span> Sèrie de Fourier sobre la xarxa recíproca</h3>
+<p>Amb la xarxa recíproca ja definida, qualsevol funció \(n(\vec r)\) amb la periodicitat de la xarxa real es pot escriure com
+\[n(\vec r) = \sum_{\vec G} n_{\vec G}\, e^{i\vec G\cdot\vec r}, \qquad
+n_{\vec G} = \frac{1}{V_c}\int_{V_c} n(\vec r)\,e^{-i\vec G\cdot\vec r}\,dV,\]
+amb \(V_c\) el volum de la cel·la unitat — l'anàleg exacte, en 3D, de la sèrie exponencial 1D de la secció anterior, canviant “múltiples enters de \(2\pi/a\)” per “vectors de la xarxa recíproca”. Que aquesta és la generalització correcta es comprova imposant la periodicitat \(n(\vec r+\vec T)=n(\vec r)\) sobre la sèrie: igualant els dos desenvolupaments s'obté \(e^{i\vec G\cdot\vec T}=1\) per a tot \(\vec T\) de la xarxa — exactament la condició que defineix <span class="nw">\(\vec G\).</span> La condició de realitat també es trasllada sense canvis: conjugant la fórmula de \(n_{\vec G}\) exactament com en 1D, si \(n(\vec r)\) és real aleshores <span class="nw">\(n_{-\vec G}=n_{\vec G}^*\),</span> i els termes \(\vec G\) i \(-\vec G\) de la suma sumen <span class="nw">\(2\,\mathrm{Re}\big(n_{\vec G}e^{i\vec G\cdot\vec r}\big)\).</span></p>
+<h2 id="sec:laue"><span class="num">3</span> Difracció: el model de Laue</h2>
+<h3 id="s3-1"><span class="num">3.1</span> Amplitud dispersada per un objecte qualsevol</h3>
+<p>Considerem una ona plana \(\psi(\vec r)\propto e^{i(\vec k\cdot\vec r-\omega t)}\) que incideix sobre una densitat dispersora \(n(\vec r)\) — per a raigs X, la densitat d'electrons. Cada punt del cristall rep l'ona amb una fase diferent i la redispersa; volem calcular l'amplitud total que arriba a un detector molt llunyà, situat a la posició \(\vec R\) en la direcció de sortida <span class="nw">\(\hat k'\),</span> amb \(|\vec R|\) molt més gran que el cristall. Suposem dispersió <em>elàstica</em>, <span class="nw">\(|\vec k'|=|\vec k|=2\pi/\lambda\),</span> i anomenem <strong>vector de dispersió</strong> la diferència
+\[\Delta\vec k \equiv \vec k'-\vec k .\]</p>
+<figure class="tikz"><img src="figures/fig_01.svg" alt="" loading="lazy"></figure>
+<p>Comparem el raig dispersat per un punt a la posició \(\vec r\) amb el raig dispersat per l'origen <span class="nw">\(O\).</span> A l'anada, l'ona incident \(e^{i\vec k\cdot\vec r}\) arriba al punt \(\vec r\) amb una fase \(\vec k\cdot\vec r\) respecte de la que té a <span class="nw">\(O\).</span> A la tornada, la distància de \(\vec r\) al detector és, a primer ordre en <span class="nw">\(r/R\),</span> <span class="nw">\(|\vec R-\vec r|\simeq R-\hat R\cdot\vec r=R-\hat k'\cdot\vec r\);</span> el camí de sortida aporta per tant una fase <span class="nw">\(|\vec k'|\,|\vec R-\vec r|\simeq k'R-\vec k'\cdot\vec r\),</span> és a dir, una fase \(-\vec k'\cdot\vec r\) respecte del raig que surt de <span class="nw">\(O\).</span> Sumant les dues contribucions, <span class="nw">\(\Delta\phi(\vec r)=\vec k\cdot\vec r-\vec k'\cdot\vec r=-\Delta\vec k\cdot\vec r\),</span> i l'amplitud total al detector és la suma de les contribucions de tots els elements de volum, cadascun amb un pes proporcional a la densitat dispersora que hi ha:
+\[F(\Delta\vec k) = \int_V n(\vec r)\,e^{-i\Delta\vec k\cdot\vec r}\,dV, \qquad I(\Delta\vec k)\propto|F(\Delta\vec k)|^2 .\]
+Alguns llibres defineixen \(\Delta\vec k=\vec k-\vec k'\) i escriuen <span class="nw">\(e^{+i\Delta\vec k\cdot\vec r}\);</span> tot el que segueix és idèntic canviant <span class="nw">\(\vec G\to-\vec G\),</span> que també és un vector de la xarxa recíproca.</p>
+<p>Aquest model tracta la dispersió de la manera més simple possible: cada fotó es dispersa com a molt una vegada dins el cristall (aproximació cinemàtica, o de Born), de manera elàstica, i la font i el detector són prou lluny perquè les ones siguin planes. Tampoc inclou els factors geomètrics i de polarització que un difractòmetre real multiplica sobre les intensitats. Les <em>posicions</em> dels pics no depenen de cap d'aquestes simplificacions; les <em>intensitats</em> relatives, en part, sí.</p>
+<h3 id="s3-2"><span class="num">3.2</span> L'amplitud dispersada per un cristall</h3>
+<p>Un cristall és una xarxa més una base (Tema 1): l'àtom \(j\) de la cel·la \(\vec T\) té el nucli a la posició <span class="nw">\(\vec T+\vec r_j\),</span> on \(\vec T\) recorre els \(N\) nusos de la xarxa i \(j=1,\dots,N_b\) els àtoms de la base. Els electrons d'aquest àtom estan repartits al voltant del nucli amb una densitat <span class="nw">\(n_j(\vec\rho)\),</span> on \(\vec\rho\) és la posició respecte del nucli. Suposarem que la densitat del cristall és la suma de les densitats de tots els seus àtoms:
+\[n(\vec r)=\sum_{\vec T}\sum_{j=1}^{N_b} n_j(\vec r-\vec T-\vec r_j).\]
+Cada terme és la densitat de l'àtom \(j\) desplaçada fins al seu nucli: val \(n_j(\vec\rho)\) al punt <span class="nw">\(\vec r=\vec T+\vec r_j+\vec\rho\).</span></p>
+<p>Partim de l'amplitud de la secció anterior i hi substituïm aquesta densitat. Com que la integral d'una suma és la suma de les integrals, podem treure les dues sumes fora:
+\[F(\Delta\vec k)=\int_V n(\vec r)\,e^{-i\Delta\vec k\cdot\vec r}\,dV
+=\sum_{\vec T}\sum_{j}\int n_j(\vec r-\vec T-\vec r_j)\,e^{-i\Delta\vec k\cdot\vec r}\,dV .\]
+Ara cada integral correspon a un sol àtom. Hi fem el canvi de variable <span class="nw">\(\vec\rho=\vec r-\vec T-\vec r_j\),</span> és a dir, <span class="nw">\(\vec r=\vec T+\vec r_j+\vec\rho\).</span> Per a \(\vec T\) i \(j\) fixos, això només trasllada l'origen fins al nucli de l'àtom, i una translació no canvia l'element de volum: <span class="nw">\(dV=d^3\rho\).</span> La integral queda
+\[\int n_j(\vec r-\vec T-\vec r_j)\,e^{-i\Delta\vec k\cdot\vec r}\,dV
+=\int n_j(\vec\rho)\,e^{-i\Delta\vec k\cdot(\vec T+\vec r_j+\vec\rho)}\,d^3\rho .\]
+L'exponencial d'una suma és el producte de les exponencials, i els dos primers factors no depenen de <span class="nw">\(\vec\rho\),</span> de manera que surten de la integral:
+\[\int n_j(\vec\rho)\,e^{-i\Delta\vec k\cdot(\vec T+\vec r_j+\vec\rho)}\,d^3\rho
+=e^{-i\Delta\vec k\cdot\vec T}\;e^{-i\Delta\vec k\cdot\vec r_j}\int n_j(\vec\rho)\,e^{-i\Delta\vec k\cdot\vec\rho}\,d^3\rho
+=e^{-i\Delta\vec k\cdot\vec T}\;e^{-i\Delta\vec k\cdot\vec r_j}\;f_j(\Delta\vec k),\]
+on hem anomenat
+\[f_j(\Delta\vec k)=\int n_j(\vec\rho)\,e^{-i\Delta\vec k\cdot\vec\rho}\,d^3\rho\]
+el <strong>factor de forma atòmic</strong>, que estudiarem a la secció <a href="#sec:forma">4.1</a>. Tornant a sumar sobre tots els àtoms,
+\[F(\Delta\vec k)=\sum_{\vec T}\sum_{j=1}^{N_b} e^{-i\Delta\vec k\cdot\vec T}\;e^{-i\Delta\vec k\cdot\vec r_j}\;f_j(\Delta\vec k) .\]
+Cada àtom es comporta com un dispersor situat al seu nucli, amb una “intensitat de dispersió” \(f_j\) que depèn de com té repartits els electrons. Finalment, el primer factor de cada terme només depèn de \(\vec T\) i els altres dos només de <span class="nw">\(j\),</span> i una doble suma d'aquest tipus es factoritza, <span class="nw">\(\sum_{\vec T}\sum_j a_{\vec T}\,b_j=\big(\sum_{\vec T}a_{\vec T}\big)\big(\sum_j b_j\big)\):</span>
+\[F(\Delta\vec k)=\underbrace{\Bigg[\sum_{\vec T}e^{-i\Delta\vec k\cdot\vec T}\Bigg]}_{L(\Delta\vec k)}\;
+\underbrace{\Bigg[\sum_{j=1}^{N_b} f_j(\Delta\vec k)\,e^{-i\Delta\vec k\cdot\vec r_j}\Bigg]}_{S(\Delta\vec k)} .\]</p>
+<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Tres ingredients, tres preguntes diferents</div><p>La suma sobre la xarxa \(L(\Delta\vec k)\) només depèn de la xarxa de Bravais, i decideix <em>on</em> hi ha pics. El <strong>factor d'estructura</strong> \(S(\Delta\vec k)\) depèn d'on són els àtoms dins la cel·la, i decideix quins d'aquests pics tenen intensitat, i quanta. El <strong>factor de forma</strong> <span class="nw">\(f_j(\Delta\vec k)\),</span> que hi entra com a pes de cada àtom, només depèn de com és l'àtom. La intensitat és <span class="nw">\(I\propto|L|^2|S|^2\).</span></p>
+<p>   </p>
+<div class="centrat"><p> 
+<img src="imatges/sim_factoritzacio_tall.png" alt="" style="width:100%"> 
+<span class="peu-figura">  Intensitat \(|F|^2=|L|^2|S|^2\) d'una xarxa quadrada d'un sol àtom gaussià, al llarg de <span class="nw">\(\Delta\vec k=\xi\,\vec b_1\).</span> \(L\) posa un pic a cada \(\vec G\) (els enters <span class="nw">\(\xi\));</span> <span class="nw">\(S\),</span> en discontinu, en fixa l'alçada. Amb un sol àtom a l'origen, \(S=f_1\) i l'envolupant és el factor de forma.</span></p></div>
+<p>  </p>
+<aside class="caixa alsimulador"><div class="caixa-cap"><span class="caixa-tipus">Simulador</span> un factor posa els pics i l'altre les alçades</div><div class="sim-incrustat" data-src="../../simuladors/02_xarxa_reciproca_difraccio/factors_difraccio.html?incrustat=1&amp;preset=sq1&amp;terme=F&amp;log=1&amp;tall=1,0&amp;dk=1,0&amp;N=6&amp;mostra=selTerme,slGamma,canvasCut,canvasMap" style="min-height:760px"><div class="sim-carregant">Carregant la simulació…</div></div><p><strong>Exploració proposada.</strong></p>
+<ol><li>En alternar la magnitud entre <span class="nw">\(|F|^2\),</span> \(|L|^2\) i <span class="nw">\(|S|^2\),</span> la corba de \(|F|^2\) apareix com el producte de les altres dues: els pics de <span class="nw">\(|L|^2\),</span> retallats per l'envolupant de <span class="nw">\(|S|^2\).</span></li><li>En augmentar \(\sigma_1\) (l'amplada de l'àtom), l'envolupant s'estreny i els pics allunyats de l'origen s'apaguen, també al mapa.</li><li>Amb \(\sigma_1=0\) es recupera l'àtom puntual de la secció següent, <span class="nw">\(f=Z\),</span> amb tots els pics de la mateixa alçada.</li></ol></aside></aside>
+<h3 id="s3-3"><span class="num">3.3</span> Àtoms puntuals: una delta a cada àtom</h3>
+<p>El cas més senzill, i el que farem servir sempre que no calgui més detall, és suposar que tots els electrons de cada àtom són al nucli: l'àtom \(j\) és una càrrega puntual amb \(Z_j\) electrons, <span class="nw">\(n_j(\vec\rho)=Z_j\,\delta(\vec\rho)\).</span> La densitat del cristall és llavors una delta de Dirac a cada àtom,
+\[n(\vec r)=\sum_{\vec T}\sum_{j=1}^{N_b} Z_j\,\delta(\vec r-\vec T-\vec r_j),\]
+i en substituir-la a \(F\) cada delta selecciona el valor de l'exponencial a la posició del seu àtom (propietat de filtratge, <span class="nw">\(\int g(\vec r)\,\delta(\vec r-\vec r_0)\,dV=g(\vec r_0)\)):</span>
+\[F(\Delta\vec k)=\sum_{\vec T}\sum_j Z_j\int\delta(\vec r-\vec T-\vec r_j)\,e^{-i\Delta\vec k\cdot\vec r}\,dV
+=\sum_{\vec T}\sum_j Z_j\,e^{-i\Delta\vec k\cdot(\vec T+\vec r_j)} .\]
+És l'expressió general amb <span class="nw">\(f_j=Z_j\):</span> un àtom puntual dispersa igual en totes les direccions, i el seu factor d'estructura és <span class="nw">\(S=\sum_j Z_j\,e^{-i\Delta\vec k\cdot\vec r_j}\).</span></p>
+<h3 id="s3-4"><span class="num">3.4</span> La condició de Laue</h3>
+<p>Cada terme de la suma sobre la xarxa, <span class="nw">\(e^{-i\Delta\vec k\cdot\vec T}\),</span> és un nombre complex de mòdul 1. Si \(\Delta\vec k\) és un vector de la xarxa recíproca, <span class="nw">\(\Delta\vec k=\vec G\),</span> aleshores per la pròpia definició de la xarxa recíproca \(e^{-i\vec G\cdot\vec T}=1\) per a tot <span class="nw">\(\vec T\):</span> els \(N\) termes valen 1, se sumen en fase i <span class="nw">\(L=N\).</span> Si \(\Delta\vec k\) no ho és, les fases dels diferents nusos són diferents i es van repartint per tota la circumferència, de manera que els termes s'anul·len entre ells i \(L\) queda molt per sota de <span class="nw">\(N\).</span></p>
+<p>Es veu explícitament en una cadena de \(N\) nusos, \(T=na\) amb <span class="nw">\(n=0,1,\dots,N-1\),</span> on anomenem \(q\) la component de \(\Delta\vec k\) al llarg de la cadena. La suma és una sèrie geomètrica de raó <span class="nw">\(e^{-iqa}\):</span>
+\[L(q)=\sum_{n=0}^{N-1}\big(e^{-iqa}\big)^n=\frac{1-e^{-iqaN}}{1-e^{-iqa}} .\]
+Fent servir \(1-e^{-i\theta}=e^{-i\theta/2}\big(e^{i\theta/2}-e^{-i\theta/2}\big)=2i\,e^{-i\theta/2}\sin(\theta/2)\) al numerador i al denominador, les fases desapareixen en fer el mòdul:
+\[|L(q)|^2=\frac{\sin^2(Nqa/2)}{\sin^2(qa/2)} .\]
+Quan <span class="nw">\(qa=2\pi p\),</span> amb \(p\) enter, tots els termes de la suma valen 1 i <span class="nw">\(|L|^2=N^2\):</span> és un pic. El primer zero al costat de cada pic és a <span class="nw">\(Nqa/2=\pi\),</span> és a dir a una distància <span class="nw">\(\Delta q=2\pi/(Na)\),</span> de manera que l'amplada del pic és proporcional a <span class="nw">\(1/N\).</span> Entre pics, en canvi, <span class="nw">\(|L|^2\le1/\sin^2(qa/2)\),</span> que no creix amb \(N\) i és, relativament al pic, de l'ordre de <span class="nw">\(1/N^2\).</span> La figura mostra \(|L|^2/N^2\) per a dues cadenes de longitud diferent.</p>
+<figure class="tikz"><img src="figures/fig_02.svg" alt="" loading="lazy"></figure>
+<p>Per a un cristall real la \(N\) és enorme: 1 mm de cristall amb \(a=3\) Å són \(N\approx3\times10^6\) cel·les per direcció, i el pic ocupa una part en tres milions de l'espai entre pics — a la pràctica, una delta. En tres dimensions passa exactament el mateix en cadascuna de les tres direccions de la xarxa.</p>
+<p>En dues dimensions, amb \(N\) cel·les en cada direcció, la suma és el producte de dues sumes com aquesta, una per a cada vector primitiu:
+\[|L|^2=\frac{\sin^2(N\,\Delta\vec k\cdot\vec a_1/2)}{\sin^2(\Delta\vec k\cdot\vec a_1/2)}\;\frac{\sin^2(N\,\Delta\vec k\cdot\vec a_2/2)}{\sin^2(\Delta\vec k\cdot\vec a_2/2)} .\]
+Al llarg d'una línia \(\Delta\vec k=\xi\,\vec b_1\) tenim \(\Delta\vec k\cdot\vec a_1=2\pi\xi\) i <span class="nw">\(\Delta\vec k\cdot\vec a_2=0\):</span> el segon factor val \(N^2\) i el primer és exactament la corba de la cadena.</p>
+<p>   </p>
+<div class="centrat"><p> 
+<img src="imatges/sim_laue_mapa.png" alt="" style="width:32%"> 
+<img src="imatges/sim_laue_fletxes_pic.png" alt="" style="width:32%"> 
+<img src="imatges/sim_laue_fletxes_entre.png" alt="" style="width:32%"> 
+<img src="imatges/sim_laue_tall.png" alt="" style="width:100%"> 
+<span class="peu-figura">  Xarxa quadrada amb <span class="nw">\(N=6\).</span> <em>Dalt, a l'esquerra:</em> \(|L|^2\) en funció de \(\Delta\vec k\) (escala logarítmica); els cercles són els vectors \(\vec G\) i la línia taronja és la recta <span class="nw">\(\Delta\vec k=\xi\,\vec b_1\).</span> <em>Dalt, al centre i a la dreta:</em> les \(N^2=36\) fletxes \(e^{-i\Delta\vec k\cdot\vec T}\) posades una darrere l'altra, a \(\Delta\vec k=\vec G_{10}\) (totes alineades, <span class="nw">\(|L|=36\))</span> i a \(\Delta\vec k=0.42\,\vec b_1\) (es cargolen, <span class="nw">\(|L|=6.2\)).</span> <em>Baix:</em> \(|L|^2/N^4\) al llarg de la línia, que és <span class="nw">\(\sin^2(6\pi\xi)/\big(36\sin^2(\pi\xi)\big)\).</span></span></p></div>
+<p>  </p>
+<aside class="caixa alsimulador"><div class="caixa-cap"><span class="caixa-tipus">Simulador</span> la suma sobre la xarxa</div><div class="sim-incrustat" data-src="../../simuladors/02_xarxa_reciproca_difraccio/factors_difraccio.html?incrustat=1&amp;preset=sq1&amp;terme=L&amp;log=1&amp;tall=1,0&amp;dk=1,0&amp;N=6&amp;obre=fletxes&amp;mostra=selXarxa,slN,canvasCut,fletxes" style="min-height:900px"><div class="sim-carregant">Carregant la simulació…</div></div><p><strong>Exploració proposada.</strong></p>
+<ol><li>En desplaçar el punt de la gràfica del tall de \(\xi=1\) a <span class="nw">\(\xi=1.5\),</span> la suma de fletxes passa de ser una recta de longitud \(N^2\) a corbar-se i tancar-se sobre ella mateixa, i \(|L|\) cau.</li><li>Entre \(\xi=0\) i \(\xi=1\) la corba té \(N-1=5\) zeros, a <span class="nw">\(\xi=m/N\),</span> d'acord amb l'expressió de la caixa “Expressions analítiques”.</li><li>Amb \(N=20\) els pics s'estrenyen (el primer zero és a <span class="nw">\(\xi=1/N\))</span> i, entre pics, la corba queda molt per sota del màxim: és la delta del cristall real.</li><li>Amb el tall en la direcció \((1,1)\) tots dos factors oscil·len, i l'expressió analítica ho reflecteix.</li><li>Amb una xarxa hexagonal o obliqua, els pics de \(|L|^2\) segueixen exactament els cercles dels <span class="nw">\(\vec G\):</span> la condició de Laue només depèn de la xarxa de Bravais.</li></ol></aside>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Condició de Laue</div><p>Només hi ha intensitat dispersada quan el vector de dispersió és un vector de la xarxa recíproca,
+\[\Delta\vec k=\vec k'-\vec k=\vec G .\]
+En aquest cas <span class="nw">\(L=N\),</span> i la intensitat del pic és <span class="nw">\(I(\vec G)\propto N^2\,|S(\vec G)|^2\).</span></p></aside>
+<h3 id="s3-5"><span class="num">3.5</span> Equivalència amb la llei de Bragg</h3>
+<p>Com que la dispersió és elàstica, <span class="nw">\(|\vec k'|=|\vec k|\),</span> i amb \(\vec k'=\vec k+\vec G\) la condició de Laue es pot escriure en forma escalar:
+\[|\vec k+\vec G|^2=|\vec k|^2\quad\Longrightarrow\quad 2\,\vec k\cdot\vec G+G^2=0 .\]
+Per interpretar-la geomètricament cal relacionar \(|\vec G|\) amb els plans de la xarxa. Sigui \(\vec G_{hkl}=h\vec b_1+k\vec b_2+l\vec b_3\) amb \(h,k,l\) sense cap factor comú. Per a qualsevol nus, \(\vec G_{hkl}\cdot\vec T=2\pi(hn_1+kn_2+ln_3)=2\pi m\) amb \(m\) enter, i els nusos amb el mateix \(m\) estan tots en un pla perpendicular a <span class="nw">\(\vec G_{hkl}\),</span> a distància \(\vec G_{hkl}\cdot\vec T/|\vec G_{hkl}|=2\pi m/|\vec G_{hkl}|\) de l'origen. Dos plans consecutius estan, doncs, separats per
+\[d_{hkl}=\frac{2\pi}{|\vec G_{hkl}|},\]
+i \(\vec G_{hkl}\) és perpendicular a la família de plans \((hkl)\) — els mateixos índexs de Miller del Tema 1. Els múltiples \(n\vec G_{hkl}\) també són vectors de la xarxa recíproca, amb <span class="nw">\(|n\vec G_{hkl}|=2\pi n/d_{hkl}\).</span></p>
+<p>Si \(2\theta\) és l'angle entre \(\vec k\) i <span class="nw">\(\vec k'\),</span> el triangle isòsceles format per <span class="nw">\(\vec k\),</span> \(\vec k'\) i \(\Delta\vec k\) dona <span class="nw">\(|\Delta\vec k|=2|\vec k|\sin\theta\).</span> Igualant a <span class="nw">\(|n\vec G_{hkl}|\),</span>
+\[2\,\frac{2\pi}{\lambda}\sin\theta=\frac{2\pi n}{d_{hkl}}\quad\Longrightarrow\quad 2d_{hkl}\sin\theta=n\lambda ,\]
+que és la llei de Bragg. Per a una xarxa cúbica de costat <span class="nw">\(a\),</span> \(|\vec G_{hkl}|=\tfrac{2\pi}{a}\sqrt{h^2+k^2+l^2}\) i, per tant, <span class="nw">\(d_{hkl}=a/\sqrt{h^2+k^2+l^2}\).</span></p>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Primer pic de difracció del coure</div><p>El coure és FCC amb \(a=3.615\) Å, i fem servir la ratlla K\(\alpha\) del coure, \(\lambda=1.5406\) Å. El primer pic que apareix és el \((111)\) — a la secció <a href="#sec:estructura">4.2</a> veurem per què no hi ha ni \((100)\) ni <span class="nw">\((110)\):</span>
+\[d_{111}=\frac{3.615}{\sqrt3}=2.087\ \text{Å}, \qquad
+\sin\theta=\frac{\lambda}{2d_{111}}=\frac{1.5406}{4.174}=0.3691, \qquad
+\theta=21.66^\circ .\]
+El pic surt a <span class="nw">\(2\theta=43.3^\circ\),</span> que és on es mesura als difractogrames de pols del coure.</p></aside>
+<h2 id="s4"><span class="num">4</span> Factor de forma atòmic i factor d'estructura</h2>
+<h3 id="sec:forma"><span class="num">4.1</span> Factor de forma atòmic</h3>
+<p>A la secció <a href="#sec:laue">3</a> hem vist que cada àtom entra a l'amplitud dispersada amb un pes <span class="nw">\(f_j\),</span> que en el model puntual val simplement <span class="nw">\(Z_j\).</span> En un àtom real, els electrons estan repartits al voltant del nucli amb una densitat <span class="nw">\(n_j(\vec\rho)\),</span> cada element de volum de l'àtom dispersa amb la seva pròpia fase \(e^{-i\Delta\vec k\cdot\vec\rho}\) respecte del nucli, i el pes de l'àtom és la suma de totes aquestes contribucions:</p>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Factor de forma atòmic</div><p>\[f_j(\Delta\vec k)=\int n_j(\vec\rho)\,e^{-i\Delta\vec k\cdot\vec\rho}\,d^3\rho ,\]
+integrat a tot l'espai, amb \(n_j\) la densitat electrònica de l'àtom \(j\) centrada al seu nucli.</p></aside>
+<p>A \(\Delta\vec k=0\) l'exponencial val 1 i <span class="nw">\(f_j(0)=\int n_j\,d^3\rho=Z_j\),</span> el nombre d'electrons de l'àtom; per a un àtom puntual, \(n_j=Z_j\delta(\vec\rho)\) i es recupera \(f_j=Z_j\) per a qualsevol <span class="nw">\(\Delta\vec k\).</span> Un àtom real, però, té una mida d'aproximadament 1 Å, comparable a <span class="nw">\(\lambda\):</span> electrons de parts diferents del mateix àtom dispersen amb fases diferents i s'anul·len parcialment. Per això \(f_j\) decreix quan \(|\Delta\vec k|\) creix, és a dir, a angles de dispersió grans.</p>
+<p>   </p>
+<div class="centrat"><p> 
+<img src="imatges/sim_forma_tall.png" alt="" style="width:100%"> 
+<span class="peu-figura">  Factors de forma de dos àtoms gaussians, <span class="nw">\(f_j=Z_j\,e^{-\sigma_j^2|\Delta\vec k|^2/2}\),</span> al llarg de <span class="nw">\(\Delta\vec k=\xi\,\vec b_1\):</span> <span class="nw">\(Z_1=18\),</span> \(\sigma_1=0.10\,a\) (continu) i <span class="nw">\(Z_2=10\),</span> \(\sigma_2=0.07\,a\) (discontinu). Tots dos valen \(Z\) a l'origen; l'àtom més gran cau més de pressa i, a \(|\Delta\vec k|\) grans, acaba dispersant menys que el petit.</span></p></div>
+<p>  </p>
+<aside class="caixa alsimulador"><div class="caixa-cap"><span class="caixa-tipus">Simulador</span> el factor de forma</div><div class="sim-incrustat" data-src="../../simuladors/02_xarxa_reciproca_difraccio/factors_difraccio.html?incrustat=1&amp;preset=sqc_diff&amp;terme=f&amp;log=1&amp;tall=1,0&amp;dk=1,0&amp;N=6&amp;mostra=canvasCut,slGamma" style="min-height:560px"><div class="sim-carregant">Carregant la simulació…</div></div><p><strong>Exploració proposada.</strong></p>
+<ol><li>\(Z_1\) només canvia l'alçada a <span class="nw">\(\xi=0\),</span> perquè <span class="nw">\(f(0)=Z\).</span></li><li>Com més gran és l'àtom (<span class="nw">\(\sigma_1\)),</span> més de pressa cau <span class="nw">\(f\).</span> Amb \(\sigma_1=0\) la corba és plana: l'àtom puntual, <span class="nw">\(f=Z\).</span></li><li>Amb el tall en la direcció \((1,1)\) la corba s'estreny en <span class="nw">\(\xi\),</span> però només perquè ara <span class="nw">\(|\Delta\vec k|=\sqrt2\,\xi\,|\vec b_1|\):</span> \(f\) només depèn de <span class="nw">\(|\Delta\vec k|\),</span> no de la direcció.</li></ol></aside>
+<p>Si l'àtom té simetria esfèrica, \(n_j\) només depèn de \(\rho=|\vec\rho|\) i la integral es pot fer en coordenades esfèriques amb l'eix \(z\) al llarg de <span class="nw">\(\Delta\vec k\).</span> Amb <span class="nw">\(G\equiv|\Delta\vec k|\),</span> \(\Delta\vec k\cdot\vec\rho=G\rho\cos\theta\) i <span class="nw">\(d^3\rho=\rho^2\sin\theta\,d\rho\,d\theta\,d\varphi\):</span>
+\[f(G)=\int_0^\infty d\rho\;\rho^2 n(\rho)\int_0^{2\pi}d\varphi\int_0^\pi e^{-iG\rho\cos\theta}\sin\theta\,d\theta .\]
+La integral en \(\varphi\) dona <span class="nw">\(2\pi\),</span> i la integral en \(\theta\) es fa amb el canvi \(u=\cos\theta\) (<span class="nw">\(du=-\sin\theta\,d\theta\)):</span>
+\[\int_0^\pi e^{-iG\rho\cos\theta}\sin\theta\,d\theta=\int_{-1}^{1}e^{-iG\rho u}\,du
+=\frac{e^{iG\rho}-e^{-iG\rho}}{iG\rho}=\frac{2\sin(G\rho)}{G\rho} .\]
+Per tant
+\[f(G)=\int_0^\infty 4\pi\rho^2\,n(\rho)\,\frac{\sin(G\rho)}{G\rho}\,d\rho .\]
+Quan <span class="nw">\(G\to0\),</span> \(\sin(G\rho)/(G\rho)\to1\) i es recupera <span class="nw">\(f=Z\).</span> El factor és real perquè l'àtom és simètric.</p>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Factor de forma de l'hidrogen</div><p>En l'estat fonamental, <span class="nw">\(n(\rho)=|\psi_{100}|^2=e^{-2\rho/a_0}/(\pi a_0^3)\),</span> amb \(a_0=0.529\) Å. Substituint a l'expressió anterior,
+\[f(G)=\frac{4}{a_0^3G}\int_0^\infty\rho\,e^{-2\rho/a_0}\sin(G\rho)\,d\rho .\]
+La integral es fa escrivint el sinus com la part imaginària d'una exponencial, amb <span class="nw">\(\alpha=2/a_0\),</span> i fent servir <span class="nw">\(\int_0^\infty\rho\,e^{-s\rho}d\rho=1/s^2\):</span>
+\[\int_0^\infty\rho\,e^{-\alpha\rho}\sin(G\rho)\,d\rho=\mathrm{Im}\,\frac{1}{(\alpha-iG)^2}=\mathrm{Im}\,\frac{(\alpha+iG)^2}{(\alpha^2+G^2)^2}=\frac{2\alpha G}{(\alpha^2+G^2)^2} .\]
+Posant-ho tot junt,
+\[f(G)=\frac{16}{(4+G^2a_0^2)^2}=\frac{1}{\big(1+(Ga_0/2)^2\big)^2} .\]
+A <span class="nw">\(G=0\),</span> <span class="nw">\(f=1\),</span> com cal per a un sol electró. Per a una reflexió amb \(d=2\) Å, \(G=2\pi/d=3.14\) Å<span class="nw">\(^{-1}\),</span> \(Ga_0=1.66\) i <span class="nw">\(f=16/(4+2.76)^2=0.35\):</span> a aquest angle l'àtom d'hidrogen dispersa només el 35% de l'amplitud d'un electró puntual, i el 12% de la intensitat. Els raigs X gairebé no veuen l'hidrogen.</p></aside>
+<h3 id="sec:estructura"><span class="num">4.2</span> Factor d'estructura</h3>
+<p>A la condició de Laue, el factor d'estructura és
+\[S(\vec G)=\sum_{j=1}^{N_b}f_j(\vec G)\,e^{-i\vec G\cdot\vec r_j}, \qquad I(\vec G)\propto N^2|S(\vec G)|^2 .\]
+Per calcular-lo a la pràctica convé escriure la posició de cada àtom en coordenades fraccionàries, <span class="nw">\(\vec r_j=x_j\vec a_1+y_j\vec a_2+z_j\vec a_3\),</span> i <span class="nw">\(\vec G=h\vec b_1+k\vec b_2+l\vec b_3\).</span> En el producte escalar hi ha nou termes <span class="nw">\(\vec b_i\cdot\vec a_j\),</span> però com que \(\vec b_i\cdot\vec a_j=2\pi\delta_{ij}\) només sobreviuen els tres diagonals:
+\[\vec G\cdot\vec r_j=2\pi(hx_j+ky_j+lz_j)
+\quad\Longrightarrow\quad
+S_{hkl}=\sum_j f_j\,e^{-2\pi i(hx_j+ky_j+lz_j)} .\]
+Als càlculs que segueixen només cal recordar que, per a \(m\) enter, \(e^{-2\pi im}=1\) i <span class="nw">\(e^{-i\pi m}=(-1)^m\).</span></p>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Factors d'estructura de les xarxes FCC i BCC</div><p>La cel·la convencional cúbica de l'FCC conté 4 àtoms idèntics, de factor de forma <span class="nw">\(f\),</span> a les posicions fraccionàries <span class="nw">\((0,0,0)\),</span> <span class="nw">\((0,\tfrac12,\tfrac12)\),</span> \((\tfrac12,0,\tfrac12)\) i <span class="nw">\((\tfrac12,\tfrac12,0)\).</span> Les fases \(2\pi(hx_j+ky_j+lz_j)\) valen, respectivament, <span class="nw">\(0\),</span> <span class="nw">\(\pi(k+l)\),</span> \(\pi(h+l)\) i <span class="nw">\(\pi(h+k)\),</span> i per tant
+\[S_{hkl}=f\left[1+(-1)^{k+l}+(-1)^{h+l}+(-1)^{h+k}\right].\]
+Si \(h,k,l\) són tots parells o tots senars, les tres sumes de parelles són parelles, tots els termes valen \(+1\) i <span class="nw">\(S=4f\).</span> Si la paritat és mixta, dos índexs tenen la mateixa paritat i el tercer no; si el diferent és <span class="nw">\(h\),</span> \(k+l\) és parell però \(h+l\) i \(h+k\) són senars, i \(S=f(1+1-1-1)=0\) — qualsevol altra tria dona el mateix. Així, <span class="nw">\((100)\),</span> <span class="nw">\((110)\),</span> \((210)\) i \((211)\) tenen <span class="nw">\(S=0\),</span> mentre que <span class="nw">\((111)\),</span> \((200)\) i \((220)\) tenen <span class="nw">\(S=4f\):</span> és la regla de selecció FCC, i és per això que el primer pic del coure és el <span class="nw">\((111)\).</span></p>
+<p>La BCC té 2 àtoms a la cel·la convencional, a \((0,0,0)\) i <span class="nw">\((\tfrac12,\tfrac12,\tfrac12)\).</span> La segona fase és <span class="nw">\(2\pi\cdot\tfrac12(h+k+l)=\pi(h+k+l)\),</span> i
+\[S_{hkl}=f\left[1+(-1)^{h+k+l}\right],\]
+que val \(2f\) si \(h+k+l\) és parell i \(0\) si és senar: \((100)\) i \((111)\) queden prohibides, i \((110)\) i <span class="nw">\((200)\),</span> permeses.</p>
+<p>Alternativament, amb la cel·la <em>primitiva</em> de l'FCC (<span class="nw">\(\vec a_1=\tfrac a2(0,1,1)\),</span> etc., amb recíproca BCC de vectors <span class="nw">\(\tfrac{2\pi}{a}(-1,1,1)\),</span> \(\tfrac{2\pi}a(1,-1,1)\) i <span class="nw">\(\tfrac{2\pi}a(1,1,-1)\))</span> no cal cap factor d'estructura: només hi ha un àtom per cel·la primitiva, i totes les combinacions enteres de \(\vec b_1,\vec b_2,\vec b_3\) donen reflexió amb <span class="nw">\(S=f\).</span> La cel·la convencional compta 4 vegades més àtoms (<span class="nw">\(S_{\text{conv}}/4=S_{\text{prim}}=f\)),</span> i el factor d'estructura ho compensa exactament anul·lant les reflexions que la cel·la primitiva mai hauria generat. El mateix passa amb la BCC, la recíproca de la qual és FCC.</p></aside>
+<p>L'anàleg en dues dimensions de la BCC és la xarxa quadrada centrada: dos àtoms iguals a \((0,0)\) i <span class="nw">\((\tfrac12,\tfrac12)\),</span> amb <span class="nw">\(S_{hk}=f\big[1+(-1)^{h+k}\big]\).</span> Al llarg de <span class="nw">\(\Delta\vec k=\xi\,\vec b_1\),</span> \(S(\xi)=f\big(1+e^{-i\pi\xi}\big)\) i <span class="nw">\(|S|^2=2f^2\big(1+\cos\pi\xi\big)\),</span> que s'anul·la exactament als \(\xi\) senars.</p>
+<p>   </p>
+<div class="centrat"><p> 
+<img src="imatges/sim_bcc_mapa.png" alt="" style="width:36%"> 
+<img src="imatges/sim_bcc_fletxes.png" alt="" style="width:36%"> 
+<img src="imatges/sim_bcc_tall.png" alt="" style="width:100%"> 
+<span class="peu-figura">  Xarxa quadrada centrada amb dos àtoms iguals. <em>Dalt, a l'esquerra:</em> \(|F|^2\) (escala logarítmica); els cercles \(\vec G\) amb \(h+k\) senar, com \((1,0)\) i <span class="nw">\((0,1)\),</span> no tenen pic. <em>Dalt, a la dreta:</em> les dues fletxes de \(S\) a <span class="nw">\(\Delta\vec k=\vec G_{10}\),</span> iguals i oposades: <span class="nw">\(S=0\).</span> <em>Baix:</em> \(|F|^2\) al llarg de <span class="nw">\(\Delta\vec k=\xi\,\vec b_1\);</span> en discontinu, <span class="nw">\(|S|^2\),</span> que passa per zero a <span class="nw">\(\xi=\pm1,\pm3\).</span></span></p></div>
+<p>  </p>
+<aside class="caixa alsimulador"><div class="caixa-cap"><span class="caixa-tipus">Simulador</span> una reflexió prohibida</div><div class="sim-incrustat" data-src="../../simuladors/02_xarxa_reciproca_difraccio/factors_difraccio.html?incrustat=1&amp;preset=sqc_eq&amp;terme=F&amp;log=1&amp;tall=1,0&amp;dk=1,0&amp;N=6&amp;obre=fletxes&amp;mostra=selTerme,chkFase,canvasCut,canvasReal,fletxes" style="min-height:1000px"><div class="sim-carregant">Carregant la simulació…</div></div><p><strong>Exploració proposada.</strong></p>
+<ol><li>Amb la magnitud \(|L|^2\) el pic de \(\vec G_{10}\) hi és, perquè \(L\) no depèn de la base. Amb \(|F|^2\) el pic desapareix: l'anul·la <span class="nw">\(S\).</span></li><li>En recórrer \(\Delta\vec k\) al llarg del tall, de \(\xi=0\) a <span class="nw">\(\xi=2\),</span> la segona fletxa de \(S\) gira mitja volta per cada unitat de \(\xi\) (<span class="nw">\(e^{-i\pi\xi}\)),</span> i a \(\xi=1\) queda just en contra de la primera.</li><li>Amb l'opció “Acoloreix els àtoms per la seva fase” a <span class="nw">\(\vec G_{10}\),</span> els àtoms dels vèrtexs i els del centre tenen colors oposats.</li><li>Amb el tall en la direcció \((1,1)\) la fase de l'àtom central és <span class="nw">\(e^{-2\pi i\xi}\),</span> que val 1 a tots els enters: no falta cap pic, d'acord amb la regla \(h+k\) parell.</li></ol></aside>
+<p>Quan els àtoms de la base no són iguals, els factors de forma deixen de ser un simple factor comú i passen a decidir la intensitat de cada reflexió. L'estructura de la sal n'és l'exemple més clar.</p>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Àtoms diferents: NaCl i KCl</div><p>L'estructura de la sal és una xarxa FCC amb una base de dos ions. A la cel·la convencional hi ha 8 ions: Na\(^+\) a les 4 posicions FCC del càlcul anterior i Cl\(^-\) a les mateixes posicions desplaçades <span class="nw">\((\tfrac12,\tfrac12,\tfrac12)\).</span> Cada clor aporta la fase del seu sodi corresponent més <span class="nw">\(2\pi\cdot\tfrac12(h+k+l)\),</span> de manera que la suma es factoritza:
+\[S_{hkl}=\left[1+(-1)^{k+l}+(-1)^{h+l}+(-1)^{h+k}\right]\left[f_{\text{Na}}+f_{\text{Cl}}\,(-1)^{h+k+l}\right].\]
+El primer claudàtor és el de l'FCC, que val 4 o 0. Dins les reflexions permeses, si \(h,k,l\) són tots parells (\(h+k+l\) parell) els dos ions sumen, <span class="nw">\(S=4(f_{\text{Na}}+f_{\text{Cl}})\);</span> si són tots senars (\(h+k+l\) senar), es resten, <span class="nw">\(S=4(f_{\text{Na}}-f_{\text{Cl}})\).</span></p>
+<p>Una estimació aproximada, prenent \(f\approx Z\) (Na\(^+\) té 10 electrons i Cl\(^-\) en té 18), dona per a les reflexions de tots senars, com la <span class="nw">\((111)\),</span> <span class="nw">\(|S|^2\propto(18-10)^2=64\),</span> davant de \((18+10)^2=784\) per a les de tots parells: són unes 12 vegades més febles, però visibles. Al KCl, K\(^+\) i Cl\(^-\) tenen tots dos 18 electrons, <span class="nw">\(f_{\text{K}}\approx f_{\text{Cl}}\),</span> i les reflexions de tots senars pràcticament desapareixen: el difractograma del KCl sembla el d'una xarxa cúbica simple de costat <span class="nw">\(a/2\),</span> perquè els raigs X gairebé no distingeixen els dos ions.</p>
+<p>Prendre \(f=Z\) és suposar ions puntuals. En realitat \(f\) decreix amb \(G\) i no ho fa igual per als dos ions, i les intensitats mesurades depenen també de la multiplicitat de cada família de plans i dels factors geomètrics del difractòmetre; l'estimació dona l'ordre de magnitud, no el valor exacte.</p></aside>
+<p>En l'anàleg bidimensional, la quadrada centrada amb dos àtoms diferents, <span class="nw">\(S_{hk}=f_1+f_2(-1)^{h+k}\).</span> Al llarg de <span class="nw">\(\Delta\vec k=\xi\,\vec b_1\),</span> <span class="nw">\(|S|^2=f_1^2+f_2^2+2f_1f_2\cos\pi\xi\):</span> als \(\xi\) senars val <span class="nw">\((f_1-f_2)^2\),</span> petit però no zero.</p>
+<p>   </p>
+<div class="centrat"><p> 
+<img src="imatges/sim_nacl_fletxes.png" alt="" style="width:30%"> 
+{<img src="imatges/sim_nacl_tall.png" alt="" style="width:67%">} 
+<span class="peu-figura">  Quadrada centrada amb \(Z_1=18\) i \(Z_2=10\) (com el NaCl). <em>Esquerra:</em> a \(\Delta\vec k=\vec G_{10}\) les dues fletxes de \(S\) són oposades però de longitud diferent, i en queda la diferència. <em>Dreta:</em> \(|F|^2\) al llarg de <span class="nw">\(\Delta\vec k=\xi\,\vec b_1\);</span> els pics senars són febles, no absents.</span></p></div>
+<p>  </p>
+<aside class="caixa alsimulador"><div class="caixa-cap"><span class="caixa-tipus">Simulador</span> NaCl i KCl</div><div class="sim-incrustat" data-src="../../simuladors/02_xarxa_reciproca_difraccio/factors_difraccio.html?incrustat=1&amp;preset=sqc_diff&amp;terme=F&amp;log=1&amp;tall=1,0&amp;dk=1,0&amp;N=6&amp;obre=fletxes&amp;mostra=canvasCut,fletxes" style="min-height:820px"><div class="sim-carregant">Carregant la simulació…</div></div><p><strong>Exploració proposada.</strong></p>
+<ol><li>A \(\vec G_{10}\) les fletxes de \(S\) es resten (<span class="nw">\(f_1-f_2\));</span> a \(\vec G_{20}\) se sumen (<span class="nw">\(f_1+f_2\)).</span></li><li>Amb \(Z_2=18\) i <span class="nw">\(\sigma_2=0.10\),</span> iguals que l'àtom 1, el sistema és el KCl: els pics senars desapareixen i el difractograma sembla el d'una xarxa quadrada de costat <span class="nw">\(a/\sqrt2\).</span></li><li>Mantenint \(Z_2=18\) i variant només <span class="nw">\(\sigma_2\),</span> els pics senars tornen a aparèixer lleugerament: els dos ions tenen la mateixa <span class="nw">\(Z\),</span> però si no tenen la mateixa mida \(f\) no cau igual per a tots dos, i fora de l'origen <span class="nw">\(f_1-f_2\neq0\).</span></li></ol></aside>
+<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Convencional amb factor d'estructura, o primitiva sense: el mateix resultat</div><p>Les dues vies de càlcul — cel·la convencional, amb més àtoms i per tant amb factor d'estructura, i cel·la primitiva, amb un sol àtom i sense cap ponderació — són sempre equivalents: descriuen la mateixa física amb una comptabilitat diferent del mateix conjunt de punts de la xarxa recíproca. Que una reflexió aparegui prohibida per simetria en la descripció convencional (com la \((100)\) de l'FCC) és exactament el mateix fet que, en la descripció primitiva, aquell vector \(\tfrac{2\pi}a(1,0,0)\) simplement no pertanyi a la xarxa recíproca primitiva. No calen dos arguments físics diferents, només dues maneres equivalents d'indexar-lo.</p></aside>
+  </article>
+</div>
+
+<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../apunts.js"></script>
+</body>
+</html>

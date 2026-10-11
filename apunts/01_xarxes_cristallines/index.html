@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema 1: Xarxes cristal·lines — Apunts</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="../estil_apunts.css">
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="logo-bloc">
+    <a href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="UAB"></a>
+  </div>
+  <div class="tema-actual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M3 19 L9 19 L15 19 M5 13 L11 13 L17 13 M7 7 L13 7 L19 7" opacity=".55"/><path d="M3 19 L5 13 L7 7 M9 19 L11 13 L13 7 M15 19 L17 13 L19 7" opacity=".55"/><circle cx="3" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="11" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="17" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="7" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="13" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="7" r="1.4" fill="currentColor" stroke="none"/></svg>Tema 1: Xarxes cristal·lines</div>
+  <div class="titol-curs">Física de l'Estat Sòlid</div>
+</header>
+
+<div class="pagina">
+  <aside class="lateral">
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#s1"><span class="num">1</span> Xarxa de Bravais i vectors primitius</a><ol>
+<li><a href="#s1-1"><span class="num">1.1</span> Cel·la primitiva, cel·la convencional i cel·la de Wigner-Seitz</a></li>
+</ol></li>
+<li><a href="#sec:simetries"><span class="num">2</span> Simetries de rotació compatibles amb la translació</a><ol>
+</ol></li>
+<li><a href="#s3"><span class="num">3</span> Xarxes de Bravais en 1D, 2D i 3D</a><ol>
+<li><a href="#s3-1"><span class="num">3.1</span> 1D</a></li>
+<li><a href="#s3-2"><span class="num">3.2</span> 2D</a></li>
+<li><a href="#s3-3"><span class="num">3.3</span> 3D</a></li>
+</ol></li>
+<li><a href="#sec:base"><span class="num">4</span> Base atòmica: cristall \(=\) xarxa \(+\) base</a><ol>
+</ol></li>
+<li><a href="#s5"><span class="num">5</span> Càlcul de paràmetres d'ocupació</a><ol>
+<li><a href="#s5-1"><span class="num">5.1</span> Densitat numèrica i densitat màssica</a></li>
+<li><a href="#s5-2"><span class="num">5.2</span> Distància entre plans cristal·logràfics i densitat superficial</a></li>
+<li><a href="#s5-3"><span class="num">5.3</span> Fracció d'ocupació (<em>packing fraction</em>)</a></li>
+</ol></li>
+</ol></nav>
+  </aside>
+
+  <article class="apunts">
+    <h1><span class="tema-num">Tema 1</span>Xarxes cristal·lines</h1>
+    <details class="index-mobil">
+      <summary>Índex</summary>
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#s1"><span class="num">1</span> Xarxa de Bravais i vectors primitius</a><ol>
+<li><a href="#s1-1"><span class="num">1.1</span> Cel·la primitiva, cel·la convencional i cel·la de Wigner-Seitz</a></li>
+</ol></li>
+<li><a href="#sec:simetries"><span class="num">2</span> Simetries de rotació compatibles amb la translació</a><ol>
+</ol></li>
+<li><a href="#s3"><span class="num">3</span> Xarxes de Bravais en 1D, 2D i 3D</a><ol>
+<li><a href="#s3-1"><span class="num">3.1</span> 1D</a></li>
+<li><a href="#s3-2"><span class="num">3.2</span> 2D</a></li>
+<li><a href="#s3-3"><span class="num">3.3</span> 3D</a></li>
+</ol></li>
+<li><a href="#sec:base"><span class="num">4</span> Base atòmica: cristall \(=\) xarxa \(+\) base</a><ol>
+</ol></li>
+<li><a href="#s5"><span class="num">5</span> Càlcul de paràmetres d'ocupació</a><ol>
+<li><a href="#s5-1"><span class="num">5.1</span> Densitat numèrica i densitat màssica</a></li>
+<li><a href="#s5-2"><span class="num">5.2</span> Distància entre plans cristal·logràfics i densitat superficial</a></li>
+<li><a href="#s5-3"><span class="num">5.3</span> Fracció d'ocupació (<em>packing fraction</em>)</a></li>
+</ol></li>
+</ol></nav>
+    </details>
+<h2 id="s1"><span class="num">1</span> Xarxa de Bravais i vectors primitius</h2>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Xarxa de Bravais</div><p>Una xarxa de Bravais és el conjunt infinit i discret de punts
+\[\vec{T} = n_1\vec{a}_1 + n_2\vec{a}_2 + n_3\vec{a}_3, \qquad n_1,n_2,n_3\in\mathbb{Z},\]
+generat per translacions enteres de tres vectors \(\vec{a}_1,\vec{a}_2,\vec{a}_3\) <strong>no coplanars</strong>, anomenats <strong>vectors primitius</strong>. La propietat que defineix la xarxa és que té exactament el mateix aspecte vist des de qualsevol dels seus punts: l'entorn d'un punt \(\vec{T}\) és indistingible de l'entorn de l'origen.</p></aside>
+<p>La xarxa de Bravais només descriu la <em>periodicitat</em>: no diu res, encara, de quins àtoms hi ha ni de com estan col·locats dins de cada període — això ho farà més endavant la <em>base</em> (secció <a href="#sec:base">4</a>).</p>
+<p>Els vectors primitius no són únics. Donada una xarxa, existeixen infinites eleccions vàlides de <span class="nw">\(\{\vec{a}_1,\vec{a}_2,\vec{a}_3\}\):</span> qualsevol combinació lineal amb coeficients enters i determinant \(\pm1\) d'una base primitiva en dona una altra d'igualment vàlida. Dues bases \(\{\vec{a}_i\}\) i \(\{\vec{a}'_i\}\) generen la <em>mateixa</em> xarxa si i només si existeix una matriu \(M\) de coeficients enters, amb \(M^{-1}\) també de coeficients enters, tal que <span class="nw">\(\vec{a}'_i=\sum_j M_{ij}\vec{a}_j\).</span> En particular, això vol dir que si es pot escriure cada \(\vec{a}_i\) com a combinació lineal entera dels \(\vec{a}'_j\) (i viceversa), les dues bases són equivalents.</p>
+<h3 id="s1-1"><span class="num">1.1</span> Cel·la primitiva, cel·la convencional i cel·la de Wigner-Seitz</h3>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Cel·la unitat</div><p>Una <strong>cel·la unitat</strong> és un volum que, amb un subconjunt de translacions de la xarxa de Bravais, omple tot l’espai sense solapaments.</p></aside>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Cel·la primitiva</div><p>Una <strong>cel·la primitiva</strong> és la mínima regió de l'espai que, repetida per totes les translacions \(\vec{T}\) de la xarxa, omple tot l'espai exactament un cop (sense buits ni solapaments).</p></aside>
+<p>El volum de la cel·la primitiva és sempre el mateix, independentment de la forma concreta que es triï:
+\[V_{\text{primitiva}} = |\vec{a}_1\cdot(\vec{a}_2\times\vec{a}_3)|.\]</p>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Cel·la convencional</div><p>Per a xarxes amb simetria addicional (com les cúbiques centrades), sovint és més còmode treballar amb una <strong>cel·la convencional</strong> més gran i geomètricament més simètrica (per exemple, el cub complet en comptes del paral·lelepípede primitiu) — al preu que la cel·la convencional pot contenir més d'un punt de xarxa. La relació entre els dos volums indica quants punts de xarxa "amaga" la cel·la convencional respecte de la primitiva.</p></aside>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Cel·la de Wigner-Seitz</div><p>La cel·la de Wigner-Seitz d'un punt de la xarxa és la regió de l'espai més propera a aquest punt que a qualsevol altre punt de la xarxa. Es construeix traçant els plans perpendiculars, pel punt mitjà, a cada segment que uneix el punt amb els seus veïns, i prenent la regió tancada per aquests plans. És sempre una cel·la primitiva vàlida, i té l'avantatge de reflectir directament la simetria puntual de la xarxa (a diferència d'un paral·lelepípede genèric).</p></aside>
+<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Cel·les de Wigner-Seitz amb nom propi: BCC i FCC</div><div class="taula-wrap"><table class="taula"><tbody><tr><td><img src="imatges/bcc_wigner_seitz.png" alt="" style="width:202px"></td><td><img src="imatges/fcc_wigner_seitz.png" alt="" style="width:202px"></td></tr><tr><td>BCC: octàedre truncat</td><td>FCC: dodecàedre ròmbic</td></tr></tbody></table></div>
+<p>Per a la BCC, la cel·la de Wigner-Seitz és un <strong>octàedre truncat</strong> (un sòlid arquimedià, també anomenat tetracaidecàedre). Per a la FCC, és un <strong>dodecàedre ròmbic</strong> (un sòlid de Catalan, 12 cares romboïdals). Cap de les dues té la forma del cub convencional — però totes dues, com qualsevol cel·la de Wigner-Seitz, omplen l'espai per repetició sense buits ni solapaments, i contenen exactament un punt de xarxa.</p></aside>
+<h2 id="sec:simetries"><span class="num">2</span> Simetries de rotació compatibles amb la translació</h2>
+<p>Una pregunta natural: quines rotacions puntuals pot admetre una xarxa periòdica? La resposta és sorprenentment restrictiva, i és l'origen últim dels 7 sistemes cristal·lins.</p>
+<figure class="tikz"><img src="figures/fig_01.svg" alt="" loading="lazy"></figure>
+<p>Siguin dos punts contigus d'una xarxa de Bravais (en <strong><span style="color:#006B3F">verd</span></strong> a la figura) separats una distància <span class="nw">\(\ell\).</span> Apliquem a cadascun una rotació d'angle \(\alpha=2\pi/n\) al voltant d'un eix perpendicular que passi per un punt de la xarxa; aquesta transformació porta cada punt original al corresponent punt <strong><span style="color:#1F6FEB">blau</span></strong>, que també ha de ser un punt de la xarxa (per definició, una simetria de rotació deixa la xarxa invariant). La distància entre els dos punts rotats, projectada sobre la direcció original, ha de ser també un múltiple enter \(m\ell\) del paràmetre de xarxa:
+\[\ell + 2\ell\cos\alpha = m\ell, \qquad m\in\mathbb{Z}.\]
+Com que <span class="nw">\(-1\leq\cos\alpha\leq1\),</span> això només és possible per a <span class="nw">\(m\in\{-1,0,1,2,3\}\),</span> és a dir
+\[\alpha = 180^\circ,\ 120^\circ,\ 90^\circ,\ 60^\circ,\ 0^\circ \quad\Longleftrightarrow\quad n=2,3,4,6,1.\]
+Una rotació de \(n=5\) (o <span class="nw">\(n\geq7\))</span> mai és compatible amb una xarxa periòdica infinita — per això no existeix cap cristall amb simetria pentagonal exacta, per molt bonic que sigui l'exemple d'un pentàgon aïllat.</p>
+<p><strong>Només \(n=1,2,3,4,6\) són compatibles amb la periodicitat</strong>. Això no vol dir que una xarxa donada tingui totes aquestes simetries: la xarxa obliqua en 2D només té \(n=1,2\) (cap simetria addicional), mentre que l'hexagonal en té <span class="nw">\(n=6\).</span> El conjunt de totes les simetries puntuals (rotacions, reflexions) que deixen invariant una xarxa donada s'anomena el seu <strong>grup puntual</strong>, i un <strong>sistema cristal·lí</strong> és, per definició, el conjunt de xarxes de Bravais que comparteixen el mateix grup puntual. En 3D hi ha exactament 7 sistemes cristal·lins (cúbic, tetragonal, ortoròmbic, monoclínic, triclínic, trigonal i hexagonal) — cadascun és una "família" dins la qual poden aparèixer diverses xarxes de Bravais (el sistema cúbic, per exemple, conté les xarxes SC, BCC i FCC).</p>
+<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Totes les xarxes de Bravais tenen centre d'inversió</div><p>A diferència de les rotacions — que varien d'una xarxa a l'altra, entre \(n=1\) i \(n=6\) —, hi ha una simetria que <strong>cap</strong> xarxa de Bravais deixa mai d'admetre: la inversió, <span class="nw">\(\vec r\to-\vec r\).</span> La demostració és immediata a partir de la pròpia definició: si \(\vec T=n_1\vec a_1+n_2\vec a_2+n_3\vec a_3\) és un punt de la xarxa, també ho és
+\[-\vec T = (-n_1)\vec a_1+(-n_2)\vec a_2+(-n_3)\vec a_3,\]
+ja que el negatiu d'un nombre enter també és un nombre enter. Aquest fet és el que fa servir l'Exercici 1b de l'entregable per descartar, sense mesurar res, que cap de les xarxes de Tema 1 pugui ser piezoelèctrica (principi de Neumann) — i també per què cal anar amb compte: que la <em>xarxa</em> tingui sempre centre d'inversió no vol dir que el <em>cristall</em> (xarxa \(+\) base) també el tingui, si la base no és ella mateixa centrosimètrica respecte del mateix punt.</p></aside>
+<h2 id="s3"><span class="num">3</span> Xarxes de Bravais en 1D, 2D i 3D</h2>
+<h3 id="s3-1"><span class="num">3.1</span> 1D</h3>
+<p>En una dimensió només hi ha una xarxa de Bravais possible: punts equiespaiats <span class="nw">\(x=na\).</span></p>
+<figure class="tikz"><img src="figures/fig_02.svg" alt="" loading="lazy"></figure>
+<h3 id="s3-2"><span class="num">3.2</span> 2D</h3>
+<p>En dues dimensions, un cop s'imposen totes les simetries de rotació compatibles amb la periodicitat (secció <a href="#sec:simetries">2</a>), només hi ha <strong>5 xarxes de Bravais</strong> diferents:</p>
+<div class="taula-wrap"><table class="taula"><tbody><tr><td><img src="imatges/cuadrada.png" alt="" style="width:160px"></td><td><img src="imatges/rectangular.png" alt="" style="width:160px"></td><td><img src="imatges/rectangular_centrada.png" alt="" style="width:160px"></td></tr><tr><td>Quadrada: <span class="nw">\(a=b\),</span> \(\alpha=90^\circ\)</td><td>Rectangular: <span class="nw">\(a\neq b\),</span> \(\alpha=90^\circ\)</td><td>Rectangular centrada</td></tr><tr><td><img src="imatges/hexagonal.png" alt="" style="width:160px"></td><td><img src="imatges/obliqua.png" alt="" style="width:160px"></td><td></td></tr><tr><td>Hexagonal: <span class="nw">\(a=b\),</span> \(\alpha=60^\circ\)</td><td>Obliqua: <span class="nw">\(a\neq b\),</span> \(\alpha\neq90^\circ\)</td><td></td></tr></tbody></table></div>
+<h3 id="s3-3"><span class="num">3.3</span> 3D</h3>
+<p>En tres dimensions, el mateix argument de compatibilitat entre rotació i translació (secció <a href="#sec:simetries">2</a>) restringeix les possibilitats a <strong>14 xarxes de Bravais</strong>, agrupades en <strong>7 sistemes cristal·lins</strong> (cúbic, tetragonal, ortoròmbic, monoclínic, triclínic, trigonal i hexagonal) segons quines simetries de rotació addicionals admeten. La figura següent mostra les 14 xarxes agrupades pels 7 sistemes:</p>
+<div class="centrat"><p><img src="imatges/bravais.jpg" alt="" style="width:100%"></p></div>
+<p>Per a sistemes cúbics, els vectors primitius habituals per a una xarxa de costat de cub convencional <span class="nw">\(a\))</span> són</p>
+<p>\[\text{SC:}\quad \vec{a}_1=\tfrac{a}{2}(1,0,0),\ \ \vec{a}_2=\tfrac{a}{2}(0,1,0),\ \ \vec{a}_3=\tfrac{a}{2}(0,0,1),\]
+\[\text{BCC:}\quad \vec{a}_1=\tfrac{a}{2}(-1,1,1),\ \ \vec{a}_2=\tfrac{a}{2}(1,-1,1),\ \ \vec{a}_3=\tfrac{a}{2}(1,1,-1),\]
+\[\text{FCC:}\quad \vec{a}_1=\tfrac{a}{2}(0,1,1),\ \ \vec{a}_2=\tfrac{a}{2}(1,0,1),\ \ \vec{a}_3=\tfrac{a}{2}(1,1,0).\]</p>
+<p>Els vectors per a BCC i FCC defineixen un cub convencional de costat <span class="nw">\(a\):</span> la cel·la primitiva real és més petita (i menys simètrica visualment) que la cel·la convencional. Amb aquests vectors, un punt genèric de la xarxa \(\vec{T}=l\vec{a}_1+m\vec{a}_2+n\vec{a}_3=\tfrac{a}{2}(\lambda,\mu,\nu)\) només pot tenir certes combinacions de \((\lambda,\mu,\nu)\) enters.</p>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Volum de la cel·la primitiva de l'FCC</div><p>Amb els vectors primitius de més amunt, el volum és el producte mixt <span class="nw">\(V_{\text{primitiva}}=|\vec{a}_1\cdot(\vec{a}_2\times\vec{a}_3)|\).</span> Primer el producte vectorial:
+\[\vec{a}_2\times\vec{a}_3 = \frac{a^2}{4}(1,0,1)\times(1,1,0) = \frac{a^2}{4}(-1,1,1).\]
+I ara el producte escalar amb <span class="nw">\(\vec{a}_1\):</span>
+\[V_{\text{primitiva}} = \left|\frac{a}{2}(0,1,1)\cdot\frac{a^2}{4}(-1,1,1)\right| = \frac{a^3}{8}\big|0+1+1\big| = \frac{a^3}{4}.\]
+Com que la cel·la convencional (el cub complet) té volum <span class="nw">\(a^3\),</span> la primitiva n'és exactament \(1/4\) — coherent amb el fet que la cel·la convencional de l'FCC conté \(4\) punts de xarxa (vèrtexs \(8\times\tfrac18\) més cares <span class="nw">\(6\times\tfrac12\),</span> Pas 0 de l'entregable). El mateix càlcul amb els vectors de la BCC dona \(V_{\text{primitiva}}=a^3/2\) (la convencional en conté \(2\) punts), i amb els de la SC, \(V_{\text{primitiva}}=a^3\) (en conté \(1\) sol punt, i coincideix amb la convencional).</p></aside>
+<figure class="tikz"><img src="figures/fig_03.svg" alt="" loading="lazy"></figure>
+<p>Als tres dibuixos, els punts verds són els vèrtexs del cub convencional (compartits, \(1/8\) cadascun); els vermells són les posicions addicionals que distingeixen cada estructura d'una xarxa cúbica simple "buida" (al cos per a BCC, al centre de cada cara — només se'n veuen 3 de les 6, les altres queden amagades per simetria — per a FCC). El diamant hi afegeix, en ambre, els 4 àtoms de la <strong>base</strong> (secció <a href="#sec:base">4</a>): no formen part de la xarxa de Bravais FCC pròpiament dita, sinó del motiu que s'hi enganxa a cada punt.</p>
+<h2 id="sec:base"><span class="num">4</span> Base atòmica: cristall \(=\) xarxa \(+\) base</h2>
+<aside class="caixa definicio"><div class="caixa-cap"><span class="caixa-tipus">Definició</span> Estructura cristal·lina</div><p>Una <strong>estructura cristal·lina</strong> s'obté associant a <em>cada</em> punt de la xarxa de Bravais una <strong>base</strong> (o motiu): un conjunt fix d'un o més àtoms, amb les seves posicions relatives, que es repeteix idènticament a cada punt de xarxa. Formalment,
+\[\text{estructura cristal·lina} = \text{xarxa de Bravais} + \text{base}.\]
+La xarxa de Bravais descriu <em>on</em> es repeteix el patró; la base descriu <em>què</em> es repeteix.</p></aside>
+<p>De manera més formal, la posició de qualsevol àtom del cristall es pot escriure com
+\[\vec r = \vec T + \vec R_c,\]
+on \(\vec T\) és un vector qualsevol de la xarxa de Bravais i \(\vec R_c\) és la posició fixa de l'àtom \(c\) dins la base, relativa a l'origen de la cel·la — el mateix conjunt \(\{\vec R_c\}\) es repeteix, sense canviar, a cada <span class="nw">\(\vec T\).</span></p>
+<p>Aquesta distinció és més subtil del que sembla a primer cop d'ull, perquè <strong>la mateixa disposició d'àtoms pot amagar xarxes de Bravais diferents</strong> segons quins àtoms es considerin "el mateix tipus":</p>
+<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> NaCl: FCC \(+\) base de 2 àtoms, no una xarxa cúbica simple</div><div class="centrat"><p><img src="imatges/na_cl_structure.jpg" alt="" style="width:197px"></p></div>
+<p>Si tots els ions de la figura fossin idèntics, els punts formarien una xarxa cúbica simple. Però com que hi ha dos tipus d'ions alternats (Na\(^+\) en gris, Cl\(^-\) en verd), la simetria de translació real només porta un ió Na\(^+\) a un altre ió Na\(^+\) (o un Cl\(^-\) a un altre Cl<span class="nw">\(^-\))</span> — mai un Na\(^+\) a un Cl<span class="nw">\(^-\).</span> Els ions d'un sol tipus formen, per si sols, una xarxa <strong>FCC</strong>; l'estructura completa és aquesta xarxa FCC amb una <strong>base de dos ions</strong> (un Na\(^+\) i un Cl<span class="nw">\(^-\),</span> desplaçats mig paràmetre de xarxa entre ells). Amb la notació \(\vec r=\vec T+\vec R_c\) de més amunt, i \(a\) el paràmetre de la cel·la convencional, la base és explícitament
+\[\text{Na}^+ \text{ a } (0,0,0),\ \left(\tfrac a2,\tfrac a2,0\right),\ \left(0,\tfrac a2,\tfrac a2\right),\ \left(\tfrac a2,0,\tfrac a2\right);\]
+\[\text{Cl}^- \text{ a } \left(\tfrac a2,\tfrac a2,\tfrac a2\right),\ \left(0,\tfrac a2,0\right),\ \left(0,0,\tfrac a2\right),\ \left(\tfrac a2,0,0\right),\]
+és a dir, dues xarxes FCC completes (una de Na<span class="nw">\(^+\),</span> una de Cl<span class="nw">\(^-\))</span> desplaçades mig paràmetre de xarxa al llarg d'una aresta. Treballar-ho amb detall és exactament l'Exercici 1.6.</p></aside>
+<p>Un segon exemple, encara més ric, és l'<strong>estructura tipus diamant</strong>: dues xarxes FCC entrellaçades, desplaçades \(\tfrac14\) de la diagonal principal de la cel·la convencional l'una respecte de l'altra — és a dir, una xarxa FCC amb una base de 2 àtoms idèntics a \((0,0,0)\) i \(\left(\tfrac a4,\tfrac a4,\tfrac a4\right)\) (els punts ambre de la figura de la secció anterior). Aquesta estructura (que comparteixen el diamant, el silici i el germani) té una fracció d'ocupació geomètrica notablement menor que una FCC "plena" (Exercici 1.7), perquè els àtoms de les dues subxarxes es "fan nosa" mútuament sense arribar mai a tocar-se tan eficientment com en un empaquetament compacte.</p>
+<p>Finalment, un aliatge <strong>ordenat</strong> (a diferència d'una simple substitució aleatòria) també es descriu amb aquest llenguatge: al compost Ni\(_3\)Al, els àtoms d'alumini ocupen sistemàticament els vèrtexs d'un cub mentre el níquel ocupa els centres de les cares — vegeu l'Exercici 1.5 per identificar-ne la xarxa de Bravais i la base.</p>
+<div class="centrat"><p><img src="imatges/AlNi3_mp-2593_primitive.png" alt="" style="width:212px"></p></div>
+<h2 id="s5"><span class="num">5</span> Càlcul de paràmetres d'ocupació</h2>
+<h3 id="s5-1"><span class="num">5.1</span> Densitat numèrica i densitat màssica</h3>
+<p>La densitat numèrica \(n\) és el nombre d'àtoms per unitat de volum:
+\[n = \frac{N}{V_{\text{cel·la}}},\]
+on \(N\) és el nombre d'àtoms continguts a la cel·la (comptats complets, igual que per calcular <span class="nw">\(f\))</span> i \(V_{\text{cel·la}}\) el seu volum. El resultat no depèn de quina cel·la es triï: si la cel·la convencional conté \(Z\) vegades més àtoms que la primitiva, també té \(Z\) vegades més volum, i el quocient \(n\) és el mateix.</p>
+<p>Un cop es coneix <span class="nw">\(n\),</span> la densitat màssica \(\rho\) s'obté multiplicant per la massa de cada àtom:
+\[\rho = n\, m_{\text{àtom}} = \frac{N}{V_{\text{cel·la}}}\cdot\frac{M}{N_A},\]
+on \(M\) és la massa molar de l'element (g/mol) i \(N_A\) el nombre d'Avogadro. Aquesta relació és la que permet, per exemple, deduir el paràmetre de xarxa \(a\) d'un metall a partir de la seva densitat mesurada experimentalment (o, a l'inrevés, predir \(\rho\) coneixent l'estructura cristal·lina).</p>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Densitat numèrica i màssica: exemple amb el coure</div><p>El coure cristal·litza en FCC, amb paràmetre de xarxa \(a=3.61\,\text{Å}\) i \(4\) àtoms per cel·la convencional (vèrtexs \(8\times\tfrac18\) més cares <span class="nw">\(6\times\tfrac12\),</span> com ja s'ha vist). La densitat numèrica és
+\[n = \frac{N}{V_{\text{cel·la}}} = \frac{4}{a^3} = \frac{4}{(3.61\times10^{-8}\,\mathrm{cm})^3} \approx 8.49\times10^{22}\ \text{àtoms/cm}^3.\]
+Amb la massa molar del coure, \(M=63.55\) g/mol, la densitat màssica surt
+\[\rho = n\,\frac{M}{N_A} = 8.49\times10^{22}\times\frac{63.55}{6.022\times10^{23}} \approx 8.96\ \mathrm{g/cm^3},\]
+que coincideix amb el valor real mesurat del coure (<span class="nw">\(8.96\ \mathrm{g/cm^3}\))</span> — la mateixa relació que, a l'inrevés, permet trobar \(a\) quan es coneix \(\rho\) i el nombre d'àtoms per cel·la, però no encara l'estructura exacta.</p></aside>
+<h3 id="s5-2"><span class="num">5.2</span> Distància entre plans cristal·logràfics i densitat superficial</h3>
+<p>Els àtoms d'una xarxa es poden agrupar en famílies de plans paral·lels i equiespaiats, indexats pels índexs de Miller \((hkl)\) (que introduirem amb la xarxa recíproca al proper capítol). La distància entre dos plans consecutius d'una mateixa família, <span class="nw">\(d_{hkl}\),</span> ve fixada pel vector de la xarxa recíproca \(\vec{G}_{hkl}\) associat:
+\[d_{hkl} = \frac{2\pi}{|\vec{G}_{hkl}|}.\]
+Per a un sistema cúbic de paràmetre <span class="nw">\(a\),</span> aquesta expressió es redueix a la forma més coneguda
+\[d_{hkl} = \frac{a}{\sqrt{h^2+k^2+l^2}}.\]</p>
+<p>Dins d'un pla cristal·logràfic concret, es pot definir també una densitat <em>superficial</em> <span class="nw">\(n_A\):</span> el nombre d'àtoms per unitat d'àrea continguts en aquell pla,
+\[n_A = \frac{N_{\text{pla}}}{A_{\text{pla}}}.\]</p>
+<p>Si tots els plans d'una mateixa família \((hkl)\) són equivalents per simetria de translació —cadascun conté la mateixa densitat superficial \(n_A\)— i estan separats una distància <span class="nw">\(d_{hkl}\),</span> aleshores tots els àtoms continguts en un "gruix" de cristall igual a \(d_{hkl}\) es reparteixen en un únic d'aquests plans. Volum i superfície queden així lligats per
+\[n = \frac{n_A}{d_{hkl}} \qquad\Longleftrightarrow\qquad n_A = n\, d_{hkl}.\]
+Aquesta relació és útil per estimar la densitat atòmica superficial d'un pla concret (rellevant en creixement epitaxial o en catàlisi de superfície) a partir de dades volumètriques macroscòpiques (<span class="nw">\(n\),</span> obtinguda de <span class="nw">\(\rho\)),</span> sense necessitat de comptar àtoms pla a pla.</p>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Densitat superficial i distància entre plans: el pla \((100)\) de la SC</div><p>El cas més senzill és la xarxa cúbica simple. La densitat volumètrica de nusos és \(\rho_V=1/a^3\) (un sol punt per cel·la convencional). El pla \((100)\) és, literalment, la cara del cub: un quadrat de costat \(a\) amb un nus a cadascun dels 4 vèrtexs, compartit entre 4 plans veïns del mateix full:
+\[N_{\text{pla}} = 4\times\tfrac14 = 1, \qquad n_A = \frac{N_{\text{pla}}}{A_{\text{pla}}} = \frac{1}{a^2}.\]
+La distància entre plans consecutius surt directament de <span class="nw">\(d=n_A/\rho_V\):</span>
+\[d_{100} = \frac{n_A}{\rho_V} = \frac{1/a^2}{1/a^3} = a,\]
+resultat que també es veu a ull: a la SC, cada pla \((100)\) és una capa completa d'àtoms del cub, i la següent capa idèntica és exactament un paràmetre de xarxa més enllà.</p></aside>
+<h3 id="s5-3"><span class="num">5.3</span> Fracció d'ocupació (<em>packing fraction</em>)</h3>
+<p>Una manera senzilla de quantificar "com d'atapeïda" és una estructura és preguntar-se quin percentatge del volum de la cel·la ocuparien esferes rígides idèntiques centrades a cada posició atòmica, si el seu radi es fes créixer just fins que comencessin a tocar-se entre elles:
+\[f = \frac{N\, V_{\text{esfera}}}{V_{\text{cel·la}}},\]
+on \(N\) és el nombre d'àtoms (complets, no fraccions tallades per la vora) continguts a la cel·la que es faci servir per calcular <span class="nw">\(V_{\text{cel·la}}\),</span> i el radi de l'esfera ve fixat per la distància al veí més proper. Calcular explícitament \(f\) per a les estructures cúbica simple, FCC i diamant (Exercici 1.7) és una bona manera de veure numèricament per què certes estructures (com la FCC, <span class="nw">\(f\approx0.74\),</span> el màxim possible per a esferes idèntiques) són tan freqüents en metalls reals, mentre que estructures obertes com el diamant (<span class="nw">\(f\approx0.34\))</span> només apareixen quan hi ha enllaços direccionals (covalents) que premien la baixa coordinació per sobre de l'empaquetament compacte.</p>
+  </article>
+</div>
+
+<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../apunts.js"></script>
+</body>
+</html>
