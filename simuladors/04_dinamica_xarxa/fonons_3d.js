@@ -46,7 +46,7 @@
     Si: { nom: 'Silici', est: 'diamant', M1: 28.085, M2: 28.085, a: 5.431, k1: 166, k2: 21.6, exp: { C11: 165.7, C12: 63.9, C44: 79.6 }, nota: 'k₁ ajustada a ν_opt(Γ) = 15.5 THz (Raman) i k₂ a C₄₄.' },
     sc: { nom: 'Genèric cúbic simple', est: 'sc', M1: 50, M2: 50, a: 3, k1: 30, k2: 10, nota: 'Cap element cristal·litza en cúbica simple (només el poloni): valors orientatius.' }
   };
-  const state = { est: 'fcc', mat: 'Cu', M1: 63.546, M2: 63.546, a: 3.615, k1: 27.3, k2: 0, s: 0.25, nomes100: false, car: true, dibK2: true, rot: [0.5, -0.6] };
+  const state = { est: 'fcc', mat: 'Cu', M1: 63.546, M2: 63.546, a: 3.615, k1: 27.3, k2: 0, s: 0.25, nomes100: false, car: true, dibK2: true, molles: true, rot: [0.5, -0.6] };
 
   // ---------------------------------------------------------------
   // Geometria: veïns i molles
@@ -293,17 +293,19 @@
     for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++) if ([0, 1, 2].reduce((s, k) => s + Math.abs(V[i][k] - V[j][k]), 0) === 1) { const a = proj(V[i]), b = proj(V[j]); gC.beginPath(); gC.moveTo(a.X, a.Y); gC.lineTo(b.X, b.Y); gC.stroke(); }
     const at = atomsCella();
     // molles k₁ entre àtoms de la cel·la
-    const d1 = SHELL[0];
-    gC.strokeStyle = '#7a8a80'; gC.lineWidth = 1.6;
-    for (let i = 0; i < at.length; i++) for (let j = i + 1; j < at.length; j++) {
-      const d = norm([at[i].r[0] - at[j].r[0], at[i].r[1] - at[j].r[1], at[i].r[2] - at[j].r[2]]);
-      if (Math.abs(d - d1) < 1e-6) { const a = proj(at[i].r), b = proj(at[j].r); gC.beginPath(); gC.moveTo(a.X, a.Y); gC.lineTo(b.X, b.Y); gC.stroke(); }
+    if (state.molles) {
+      const d1 = SHELL[0];
+      gC.strokeStyle = '#7a8a80'; gC.lineWidth = 1.6;
+      for (let i = 0; i < at.length; i++) for (let j = i + 1; j < at.length; j++) {
+        const d = norm([at[i].r[0] - at[j].r[0], at[i].r[1] - at[j].r[1], at[i].r[2] - at[j].r[2]]);
+        if (Math.abs(d - d1) < 1e-6) { const a = proj(at[i].r), b = proj(at[j].r); gC.beginPath(); gC.moveTo(a.X, a.Y); gC.lineTo(b.X, b.Y); gC.stroke(); }
+      }
     }
     // molles k₂ des de l'àtom més proper al centre
     let ref = at[0], best = 9;
     at.forEach(a => { const d = norm([a.r[0] - 0.5, a.r[1] - 0.5, a.r[2] - 0.5]); if (d < best) { best = d; ref = a; } });
     const fantasma = [];
-    if (state.dibK2 && state.k2 > 0) {
+    if (state.molles && state.dibK2 && state.k2 > 0) {
       gC.strokeStyle = '#d9822b'; gC.lineWidth = 1.2; gC.setLineDash([4, 3]);
       BONDS.filter(b => b.s === 2 && b.k === ref.k).forEach(b => {
         const r2 = [0, 1, 2].map(i => ref.r[i] + b.d[i]), a = proj(ref.r), c = proj(r2);
@@ -321,8 +323,12 @@
       if (!a.fant) { gC.strokeStyle = 'rgba(0,0,0,0.25)'; gC.lineWidth = 1; gC.stroke(); }
     });
     gC.fillStyle = '#555'; gC.font = '11px sans-serif'; gC.textAlign = 'left';
-    gC.fillText(EST[state.est].nom + ' · primers veïns a ' + fmt(SHELL[0] * state.a, 3) + ' Å, segons a ' + fmt(SHELL[1] * state.a, 3) + ' Å', 8, 14);
-    gC.fillText('àtom 1 (verd, M₁)' + (R > 1 ? ' · àtom 2 (taronja, M₂)' : ''), 8, H - 8);
+    if (state.molles) {
+      gC.fillText(EST[state.est].nom + ' · primers veïns a ' + fmt(SHELL[0] * state.a, 3) + ' Å, segons a ' + fmt(SHELL[1] * state.a, 3) + ' Å', 8, 14);
+      gC.fillText('àtom 1 (verd, M₁)' + (R > 1 ? ' · àtom 2 (taronja, M₂)' : ''), 8, H - 8);
+    } else {
+      gC.fillText(EST[state.est].nom.replace(/ \(.*/, '') + (R > 1 ? ' · base de 2 àtoms (verd i taronja)' : ''), 8, H - 8);
+    }
   }
   (function dragCella() {
     let on = false, last = null;
@@ -455,6 +461,8 @@
     if (p.has('qfix')) { const v = p.get('qfix').split(',').map(Number); if (v.length === 3 && v.every(isFinite)) state.qFix = v; }
     if (p.get('nomes100') === '1') state.nomes100 = true;
     if (p.get('car') === '0') state.car = false;
+    if (p.get('molles') === '0') state.molles = false;
+    if (!state.molles) { const t = cC.parentElement.querySelector('.plot-title'); if (t) t.textContent = 'La cel·la'; }
     render(true);
   })();
 })();
