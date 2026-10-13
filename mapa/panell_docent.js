@@ -137,9 +137,19 @@
 
     // detall per alumne
     const ta = el('table', 'pan-taula');
-    fila(ta, 'th', ['NIU', 'Entesos', 'Dubtes', 'Perduts', 'Exercicis', 'Notes escrites', 'Últim desat'], []);
-    files.sort((a, b) => b.ok - a.ok).forEach(r =>
-      fila(ta, 'td', [r.niu, r.ok + ' (' + pc(r.ok / TOTAL) + ')', r.dubte, r.perdut, r.ex, r.notes, dataCurta(r.t)], []));
+    fila(ta, 'th', ['NIU', 'Entesos', 'Dubtes', 'Perduts', 'Exercicis', 'Notes escrites', 'Últim desat', 'Contrasenya'], []);
+    files.sort((a, b) => b.ok - a.ok).forEach(r => {
+      const bReset = el('button', 'pan-reset', 'Restableix');
+      bReset.type = 'button';
+      bReset.title = 'Torna la contrasenya d\'aquest alumne a la de defecte';
+      bReset.addEventListener('click', async () => {
+        if (!confirm('Restablir la contrasenya de ' + r.niu + ' a la de defecte (REDACTAT' + r.niu + ')?\nL\'alumne hi podrà tornar a entrar amb aquesta.')) return;
+        bReset.disabled = true; bReset.textContent = '…';
+        try { await S.resetClau(r.niu); bReset.textContent = 'Restablerta'; }
+        catch (e) { bReset.textContent = 'Error'; bReset.disabled = false; }
+      });
+      fila(ta, 'td', [r.niu, r.ok + ' (' + pc(r.ok / TOTAL) + ')', r.dubte, r.perdut, r.ex, r.notes, dataCurta(r.t), bReset], []);
+    });
     const b3 = el('details', 'pan-bloc');
     b3.append(el('summary', null, 'Detall per alumne (' + files.length + ')'), ta);
     cos.append(b3);

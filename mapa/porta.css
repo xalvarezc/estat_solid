@@ -52,9 +52,59 @@ body.porta-tancada main, body.porta-tancada footer { display: none; }
   white-space: nowrap;
 }
 .cap-surt:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+.cap-clau {
+  font-size: .85rem; font-weight: 600; color: var(--ink-2);
+  padding: 7px 13px; border: 0; border-radius: 999px; background: none; cursor: pointer;
+  white-space: nowrap;
+}
+.cap-clau:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
 @media (max-width: 640px) {
   .cap-desat { display: none; }
 }
+
+/* ---------- diàleg de canvi de contrasenya ---------- */
+.modal-fons {
+  position: fixed; inset: 0; z-index: 120;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px 16px; overflow: auto;
+  background: rgba(11, 61, 36, .34);
+}
+.modal-caixa {
+  width: 100%; max-width: 410px;
+  background: var(--blanc);
+  border: 1px solid var(--border); border-top: 4px solid var(--uabgreen);
+  border-radius: 14px; padding: 24px 26px 20px;
+  box-shadow: 0 18px 50px rgba(11, 61, 36, .22);
+}
+.modal-caixa h2 { margin: 0 0 6px; font-size: 1.3rem; }
+.modal-nota { font-size: .82rem; color: var(--muted); margin: 0 0 16px; }
+.modal-caixa label { display: block; font-weight: 600; font-size: .83rem; color: var(--ink-2); margin: 0 0 12px; }
+.modal-caixa input {
+  display: block; width: 100%; margin-top: 5px; padding: 9px 11px;
+  font: inherit; color: var(--ink);
+  border: 1px solid var(--linia); border-radius: 8px; background: var(--paper);
+}
+.modal-caixa input:focus { outline: 2px solid var(--uabgreen); border-color: transparent; background: #fff; }
+.modal-error { color: var(--perdut); font-size: .85rem; min-height: 1.1em; margin: 2px 0 10px; }
+.modal-botons { display: flex; gap: 10px; justify-content: flex-end; }
+.modal-botons button {
+  font: inherit; font-weight: 700; font-size: .9rem;
+  padding: 9px 16px; border-radius: 999px; border: 0; cursor: pointer;
+  color: #fff; background: var(--uabgreen-dark);
+}
+.modal-botons button:hover { background: var(--verd-fosc); }
+.modal-botons button:disabled { opacity: .6; cursor: default; }
+.modal-botons .modal-sec { color: var(--ink-2); background: var(--paper-2); }
+.modal-botons .modal-sec:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+
+/* botó de restabliment de contrasenya al detall per alumne del panell */
+.pan-reset {
+  font: inherit; font-size: .78rem; font-weight: 600; color: var(--ink-2);
+  padding: 4px 10px; border: 1px solid var(--linia); border-radius: 999px;
+  background: var(--paper); cursor: pointer; white-space: nowrap;
+}
+.pan-reset:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+.pan-reset:disabled { opacity: .6; cursor: default; }
 
 /* ---------- panell docent ---------- */
 .panell {
