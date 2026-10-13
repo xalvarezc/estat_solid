@@ -6,13 +6,31 @@
 <title>Mapa del curs — Física de l'Estat Sòlid</title>
 <meta name="description" content="Les línies argumentals de Física de l'Estat Sòlid i el seguiment del teu progrés: marca què entens, on tens dubtes i on t'has perdut.">
 <!-- Mapa conceptual del curs. Contingut: mapa_dades.js (+ mapa_exercicis.js, generat). Lògica: mapa.js.
-     El progrés de cada alumne es desa només al seu navegador (localStorage). -->
+     Accés amb NIU i contrasenya (porta.js); el progrés de cada alumne es desa al Firestore del curs
+     (connexio_firebase.js) i, com a reserva, al seu navegador. Panell docent: panell_docent.js. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
 <link rel="stylesheet" href="mapa.css">
+<link rel="stylesheet" href="porta.css">
 </head>
-<body>
+<body class="porta-tancada">
+
+<div class="porta" id="porta" hidden>
+  <div class="porta-caixa">
+    <p class="avantitol">Física de l'Estat Sòlid · UAB</p>
+    <h1>Mapa del curs</h1>
+    <p class="porta-text">Aquest espai és per a l'alumnat de l'assignatura. Identifica't amb el NIU; la contrasenya es va anunciar a l'espai de l'assignatura del Campus Virtual.</p>
+    <form id="portaForm" autocomplete="on">
+      <label>NIU<input name="niu" inputmode="numeric" autocomplete="username" required></label>
+      <label>Contrasenya<input name="contrasenya" type="password" autocomplete="current-password" required></label>
+      <p class="porta-error" id="portaError" role="alert"></p>
+      <button type="submit">Entra</button>
+    </form>
+    <p class="porta-nota">En entrar, les marques i les notes que facis queden desades amb el teu NIU, perquè les recuperis des de qualsevol ordinador. El professorat en veu el conjunt per fer el seguiment del grup.</p>
+  </div>
+</div>
+
 <header class="capcalera-uab">
   <div class="cap-esq">
     <a class="cap-logo" data-ruta="portada" href="../" title="Portada del curs"><img data-ruta="sims|imatges/logotip-versio-3-verd.png" src="../simuladors/imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
@@ -43,7 +61,7 @@
     </ol>
     <p class="privadesa">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-      El teu progrés es desa només en aquest navegador: ningú més el veu. Si canvies d'ordinador o de navegador, fes-ne una còpia amb «Desa una còpia».
+      El teu progrés queda desat al curs amb el teu NIU: el recuperes des de qualsevol ordinador. Les marques i les notes només surten al teu mapa; el professorat en veu el conjunt per fer el seguiment del grup.
     </p>
   </section>
 
@@ -94,8 +112,10 @@
 
 <footer class="peu-uab">F. Xavier Àlvarez · Física de l'Estat Sòlid · Universitat Autònoma de Barcelona</footer>
 
+<script src="connexio_firebase.js"></script>
 <script src="mapa_dades.js"></script>
 <script src="mapa_exercicis.js"></script>
-<script src="mapa.js"></script>
+<script src="porta.js"></script>
+<!-- mapa.js (i panell_docent.js, si és el docent) els carrega porta.js un cop feta la identificació -->
 </body>
 </html>

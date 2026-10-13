@@ -1,0 +1,90 @@
+/* porta.css — porta d'accés amb NIU, indicadors de sessió i panell docent del mapa del curs.
+   Complementa mapa.css (mateixos colors i tipografia). */
+
+/* ---------- porta d'accés ---------- */
+body.porta-tancada main, body.porta-tancada footer { display: none; }
+.porta {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px; overflow: auto;
+  background:
+    radial-gradient(900px 440px at 85% -10%, rgba(0,150,57,.10), transparent 60%),
+    radial-gradient(700px 420px at -10% 110%, rgba(11,61,36,.08), transparent 55%),
+    var(--paper);
+}
+.porta-caixa {
+  width: 100%; max-width: 440px;
+  background: var(--blanc);
+  border: 1px solid var(--border); border-top: 4px solid var(--uabgreen);
+  border-radius: 14px; padding: 30px 30px 24px;
+  box-shadow: 0 18px 50px rgba(11,61,36,.14);
+}
+.porta-caixa h1 { margin: 0 0 10px; font-size: 1.7rem; }
+.porta-text { color: var(--ink-2); font-size: .95rem; margin: 0 0 18px; }
+#portaForm label { display: block; font-weight: 600; font-size: .85rem; margin: 0 0 12px; color: var(--ink-2); }
+#portaForm input {
+  display: block; width: 100%; margin-top: 5px; padding: 9px 11px;
+  font: inherit; color: var(--ink);
+  border: 1px solid var(--linia); border-radius: 8px; background: var(--paper);
+}
+#portaForm input:focus { outline: 2px solid var(--uabgreen); border-color: transparent; background: #fff; }
+#portaForm button {
+  width: 100%; padding: 10px; font-weight: 700; font-size: .95rem;
+  color: #fff; background: var(--uabgreen-dark);
+  border: 0; border-radius: 999px; cursor: pointer;
+}
+#portaForm button:hover { background: var(--verd-fosc); }
+#portaForm button:disabled { opacity: .6; cursor: default; }
+.porta-error { color: var(--perdut); font-size: .88rem; min-height: 1.2em; margin: 2px 0 10px; }
+.porta-nota { font-size: .8rem; color: var(--muted); margin: 16px 0 0; line-height: 1.5; }
+
+/* ---------- sessió a la capçalera ---------- */
+.cap-desat { align-self: center; font-size: .74rem; color: var(--muted); white-space: nowrap; }
+.cap-desat[data-e="ok"], .cap-desat[data-e="okbuit"] { color: var(--ok); }
+.cap-desat[data-e="error"], .cap-desat[data-e="local"] { color: var(--afectat); }
+.cap-niu {
+  align-self: center; font-size: .8rem; font-weight: 700; color: var(--uabgreen-dark);
+  padding-left: 12px; border-left: 1px solid var(--linia); white-space: nowrap;
+}
+.cap-surt {
+  font-size: .85rem; font-weight: 600; color: var(--ink-2);
+  padding: 7px 13px; border: 0; border-radius: 999px; background: none; cursor: pointer;
+  white-space: nowrap;
+}
+.cap-surt:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+@media (max-width: 640px) {
+  .cap-desat { display: none; }
+}
+
+/* ---------- panell docent ---------- */
+.panell {
+  margin: 0 0 34px; padding: 22px 24px;
+  background: var(--blanc);
+  border: 1px solid var(--border); border-top: 4px solid var(--verd-fosc);
+  border-radius: 14px;
+}
+.pan-cap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pan-cap h2 { margin: 0; }
+.pan-cap button {
+  font-size: .85rem; font-weight: 600; color: var(--ink-2);
+  padding: 7px 15px; border: 1px solid var(--linia); border-radius: 999px;
+  background: var(--paper); cursor: pointer;
+}
+.pan-cap button:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+.pan-cap button:disabled { opacity: .6; cursor: default; }
+.pan-resum { display: flex; flex-wrap: wrap; gap: 14px; margin: 16px 0; }
+.pan-xifra { flex: 1 1 150px; background: var(--paper-2); border-radius: 10px; padding: 12px 14px; }
+.pan-xifra strong { display: block; font-size: 1.35rem; font-family: var(--font-serif); color: var(--verd-fosc); }
+.pan-xifra span { font-size: .8rem; color: var(--muted); }
+.pan-bloc { margin: 12px 0; }
+.pan-bloc summary { cursor: pointer; font-weight: 700; padding: 6px 0; }
+.pan-taula { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 8px 0 4px; }
+.pan-taula th, .pan-taula td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--paper-2); }
+.pan-taula th { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.pan-linia { font-weight: 600; border-left: 4px solid var(--c, var(--linia)); padding-left: 8px; }
+.pan-peu, .pan-buit { font-size: .8rem; color: var(--muted); margin: 10px 0 0; }
+@media (max-width: 640px) {
+  .panell { padding: 16px; }
+  .pan-taula { font-size: .8rem; }
+  .pan-taula th, .pan-taula td { padding: 5px 6px; }
+}

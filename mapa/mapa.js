@@ -66,7 +66,8 @@
   // ---------------------------------------------------------------
   // Progrés de l'alumne (només en aquest navegador)
   // ---------------------------------------------------------------
-  const CLAU_DESA = 'estatsolid.mapa.v1';
+  const SESSIO = window.SESSIO || null;         // la posa porta.js un cop l'alumne s'ha identificat
+  const CLAU_DESA = 'estatsolid.mapa.v1' + (SESSIO ? '.' + SESSIO.niu : '');
   let estat = { e: {}, n: {}, x: {}, h: [] };   // e: estat de cada concepte · n: notes · x: exercicis fets · h: historial
 
   function adopta(o) {                  // valida un objecte desat i el converteix en l'estat
@@ -85,12 +86,23 @@
     estat = { e, n, x, h: h.slice(-500) };
   }
   function llegeix() {
-    try { const t = localStorage.getItem(CLAU_DESA); if (t) adopta(JSON.parse(t)); } catch (err) { /* sense accés: es comença de zero */ }
+    let local = null;
+    try {
+      const t = localStorage.getItem(CLAU_DESA);
+      if (t) local = JSON.parse(t);
+      // primera entrada amb NIU en aquest navegador: s'hereta el progrés fet abans de la porta
+      if (!local && SESSIO) { const v = localStorage.getItem('estatsolid.mapa.v1'); if (v) local = JSON.parse(v); }
+    } catch (err) { /* sense accés: es comença de zero */ }
+    const remot = SESSIO && SESSIO.inicial;     // el que hi havia desat al curs en entrar
+    const tria = remot && (!local || (remot.t || 0) >= (local.t || 0)) ? remot : local;
+    if (tria) adopta(tria);
   }
   let avisatDesa = false;
   function desa() {
+    const dades = { v: 1, t: Date.now(), e: estat.e, n: estat.n, x: estat.x, h: estat.h };
+    if (SESSIO) SESSIO.sync(dades);             // cap al Firestore del curs (amb retard, a porta.js)
     try {
-      localStorage.setItem(CLAU_DESA, JSON.stringify({ v: 1, e: estat.e, n: estat.n, x: estat.x, h: estat.h }));
+      localStorage.setItem(CLAU_DESA, JSON.stringify(dades));
     } catch (err) {
       if (!avisatDesa) {
         avisatDesa = true;
@@ -246,7 +258,7 @@
         desa();
       }, 400);
     });
-    d.append(h('label', { class: 'c-nota' }, h('span', { text: 'Les meves notes (només en aquest navegador)' }), ta));
+    d.append(h('label', { class: 'c-nota' }, h('span', { text: SESSIO ? 'Les meves notes (es desen amb el teu NIU)' : 'Les meves notes (només en aquest navegador)' }), ta));
     E.ta = ta;
     E.construit = true;
   }
@@ -676,6 +688,7 @@
   // Inici
   // ---------------------------------------------------------------
   llegeix();
+  if (SESSIO) desa();                           // consolida al curs l'estat triat (local o remot)
   actualitza();
   const ancora = decodeURIComponent(location.hash.slice(1));
   if (ancora.startsWith('c-') && C[ancora.slice(2)]) navega(ancora.slice(2));
