@@ -1,0 +1,341 @@
+/* mapa.css — mapa del curs (mateixa capçalera, tipografia i colors que la portada) */
+:root {
+  --uabgreen: #009639; --uabgreen-dark: #006B3F; --verd-fosc: #0B3D24;
+  --ink: #1A1D24; --ink-2: #3C4250; --muted: #6B7280; --border: #E2DED3; --linia: #D6DAE1;
+  --paper: #FBF9F4; --paper-2: #F3EFE4; --blanc: #FFFFFF;
+  --font-body: Seravek, 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+
+  /* estats de l'alumne */
+  --ok: #2F855A;      --ok-bg: #E3F3EA;
+  --parcial: #9AD0B0;
+  --dubte: #B7791F;   --dubte-bg: #FBF0D9;  --dubte-punt: #E0A526;
+  --perdut: #C53030;  --perdut-bg: #FBE4E4;
+  --afectat: #DD6B20; --afectat-bg: #FDEBDD;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 76px; }
+html, body { margin: 0; padding: 0; }
+body { font-family: var(--font-body); color: var(--ink); background: var(--paper); line-height: 1.55; }
+img, svg { max-width: 100%; }
+button { font: inherit; }
+
+/* ---- Capçalera única del curs (idèntica a la portada) ---- */
+.capcalera-uab{
+  position:sticky; top:0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  padding:8px 22px; background:rgba(255,255,255,.97);
+  border-top:4px solid var(--uabgreen);
+  border-bottom:1px solid #E3E7E3;
+  box-shadow:0 1px 16px rgba(11,61,36,.07);
+}
+@supports (backdrop-filter: blur(6px)){
+  .capcalera-uab{ background:rgba(255,255,255,.9); backdrop-filter:blur(7px); }
+}
+.capcalera-uab .cap-esq{ display:flex; align-items:center; gap:14px; min-width:0; }
+.capcalera-uab .cap-logo{ display:block; line-height:0; flex-shrink:0; }
+.capcalera-uab .cap-logo img{ height:34px; display:block; }
+.capcalera-uab .cap-marca{ min-width:0;
+  display:flex; flex-direction:column; justify-content:center; text-decoration:none; color:var(--ink);
+  font-family:var(--font-serif);
+  font-weight:700; font-size:1.04rem; line-height:1.1; letter-spacing:.005em; white-space:nowrap;
+  padding-left:14px; border-left:1px solid #DCE0DC;
+}
+.capcalera-uab .cap-marca small{
+  font-family:var(--font-body);
+  font-weight:600; font-size:.63rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--uabgreen-dark); margin-top:3px;
+}
+.capcalera-uab .cap-marca:hover{ color:var(--uabgreen-dark); }
+.capcalera-uab .cap-pagina{
+  flex:1; display:flex; align-items:center; justify-content:center; gap:8px;
+  font-size:.9rem; font-weight:600; color:var(--ink-2); text-align:center; min-width:0;
+}
+.capcalera-uab .cap-pagina svg{ width:19px; height:19px; color:var(--uabgreen); flex-shrink:0; }
+.capcalera-uab .cap-nav{ display:flex; gap:4px; flex-shrink:0; }
+.capcalera-uab .cap-nav a{
+  text-decoration:none; font-size:.85rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:999px; white-space:nowrap;
+}
+.capcalera-uab .cap-nav a:hover{ background:#E7F4EC; color:var(--uabgreen-dark); }
+.capcalera-uab .cap-nav a.actiu{ background:var(--uabgreen-dark); color:#fff; }
+@media (max-width:960px){
+  .capcalera-uab .cap-pagina{ display:none; }
+}
+@media (max-width:640px){
+  .capcalera-uab{ position:static; flex-wrap:wrap; gap:8px 12px; padding:8px 14px; }
+  .capcalera-uab .cap-logo img{ height:28px; }
+  .capcalera-uab .cap-marca{ font-size:.92rem; white-space:normal; }
+  .capcalera-uab .cap-marca small{ display:none; }
+  .capcalera-uab .cap-nav{ margin-left:auto; }
+  .capcalera-uab .cap-nav a{ font-size:.78rem; padding:6px 10px; }
+}
+
+/* ---------- pàgina ---------- */
+.mapa { max-width: 1120px; margin: 0 auto; padding: 36px 24px 56px; }
+h1, h2, h3 { font-family: var(--font-serif); }
+.avantitol {
+  font-size: .76rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--uabgreen-dark); margin: 0 0 8px;
+}
+.intro h1 { font-size: clamp(2.1rem, 4.4vw, 3rem); line-height: 1.05; margin: 0 0 12px; letter-spacing: -.01em; }
+.intro .subtitol { font-family: var(--font-serif); font-size: 1.15rem; color: var(--ink-2); max-width: 46em; margin: 0 0 18px; }
+.passos { margin: 0 0 16px; padding-left: 22px; max-width: 54em; }
+.passos li { margin-bottom: 6px; }
+.et-estat { display: inline-block; font-size: .8rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.et-estat.ok { background: var(--ok-bg); color: var(--ok); }
+.et-estat.dubte { background: var(--dubte-bg); color: var(--dubte); }
+.et-estat.perdut { background: var(--perdut-bg); color: var(--perdut); }
+.privadesa {
+  display: flex; gap: 10px; align-items: flex-start; max-width: 54em;
+  font-size: .88rem; color: var(--ink-2); background: var(--blanc);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 0;
+}
+.privadesa svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; color: var(--uabgreen-dark); }
+
+/* ---------- botons ---------- */
+.eines, .copia { display: flex; flex-wrap: wrap; gap: 8px; }
+.eines button, .copia button {
+  font-size: .82rem; font-weight: 600; color: var(--ink-2); background: var(--blanc);
+  border: 1px solid var(--linia); border-radius: 999px; padding: 6px 13px; cursor: pointer;
+}
+.eines button:hover, .copia button:hover { border-color: var(--uabgreen); color: var(--uabgreen-dark); }
+.eines button[aria-pressed="true"] { background: var(--uabgreen-dark); border-color: var(--uabgreen-dark); color: #fff; }
+.copia button.perill:hover { border-color: var(--perdut); color: var(--perdut); }
+button:focus-visible, summary:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--uabgreen); outline-offset: 2px;
+}
+
+/* ---------- la teva situació ---------- */
+.situacio {
+  margin-top: 28px; background: var(--blanc); border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px 22px; box-shadow: 0 10px 30px rgba(11,61,36,.06);
+}
+.sit-cap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 12px; }
+.sit-cap h2 { margin: 0; font-size: 1.45rem; }
+.sit-resum { margin: 0 0 10px; color: var(--ink-2); }
+.barra { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: #ECEAE3; }
+.barra span { display: block; height: 100%; }
+.barra .b-ok { background: var(--ok); }
+.barra .b-dubte { background: var(--dubte-punt); }
+.barra .b-perdut { background: var(--perdut); }
+.sit-linies { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.sit-linies li {
+  border: 1px solid var(--border); border-left: 5px solid var(--c); border-radius: 8px;
+  padding: 8px 12px; font-size: .88rem; background: var(--paper);
+}
+.sit-linies .nom { font-weight: 700; display: block; }
+.sit-linies .estat-txt { color: var(--ink-2); }
+.sit-linies .estat-txt.perdut { color: var(--perdut); font-weight: 600; }
+.sit-linies .estat-txt.afectat { color: var(--afectat); font-weight: 600; }
+.sit-linies .estat-txt.dubte { color: var(--dubte); font-weight: 600; }
+.sit-linies .estat-txt.ok { color: var(--ok); font-weight: 600; }
+.sit-bloc { margin-top: 18px; }
+.sit-bloc h3 { font-size: 1.08rem; margin: 0 0 8px; }
+.sit-perdut {
+  border: 1px solid #F1C4C4; background: var(--perdut-bg); border-radius: 10px;
+  padding: 10px 14px; margin-bottom: 10px; font-size: .9rem;
+}
+.sit-perdut .titol { font-weight: 700; margin-bottom: 4px; }
+.sit-perdut p { margin: 4px 0; }
+.sit-seguir { font-size: .92rem; color: var(--ink-2); margin: 0; }
+.sit-buit { color: var(--ink-2); margin: 0; }
+.sit-peu { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.historial summary { cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--ink-2); }
+.historial ol { margin: 8px 0 0; padding-left: 0; list-style: none; font-size: .85rem; max-height: 260px; overflow-y: auto; }
+.historial li { padding: 3px 0; border-bottom: 1px dashed var(--border); }
+.historial .data { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 6px; }
+.missatge { margin: 10px 0 0; font-size: .88rem; color: var(--uabgreen-dark); min-height: 1.2em; }
+
+/* xips de conceptes (enllaços dins del mapa) */
+.xip {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%;
+  font-size: .82rem; font-weight: 600; color: var(--ink); text-align: left;
+  background: var(--blanc); border: 1px solid var(--linia); border-left: 4px solid var(--c, var(--linia));
+  border-radius: 6px; padding: 3px 9px; margin: 2px 4px 2px 0; cursor: pointer;
+}
+.xip:hover { border-color: var(--uabgreen); border-left-color: var(--c, var(--uabgreen)); }
+.xip .p { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: #fff; border: 1.5px solid #B9B4A6; }
+.xip .p.ok { background: var(--ok); border-color: var(--ok); }
+.xip .p.dubte { background: var(--dubte-punt); border-color: var(--dubte-punt); }
+.xip .p.perdut { background: var(--perdut); border-color: var(--perdut); }
+
+/* ---------- vista general ---------- */
+.vista { margin-top: 36px; }
+.vista-cap h2 { margin: 0 0 4px; font-size: 1.45rem; }
+.vista-cap p { margin: 0 0 12px; color: var(--ink-2); font-size: .92rem; max-width: 52em; }
+.vista-mapa {
+  background: var(--blanc); border: 1px solid var(--border); border-radius: 14px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.vista-mapa svg { display: block; width: 100%; min-width: 860px; height: auto; }
+.vista-mapa .est { cursor: pointer; }
+.vista-mapa .est:hover .cercle, .vista-mapa .est:focus .cercle { stroke-width: 4.5; }
+.vista-mapa .v-linia { font-family: var(--font-serif); font-size: 14.5px; font-weight: 700; }
+.vista-mapa .v-recompte { font-size: 11px; fill: var(--muted); }
+.vista-mapa .v-tema { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; fill: var(--muted); }
+.vista-mapa .v-est { font-size: 11px; fill: var(--ink-2); }
+.vista-mapa .v-tema, .vista-mapa .v-est, .vista-mapa .v-linia, .vista-mapa .v-recompte {   /* llegibles damunt de les connexions */
+  paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round;
+}
+.vista-mapa .v-icona { font-size: 13px; font-weight: 800; pointer-events: none; }
+.vista-mapa .est:focus { outline: none; }
+.vista-mapa .transf { fill: none; stroke: #9AA3AE; stroke-width: 1.3; stroke-dasharray: 4 4; opacity: .45; }
+.vista-mapa .transf.actiu { stroke: var(--ink); opacity: 1; stroke-width: 2; }
+.llegenda { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 0; padding: 0; font-size: .82rem; color: var(--ink-2); }
+.llegenda li { display: inline-flex; align-items: center; gap: 6px; }
+.ll-punt { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #9AA3AE; background: #fff; display: inline-block; }
+.ll-punt.ok { background: var(--ok); border-color: var(--ok); }
+.ll-punt.parcial { background: var(--parcial); border-color: var(--parcial); }
+.ll-punt.dubte { background: var(--dubte-punt); border-color: var(--dubte-punt); }
+.ll-punt.perdut { background: var(--perdut); border-color: var(--perdut); }
+.ll-punt.afectat { border: 2px dashed var(--afectat); }
+.ll-clau { color: #B8893A; font-size: 1rem; }
+
+/* ---------- línies (desplegables) ---------- */
+.linies { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+.linia { background: var(--blanc); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.linia > summary {
+  list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: center;
+  padding: 16px 20px; border-left: 8px solid var(--c);
+}
+.linia > summary::-webkit-details-marker, .estacio > summary::-webkit-details-marker { display: none; }
+.linia > summary .fletxa, .estacio > summary .fletxa {
+  width: 22px; height: 22px; display: grid; place-items: center; color: var(--muted); transition: transform .15s;
+}
+.linia[open] > summary .fletxa, .estacio[open] > summary .fletxa { transform: rotate(90deg); }
+.linia .l-nom { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+.linia .l-temes { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+.linia .l-dreta { text-align: right; font-size: .82rem; color: var(--ink-2); min-width: 150px; }
+.linia .l-dreta .barra { margin-top: 5px; height: 7px; }
+.linia .l-estat.perdut { color: var(--perdut); font-weight: 700; }
+.linia .l-estat.afectat { color: var(--afectat); font-weight: 700; }
+.linia .l-estat.dubte { color: var(--dubte); font-weight: 700; }
+.linia .l-estat.ok { color: var(--ok); font-weight: 700; }
+.linia .l-desc { margin: 0; padding: 0 20px 6px 62px; color: var(--ink-2); font-size: .93rem; max-width: 60em; }
+.estacions { list-style: none; margin: 0; padding: 6px 20px 18px 20px; position: relative; }
+.estacions::before {               /* el rail de la línia */
+  content: ""; position: absolute; left: 39px; top: 18px; bottom: 30px; width: 5px; border-radius: 3px; background: var(--c); opacity: .85;
+}
+.estacio { position: relative; }
+.estacio > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
+  padding: 10px 8px 10px 0; border-radius: 8px;
+}
+.estacio > summary:hover { background: var(--paper); }
+.estacio .e-punt {
+  position: relative; z-index: 1; width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; margin-left: 9px;
+  background: #fff; border: 4px solid var(--c); display: grid; place-items: center;
+  font-size: .72rem; font-weight: 800; color: #fff;
+}
+.estacio .e-punt.ok { background: var(--ok); }
+.estacio .e-punt.parcial { background: var(--parcial); }
+.estacio .e-punt.dubte { background: var(--dubte-punt); }
+.estacio .e-punt.perdut { background: var(--perdut); }
+.estacio .e-punt.afectat { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--afectat); }
+.estacio .e-nom { font-weight: 700; font-size: 1.02rem; }
+.estacio .e-tema { font-size: .76rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.estacio .e-minis { margin-left: auto; display: flex; gap: 3px; flex-shrink: 0; }
+.estacio .e-minis span { width: 9px; height: 9px; border-radius: 50%; background: #fff; border: 1.5px solid #B9B4A6; }
+.estacio .e-minis span.ok { background: var(--ok); border-color: var(--ok); }
+.estacio .e-minis span.dubte { background: var(--dubte-punt); border-color: var(--dubte-punt); }
+.estacio .e-minis span.perdut { background: var(--perdut); border-color: var(--perdut); }
+.estacio .e-minis span.afectat { border-color: var(--afectat); border-style: dashed; }
+
+.conceptes { list-style: none; margin: 2px 0 10px 56px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.concepte {
+  border: 1px solid var(--border); border-radius: 10px; background: var(--blanc);
+  border-left: 4px solid #D9D5C9; transition: box-shadow .3s;
+}
+.concepte.ok { border-left-color: var(--ok); }
+.concepte.dubte { border-left-color: var(--dubte-punt); background: #FFFCF4; }
+.concepte.perdut { border-left-color: var(--perdut); background: #FFF8F8; }
+.concepte.flash { box-shadow: 0 0 0 3px var(--uabgreen); }
+.c-fila { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 10px 8px 12px; }
+.c-obre {
+  flex: 1 1 260px; min-width: 0; display: flex; align-items: center; gap: 8px; text-align: left;
+  background: none; border: 0; padding: 2px 0; cursor: pointer; color: var(--ink);
+}
+.c-obre .fletxa { color: var(--muted); transition: transform .15s; flex-shrink: 0; display: grid; place-items: center; width: 16px; }
+.concepte.obert .c-obre .fletxa { transform: rotate(90deg); }
+.c-nom { font-weight: 600; }
+.c-clau { color: #B8893A; flex-shrink: 0; }
+.c-botons { display: flex; gap: 4px; flex-shrink: 0; }
+.c-botons button {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .78rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+  background: var(--blanc); color: var(--ink-2); border: 1.5px solid var(--linia);
+}
+.c-botons button .ic { font-weight: 800; }
+.c-botons button[data-e="ok"]:hover { border-color: var(--ok); color: var(--ok); }
+.c-botons button[data-e="dubte"]:hover { border-color: var(--dubte-punt); color: var(--dubte); }
+.c-botons button[data-e="perdut"]:hover { border-color: var(--perdut); color: var(--perdut); }
+.c-botons button[data-e="ok"][aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: #fff; }
+.c-botons button[data-e="dubte"][aria-pressed="true"] { background: var(--dubte-punt); border-color: var(--dubte-punt); color: #3A2A05; }
+.c-botons button[data-e="perdut"][aria-pressed="true"] { background: var(--perdut); border-color: var(--perdut); color: #fff; }
+.c-avis {
+  margin: 0 12px 8px 36px; font-size: .84rem; color: #8A3F0C; background: var(--afectat-bg);
+  border-radius: 6px; padding: 5px 10px;
+}
+.c-detall { padding: 2px 16px 14px 36px; font-size: .92rem; }
+.c-desc { margin: 0 0 10px; color: var(--ink-2); max-width: 60em; }
+.c-rel { margin: 6px 0; }
+.c-rel .et, .c-nota > span {
+  display: block; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px;
+}
+.c-enllacos { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
+.c-enllacos a, .c-enllacos .sense {
+  display: inline-flex; align-items: center; gap: 6px; font-size: .84rem; font-weight: 600;
+  padding: 5px 11px; border-radius: 999px; text-decoration: none;
+}
+.c-enllacos a { background: #E7F4EC; color: var(--uabgreen-dark); }
+.c-enllacos a:hover { background: var(--uabgreen-dark); color: #fff; }
+.c-enllacos .sense { background: var(--paper-2); color: var(--muted); }
+.c-enllacos svg { width: 14px; height: 14px; }
+.c-nota { display: block; margin-top: 10px; }
+.c-nota textarea {
+  width: 100%; min-height: 54px; resize: vertical; font: inherit; font-size: .9rem;
+  border: 1px solid var(--linia); border-radius: 8px; padding: 7px 9px; background: var(--paper);
+}
+
+/* exercicis */
+.c-nex {
+  flex-shrink: 0; font-size: .72rem; font-weight: 700; color: var(--muted);
+  border: 1px solid var(--linia); border-radius: 999px; padding: 1px 7px; white-space: nowrap;
+}
+.c-nex.tots { color: var(--ok); border-color: var(--ok); background: var(--ok-bg); }
+.ex-llista { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.ex-fila { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; font-size: .88rem; }
+.ex-fila a { color: var(--uabgreen-dark); font-weight: 600; }
+.ex-tema { color: var(--muted); font-size: .8rem; }
+.ex-fet {
+  flex-shrink: 0; font-size: .74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; cursor: pointer;
+  background: var(--blanc); color: var(--ink-2); border: 1.5px solid var(--linia);
+}
+.ex-fet:hover { border-color: var(--ok); color: var(--ok); }
+.ex-fet[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: #fff; }
+.sit-linies .ex-txt { display: block; color: var(--muted); font-size: .8rem; margin-top: 2px; }
+.sit-ex { margin-top: 8px; }
+
+/* filtre «només els punts febles» */
+.nomes-febles .concepte:not(.febla),
+.nomes-febles .estacio:not(.te-febla),
+.nomes-febles .linia:not(.te-febla) { display: none; }
+
+.peu-uab { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 16px; border-top: 1px solid var(--border); }
+
+@media (max-width: 640px) {
+  .mapa { padding: 24px 16px 40px; }
+  .situacio { padding: 16px; }
+  .linia > summary { grid-template-columns: auto 1fr; padding: 14px 14px; }
+  .linia .l-dreta { grid-column: 1 / -1; text-align: left; min-width: 0; }
+  .linia .l-desc { padding: 0 14px 6px 14px; }
+  .estacions { padding: 4px 10px 14px 10px; }
+  .estacions::before { left: 29px; }
+  .estacio .e-minis { display: none; }
+  .conceptes { margin-left: 10px; }
+  .c-botons button .txt { display: none; }
+  .c-botons button { padding: 6px 12px; font-size: .9rem; }
+  .c-avis { margin-left: 12px; }
+  .c-detall { padding: 2px 12px 12px 12px; }
+}

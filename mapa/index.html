@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa del curs — Física de l'Estat Sòlid</title>
+<meta name="description" content="Les línies argumentals de Física de l'Estat Sòlid i el seguiment del teu progrés: marca què entens, on tens dubtes i on t'has perdut.">
+<!-- Mapa conceptual del curs. Contingut: mapa_dades.js (+ mapa_exercicis.js, generat). Lògica: mapa.js.
+     El progrés de cada alumne es desa només al seu navegador (localStorage). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
+<link rel="stylesheet" href="mapa.css">
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" data-ruta="portada" href="../" title="Portada del curs"><img data-ruta="sims|imatges/logotip-versio-3-verd.png" src="../simuladors/imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" data-ruta="portada" href="../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h7M14 6h7M3 12h4M11 12h10M3 18h11M18 18h3"/><circle cx="12" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg>
+    Mapa del curs
+  </div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a data-ruta="portada|#index" href="../#index">Índex del curs</a>
+    <a data-ruta="sims" href="../simuladors/">Simuladors</a>
+    <a class="actiu" href="./">Mapa del curs</a>
+  </nav>
+</header>
+
+<main class="mapa">
+
+  <section class="intro">
+    <p class="avantitol">On sóc del curs?</p>
+    <h1>Mapa del curs</h1>
+    <p class="subtitol">L'assignatura són quatre línies argumentals que avancen en paral·lel. Si et perds en una, el mapa et diu què en queda afectat i quines pots continuar seguint sense problema.</p>
+    <ol class="passos">
+      <li><strong>Obre una línia</strong> i les seves estacions per veure els conceptes, en l'ordre dels apunts.</li>
+      <li><strong>Marca cada concepte</strong> quan l'hagis treballat: <span class="et-estat ok">✓ L'entenc</span> <span class="et-estat dubte">? Dubtes</span> <span class="et-estat perdut">! M'he perdut</span>. Torna a clicar per desmarcar-lo.</li>
+      <li><strong>Practica</strong>: cada concepte porta els exercicis dels fulls que el treballen. Marca'ls com a fets quan els hagis resolt.</li>
+      <li><strong>Mira «La teva situació»</strong>: on t'has encallat, què et cal repassar abans i què pots seguir igualment.</li>
+    </ol>
+    <p class="privadesa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      El teu progrés es desa només en aquest navegador: ningú més el veu. Si canvies d'ordinador o de navegador, fes-ne una còpia amb «Desa una còpia».
+    </p>
+  </section>
+
+  <section class="situacio" id="situacio" aria-labelledby="situacio-titol">
+    <div class="sit-cap">
+      <h2 id="situacio-titol">La teva situació</h2>
+      <div class="eines" role="toolbar" aria-label="Eines del mapa">
+        <button type="button" id="btnFebles" aria-pressed="false">Només els meus punts febles</button>
+        <button type="button" id="btnObre">Desplega-ho tot</button>
+        <button type="button" id="btnTanca">Plega-ho tot</button>
+      </div>
+    </div>
+    <div id="sitCos"></div>
+    <div class="sit-peu">
+      <details class="historial" id="historial">
+        <summary>El meu historial</summary>
+        <ol id="historialLlista"></ol>
+      </details>
+      <div class="copia">
+        <button type="button" id="btnDesa">Desa una còpia</button>
+        <button type="button" id="btnRecupera">Recupera una còpia</button>
+        <input type="file" id="fitxerCopia" accept="application/json,.json" hidden>
+        <button type="button" id="btnEsborra" class="perill">Esborra el meu progrés</button>
+      </div>
+    </div>
+    <p class="missatge" id="missatge" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="vista" aria-labelledby="vista-titol">
+    <div class="vista-cap">
+      <h2 id="vista-titol">Vista general</h2>
+      <p>Cada fila és una línia argumental; cada cercle, una estació. Les línies discontínues uneixen estacions de línies diferents que en necessiten una altra. Clica una estació per obrir-la.</p>
+    </div>
+    <div class="vista-mapa" id="vistaMapa"></div>
+    <ul class="llegenda" aria-label="Llegenda">
+      <li><span class="ll-punt ok"></span>Tot entès</li>
+      <li><span class="ll-punt parcial"></span>En part</li>
+      <li><span class="ll-punt dubte"></span>Amb dubtes</li>
+      <li><span class="ll-punt perdut"></span>M'hi he perdut</li>
+      <li><span class="ll-punt afectat"></span>Depèn d'un punt on t'has perdut</li>
+      <li><span class="ll-clau">★</span>Concepte clau: molts conceptes posteriors en depenen</li>
+    </ul>
+  </section>
+
+  <section class="linies" id="linies" aria-label="Línies argumentals"></section>
+
+</main>
+
+<footer class="peu-uab">F. Xavier Àlvarez · Física de l'Estat Sòlid · Universitat Autònoma de Barcelona</footer>
+
+<script src="mapa_dades.js"></script>
+<script src="mapa_exercicis.js"></script>
+<script src="mapa.js"></script>
+</body>
+</html>

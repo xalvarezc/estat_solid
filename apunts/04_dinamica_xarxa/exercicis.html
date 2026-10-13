@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema 4: Dinàmica de xarxa — Exercicis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_apunts.css">
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 L6 16 L7 18 L9 10" opacity=".8"/><path d="M9 10 L11 18 L12 16 L15 20" opacity=".8"/><path d="M15 20 L18 17 L19 19 L21 17" opacity=".8"/><circle cx="3" cy="17" r="1.6" fill="currentColor" stroke="none"/><circle cx="9" cy="10" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="20" r="1.6" fill="currentColor" stroke="none"/><circle cx="21" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Tema 4: Dinàmica de xarxa</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../index.html#index">Índex del curs</a>
+    <a href="../../simuladors/index.html">Simuladors</a>
+    <a href="../../mapa/">Mapa del curs</a>
+  </nav>
+</header>
+
+<div class="pagina">
+  <aside class="lateral">
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-4-1"><span class="num">4.1</span> Xarxa lineal monoatòmica</a></li>
+<li><a href="#ex-4-2"><span class="num">4.2</span> Energia de la xarxa lineal monoatòmica</a></li>
+<li><a href="#ex-4-3"><span class="num">4.3</span> Equació de les ones en el continu</a></li>
+<li><a href="#ex-4-4"><span class="num">4.4</span> Base de dos àtoms diferents</a></li>
+<li><a href="#ex-4-5"><span class="num">4.5</span> Anomalia de Kohn</a></li>
+<li><a href="#ex-4-6"><span class="num">4.6</span> Vibracions atòmiques en un metall</a></li>
+</ol></nav>
+  </aside>
+
+  <article class="apunts exercicis">
+    <h1><span class="tema-num">Tema 4 · Exercicis</span>Dinàmica de xarxa</h1>
+<p class="recursos-tema"><a href="exercicis_04_enunciats.pdf" download>Enunciats en PDF</a> <a href="index.html">Apunts del tema</a></p>
+    <details class="index-mobil">
+      <summary>Índex</summary>
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-4-1"><span class="num">4.1</span> Xarxa lineal monoatòmica</a></li>
+<li><a href="#ex-4-2"><span class="num">4.2</span> Energia de la xarxa lineal monoatòmica</a></li>
+<li><a href="#ex-4-3"><span class="num">4.3</span> Equació de les ones en el continu</a></li>
+<li><a href="#ex-4-4"><span class="num">4.4</span> Base de dos àtoms diferents</a></li>
+<li><a href="#ex-4-5"><span class="num">4.5</span> Anomalia de Kohn</a></li>
+<li><a href="#ex-4-6"><span class="num">4.6</span> Vibracions atòmiques en un metall</a></li>
+</ol></nav>
+    </details>
+<div class="exercici" id="ex-4-1"><p><span class="ex-cap">Exercici 4.1 — Xarxa lineal monoatòmica</span> Considera una xarxa lineal monoatòmica:
+\[m \ddot{u}_s = -C (2u_s - u_{s-1} - u_{s+1})\]
+on \(u_s\) representa el desplaçament d'un àtom de massa \(m\) en la cel·la <span class="nw">\(s\).</span> Escriu \(u_s\) com una ona viatgera, <span class="nw">\(u_s = U e^{i(ksa - \omega t)}\),</span> i mostra que la relació de dispersió és:
+\[\omega^2 = \frac{4C}{m} \sin^2 \left( \frac{ka}{2} \right)\]
+on \(a\) és la separació entre els àtoms.</p></div>
+<div class="exercici" id="ex-4-2"><p><span class="ex-cap">Exercici 4.2 — Energia de la xarxa lineal monoatòmica</span> Considera una ona longitudinal de l'exercici anterior
+\[u_s = u \cos(\omega t - ksa)\]
+que es propaga en una xarxa lineal monoatòmica d'àtoms amb massa <span class="nw">\(m\),</span> separació <span class="nw">\(a\),</span> i interacció entre primers veïns <span class="nw">\(C\).</span></p>
+<p>(a) Mostra que l'energia total de l'ona és:
+\[E = \frac{1}{2} m \sum_s \left( \frac{du_s}{dt} \right)^2 + \frac{1}{2} C \sum_s (u_s - u_{s+1})^2\]
+on \(s\) recorre tots els àtoms.</p>
+<p>(b) Substituint \(u_s\) en aquesta expressió, mostra que l'energia mitjana en el temps per àtom és:
+\[\frac{1}{4} m \omega^2 u^2 + \frac{1}{2} C(1 - \cos ka)u^2 = \frac{1}{2} m \omega^2 u^2,\]
+on en l'últim pas hem utilitzat la relació de dispersió per aquest problema.</p></div>
+<div class="exercici" id="ex-4-3"><p><span class="ex-cap">Exercici 4.3 — Equació de les ones en el continu</span> Mostra que per longituds d'ona llargues, l'equació de moviment de l'exercici 4.1 es redueix a l'equació de les ones elàstiques en el continu:
+\[\frac{\partial^2 u}{\partial t^2} = v^2 \frac{\partial^2 u}{\partial x^2},\]
+on \(v\) és la velocitat del so.</p></div>
+<div class="exercici" id="ex-4-4"><p><span class="ex-cap">Exercici 4.4 — Base de dos àtoms diferents</span> a) Per al problema de dues masses diferents \(m_1\) i \(m_2\) amb una constant elàstica igual <span class="nw">\(C\),</span> troba les relacions d'amplitud \(U_1/U_2\) per les dues branques a <span class="nw">\(k_{\text{max}} = \pi/a\).</span> Mostra que en aquest valor de <span class="nw">\(k\),</span> les dues xarxes actuen com si estiguessin desacoblades: una xarxa roman en repòs mentre l'altra es mou.
+b) Per a \(k\) petit, mostra que la freqüència acústica i òptica per a aquesta xarxa és:
+\[\omega_{ac}^2 = \frac{Ca^2}{2(m_1 + m_2)}k^2, \quad \omega_{op}^2 = \frac{2C(m_1+m_2)}{m_1 m_2}\]</p>
+<p>on \(\omega_{ac}\) i \(\omega_{op}\) són les freqüències acústiques i òptiques respectivament.</p></div>
+<div class="exercici" id="ex-4-5"><p><span class="ex-cap">Exercici 4.5 — Anomalia de Kohn</span> Suposem que la constant de força interplanar \(C_p\) entre els plans \(s\) i \(s + p\) té la forma:
+\[C_p = A \frac{\sin pk_0 a}{p a},\]
+on \(A\) i \(k_0\) són constants, i que \(p\) pren valors en tots els enters. Aquesta forma s'espera en metalls. Utilitzeu això i la relació de dispersió per trobar una expressió per a \(\omega^2\) i també per a <span class="nw">\(\frac{\partial\omega^2}{\partial K}\).</span> Proveu que \(\frac{\partial \omega^2}{ \partial K}\) és infinit quan <span class="nw">\(K = k_0\).</span> Així, un gràfic de \(\omega^2\) en funció de \(K\) o de \(\omega\) en funció de \(K\) té una asímptota vertical en <span class="nw">\(k_0\).</span></p></div>
+<div class="exercici" id="ex-4-6"><p><span class="ex-cap">Exercici 4.6 — Vibracions atòmiques en un metall</span> Considerem ions puntuals de massa \(M\) i càrrega <span class="nw">\(e\),</span> immersos en un mar uniforme d'electrons de conducció. S'imagina que els ions estan en equilibri estable quan es troben en punts regulars de la xarxa. Si un ió és desplaçat una petita distància \(r\) des de la seva posició d'equilibri, la força restauradora es deu principalment a la càrrega elèctrica dins de l'esfera de radi \(r\) centrada en la posició d'equilibri. Prenem la densitat de nombres d'ions (o d'electrons de conducció) com <span class="nw">\(\frac{3}{4\pi R^3}\),</span> que defineix <span class="nw">\(R\).</span></p>
+<p>(a) Demostra que la freqüència d'un ió en oscil·lació és <span class="nw">\(\omega = \left( \frac{e^2}{MR^3} \right)^{1/2}\).</span></p>
+<p>(b) Estima el valor d'aquesta freqüència per al sodi, aproximadament.</p>
+<p>(c) A partir de (a), (b) i una mica de sentit comú, estima l'ordre de magnitud de la velocitat del so en aquest metall.</p></div>
+  </article>
+</div>
+
+<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../apunts.js"></script>
+</body>
+</html>

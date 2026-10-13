@@ -69,7 +69,12 @@ var TEMES = [
     {nom:"La matriu dinàmica en 3D: branques acústiques i òptiques d'un cristall real", href:"04_dinamica_xarxa/fonons_3d.html",
      desc:"SC, BCC, FCC, CsCl, NaCl i diamant amb molles centrals entre primers i segons veïns ajustades a materials reals (Cu, Al, W, Fe, NaCl, C, Si). Construeix i diagonalitza D(q) al llarg de la zona de Brillouin, mostra la matriu i la cel·la amb les molles, classifica els modes (L/T, acústic/òptic) i en treu C₁₁, C₁₂ i C₄₄ per comparar amb l'experiment."}
   ]},
-  {num:"05", nom:"Fonons", carpeta:null, simuladors:[]},
+  {num:"05", nom:"Fonons", carpeta:"05_fonons", simuladors:[
+    {nom:"La calor específica d'un cristall: fonons, Einstein i Debye", href:"05_fonons/calor_especifica.html",
+     desc:"Densitat d'estats de nou materials reals (diamant, Si, Ge, Cu, Al, W, NaCl, Ar, c-BN), calculada amb la dinàmica de xarxa del Tema 4: quins modes estan actius a cada temperatura (Planck), la calor específica que en surt, i com la reprodueixen els models d'Einstein i de Debye, des de la llei T³ fins a Dulong-Petit."},
+    {nom:"La conductivitat tèrmica d'un aïllant: el recorregut lliure mitjà dels fonons", href:"05_fonons/conductivitat_termica.html",
+     desc:"K = ⅓ C v ℓ amb el recorregut lliure mitjà de cada fonó limitat per les vores de la mostra, el desordre isotòpic i els xocs umklapp: la corba K(T) amb el seu màxim, l'efecte de la mida (de nanofils a cristalls) i dels isòtops, i quins fonons porten de debò la calor."}
+  ]},
   {num:"06", nom:"Fermi / electrons", carpeta:"06_fermi_electrons", simuladors:[
     {nom:"Sommerfeld: g(ε), f_FD(ε,T) i el desplaçament de μ", href:"06_fermi_electrons/simulador_sommerfeld.html",
      desc:"Control de temperatura en directe; mostra com μ es desplaça per sota de ε_F."},

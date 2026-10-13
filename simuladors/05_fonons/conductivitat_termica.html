@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La conductivitat tèrmica i el recorregut lliure mitjà dels fonons</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./fonons.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12 C4.5 4, 7.5 4, 10 12 C12.5 20, 15.5 20, 18 12 C19.5 7.5, 21 7.5, 22 10.5"/></svg>Tema 5: Fonons</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../#index">Índex del curs</a>
+    <a class="actiu" href="../index.html">Simuladors</a>
+  </nav>
+</header>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La conductivitat tèrmica d'un aïllant: el recorregut lliure mitjà dels fonons</h1>
+  <p class="sub">En un aïllant la calor la porten els fonons, i la conductivitat és K = ⅓ C v ℓ. Tria un material, la temperatura, la mida de la mostra i la quantitat de desordre isotòpic, i mira què limita el recorregut lliure mitjà ℓ: les vores de la mostra, els isòtops o els xocs entre fonons. D'aquí surt la corba K(T), amb la pujada T³, el màxim i la caiguda a alta temperatura.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Material</div>
+      <div class="control-group">
+        <select class="sel-input" id="selMat"></select>
+      </div>
+      <p class="hint" id="notaMat"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Temperatura</div>
+      <div class="control-group">
+        <label class="control-label" for="slT">T <span class="val" id="valT"></span></label>
+        <input type="range" class="slider" id="slT" min="0" max="3" step="0.005" value="2.4771">
+      </div>
+      <div class="grup-btn" id="grupT">
+        <button type="button" class="btn-opcio" data-t="4">4 K</button>
+        <button type="button" class="btn-opcio" data-t="30">30 K</button>
+        <button type="button" class="btn-opcio" data-t="300">300 K</button>
+        <button type="button" class="btn-opcio" data-t="1000">1000 K</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mostra</div>
+      <div class="control-group">
+        <label class="control-label" for="slL">Mida L (vores) <span class="val" id="valL"></span></label>
+        <input type="range" class="slider" id="slL" min="-8" max="-2" step="0.01" value="-2.5229">
+      </div>
+      <div class="grup-btn" id="grupL">
+        <button type="button" class="btn-opcio" data-l="3e-8">fil de 30 nm</button>
+        <button type="button" class="btn-opcio" data-l="1e-7">fil de 100 nm</button>
+        <button type="button" class="btn-opcio" data-l="1e-6">capa d'1 µm</button>
+        <button type="button" class="btn-opcio" data-l="3e-3">cristall de 3 mm</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slG">Desordre isotòpic Γ / Γ<sub>natural</sub> <span class="val" id="valG"></span></label>
+        <input type="range" class="slider" id="slG" min="-2.5" max="2" step="0.01" value="0">
+      </div>
+      <div class="grup-btn" id="grupG">
+        <button type="button" class="btn-opcio" data-g="nat">natural</button>
+        <button type="button" class="btn-opcio" data-g="pur" id="btnPur">isotòpicament pur</button>
+        <button type="button" class="btn-opcio" data-g="30">molts defectes (×30)</button>
+      </div>
+      <label class="check-row"><input type="checkbox" id="chkLim" checked> Mostra els límits: només vores (ℓ = L) i sense vores</label>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Conductivitat tèrmica en funció de la temperatura</div>
+        <canvas id="canvasK" width="880" height="360"></canvas>
+        <p class="plot-desc" style="max-width:880px;">Verd: el model amb la mostra i el desordre triats. Gris: el mateix material natural en un cristall de 3 mm. Discontínues: el que donaria cada límit per separat (només les vores, ℓ = L; o sense vores). El punt vermell és la conductivitat experimental a 300 K.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Recorregut lliure mitjà de cada fonó</div>
+        <canvas id="canvasMFP" width="430" height="330"></canvas>
+        <p class="plot-desc" style="max-width:430px;">ℓ(ν) a la temperatura triada: limitat per les vores (gris), pels isòtops (lila, ∝ ν⁻⁴) i pels xocs umklapp (taronja). El total (verd) és més curt que tots tres (regla de Matthiessen). L'ombra mostra quins fonons porten la calor.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Quins recorreguts porten la calor</div>
+        <canvas id="canvasAcc" width="430" height="330"></canvas>
+        <p class="plot-desc" style="max-width:430px;">Fracció de K que porten els fonons amb recorregut lliure mitjà més curt que ℓ. La línia vertical és la mida de la mostra: els fonons de la dreta topen amb les vores.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>La teoria cinètica dona <strong>K = ⅓ C v ℓ</strong>: la calor la porten els fonons, amb la capacitat calorífica C, a la velocitat del so v, i recorren de mitjana una distància ℓ entre xoc i xoc.</p>
+      <p>Cada fonó té el seu recorregut, i els mecanismes se sumen en inversa (<strong>regla de Matthiessen</strong>): les <strong>vores</strong> de la mostra (ℓ = L), el <strong>desordre isotòpic</strong> (ℓ ∝ ν⁻⁴, Γ calculat amb les abundàncies naturals) i els <strong>xocs umklapp</strong> entre fonons, que són els únics xocs entre fonons que frenen el flux de calor (ℓ ∝ ν⁻² T⁻¹ e<sup>Θ/bT</sup>, b = 4).</p>
+      <p>El model és el de Debye (una branca mitjana, v i Θ<sub>D</sub> de cada material), i el coeficient dels xocs umklapp s'ajusta perquè K(300 K) sigui l'experimental en un cristall de 3 mm. La resta (la corba K(T), el màxim, l'efecte de la mida i dels isòtops) són prediccions. Al diamant, Γ inclou també els altres defectes puntuals, i Γ i b (6.5) s'han ajustat al màxim mesurat.</p>
+      <p>És un model senzill: no distingeix les branques acústiques, dona a tots els fonons la velocitat del so i no té en compte que els xocs normals entre fonons redistribueixen el flux. Per això fa massa curts els recorreguts dels fonons de freqüència baixa (observacions 1 i 3).</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Silici a 300 K: ⅓Cvℓ dona un recorregut mitjà d'uns 45 nm, però cada fonó té el seu. La gràfica de la dreta mostra que la calor la porten fonons amb recorreguts que van de 10 nm a més d'1 µm, i que, segons el model, un 14 % la porten els de més d'1 µm. Les mesures en donen un 40 % (Regner et al., 2013): al silici real, els fonons de freqüència alta són lents (la corba de dispersió s'aplana a la vora de zona) i porten poca calor, i la porten sobretot els de freqüència baixa, que són els de recorregut llarg.</p>
+          <p><strong>2.</strong> Baixa la temperatura: els xocs umklapp s'apaguen (e<sup>Θ/bT</sup>), ℓ creix i K puja fins que ℓ arriba a la mida de la mostra. Llavors ℓ = L i K = ⅓ C v L cau com T³: és el màxim de la corba.</p>
+          <p><strong>3.</strong> Passa a un fil de 100 nm: el màxim s'aplana i es desplaça cap als 180 K, i a 300 K la conductivitat baixa a la meitat. Els fonons de recorregut llarg (gràfica de la dreta) són els que topen amb les vores. Un fil real de 115 nm té una conductivitat d'uns 40 W/(m K), la quarta part de la del silici massís (Li et al., 2003): l'efecte de la mida és encara més fort que al model, pel que diu l'observació 1.</p>
+          <p><strong>4.</strong> Fes el germani o el silici isotòpicament purs: a 300 K gairebé no canvien, però el màxim es multiplica. Al germani, el Kittel en dona un factor 3 per a mostres amb un 96 % de ⁷⁴Ge.</p>
+          <p><strong>5.</strong> Compara el diamant amb el NaCl a 300 K: àtoms lleugers, molles rígides i Θ<sub>D</sub> alta fan que al diamant els xocs umklapp encara estiguin congelats i ℓ sigui de centenars de nanòmetres; al NaCl és de pocs nanòmetres.</p>
+          <p><strong>6.</strong> Safir: el màxim, d'uns 20 000 W/(m K) cap als 30 K, supera el del coure, que és un metall (Kittel).</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./fonons_comu.js"></script>
+<script src="./dades_fonons.js"></script>
+<script src="./conductivitat_termica.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

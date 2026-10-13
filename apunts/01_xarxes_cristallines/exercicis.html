@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema 1: Xarxes cristal·lines — Exercicis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_apunts.css">
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M3 19 L9 19 L15 19 M5 13 L11 13 L17 13 M7 7 L13 7 L19 7" opacity=".55"/><path d="M3 19 L5 13 L7 7 M9 19 L11 13 L13 7 M15 19 L17 13 L19 7" opacity=".55"/><circle cx="3" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="19" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="11" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="17" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="7" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="13" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="7" r="1.4" fill="currentColor" stroke="none"/></svg>Tema 1: Xarxes cristal·lines</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../index.html#index">Índex del curs</a>
+    <a href="../../simuladors/index.html">Simuladors</a>
+    <a href="../../mapa/">Mapa del curs</a>
+  </nav>
+</header>
+
+<div class="pagina">
+  <aside class="lateral">
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-1-1"><span class="num">1.1</span> Equivalència entre bases</a></li>
+<li><a href="#ex-1-2"><span class="num">1.2</span> Xarxes de Bravais en 2D</a></li>
+<li><a href="#ex-1-3"><span class="num">1.3</span> Condició per a la xarxa FCC</a></li>
+<li><a href="#ex-1-4"><span class="num">1.4</span> Condició per a la xarxa BCC</a></li>
+<li><a href="#ex-1-5"><span class="num">1.5</span> Xarxa de l'aliatge Ni\(_3\)Al</a></li>
+<li><a href="#ex-1-6"><span class="num">1.6</span> Xarxa del NaCl</a></li>
+<li><a href="#ex-1-7"><span class="num">1.7</span> Fracció d'ocupació</a></li>
+<li><a href="#ex-1-8"><span class="num">1.8</span> Formes al·lotròpiques del carboni</a></li>
+<li><a href="#ex-1-9"><span class="num">1.9</span> Densitat de nusos i distància entre plans (FCC i BCC)</a></li>
+<li><a href="#ex-1-10"><span class="num">1.10</span> Vector normal a un pla i índexs de Miller</a></li>
+<li><a href="#ex-1-11"><span class="num">1.11</span> Grup de simetria del rectangle</a></li>
+<li><a href="#ex-1-12"><span class="num">1.12</span> Grup de simetria del triangle equilàter</a></li>
+<li><a href="#ex-1-13"><span class="num">1.13</span> Volum de la cel·la primitiva</a></li>
+<li><a href="#ex-1-14"><span class="num">1.14</span> Simetria de translació i propietats macroscòpiques</a></li>
+<li><a href="#ex-1-15"><span class="num">1.15</span> Cel·la de Wigner-Seitz d'una xarxa hexagonal 2D</a></li>
+<li><a href="#ex-1-16"><span class="num">1.16</span> Centre d'inversió: xarxa vs. cristall</a></li>
+</ol></nav>
+  </aside>
+
+  <article class="apunts exercicis">
+    <h1><span class="tema-num">Tema 1 · Exercicis</span>Xarxes cristal·lines</h1>
+<p class="recursos-tema"><a href="exercicis_01_enunciats.pdf" download>Enunciats en PDF</a> <a href="index.html">Apunts del tema</a></p>
+    <details class="index-mobil">
+      <summary>Índex</summary>
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-1-1"><span class="num">1.1</span> Equivalència entre bases</a></li>
+<li><a href="#ex-1-2"><span class="num">1.2</span> Xarxes de Bravais en 2D</a></li>
+<li><a href="#ex-1-3"><span class="num">1.3</span> Condició per a la xarxa FCC</a></li>
+<li><a href="#ex-1-4"><span class="num">1.4</span> Condició per a la xarxa BCC</a></li>
+<li><a href="#ex-1-5"><span class="num">1.5</span> Xarxa de l'aliatge Ni\(_3\)Al</a></li>
+<li><a href="#ex-1-6"><span class="num">1.6</span> Xarxa del NaCl</a></li>
+<li><a href="#ex-1-7"><span class="num">1.7</span> Fracció d'ocupació</a></li>
+<li><a href="#ex-1-8"><span class="num">1.8</span> Formes al·lotròpiques del carboni</a></li>
+<li><a href="#ex-1-9"><span class="num">1.9</span> Densitat de nusos i distància entre plans (FCC i BCC)</a></li>
+<li><a href="#ex-1-10"><span class="num">1.10</span> Vector normal a un pla i índexs de Miller</a></li>
+<li><a href="#ex-1-11"><span class="num">1.11</span> Grup de simetria del rectangle</a></li>
+<li><a href="#ex-1-12"><span class="num">1.12</span> Grup de simetria del triangle equilàter</a></li>
+<li><a href="#ex-1-13"><span class="num">1.13</span> Volum de la cel·la primitiva</a></li>
+<li><a href="#ex-1-14"><span class="num">1.14</span> Simetria de translació i propietats macroscòpiques</a></li>
+<li><a href="#ex-1-15"><span class="num">1.15</span> Cel·la de Wigner-Seitz d'una xarxa hexagonal 2D</a></li>
+<li><a href="#ex-1-16"><span class="num">1.16</span> Centre d'inversió: xarxa vs. cristall</a></li>
+</ol></nav>
+    </details>
+<div class="exercici" id="ex-1-1"><p><span class="ex-cap">Exercici 1.1 — Equivalència entre bases</span> Demostreu que els vectors primitius
+\[\vec{a}'_1 = (1, 0, 0), \quad \vec{a}'_2 = (0, 1, 0), \quad \vec{a}'_3 = \tfrac{1}{2} (1, 1, 1)\]
+donen la mateixa xarxa de Bravais que
+\[\vec{a}_1 = \tfrac{1}{2}(-1, 1, 1), \quad \vec{a}_2 = \tfrac{1}{2}(1, -1, 1), \quad \vec{a}_3 = \tfrac{1}{2}(1, 1, -1).\]</p></div>
+<div class="exercici" id="ex-1-2"><p><span class="ex-cap">Exercici 1.2 — Xarxes de Bravais en 2D</span> Construïu (o identifiqueu) les cel·les fonamentals de les 5 xarxes de Bravais que hi ha en dues dimensions.</p></div>
+<div class="exercici" id="ex-1-3"><p><span class="ex-cap">Exercici 1.3 — Condició per a la xarxa FCC</span> La xarxa de Bravais FCC té per vectors primitius
+\[\vec{a}_1 = \tfrac{a}{2} (0, 1, 1), \quad \vec{a}_2 = \tfrac{a}{2} (1, 0, 1), \quad \vec{a}_3 = \tfrac{a}{2} (1, 1, 0),\]
+de manera que un punt de la xarxa ve donat per <span class="nw">\(\vec{T} = l\vec{a}_1 + m\vec{a}_2 + n\vec{a}_3\).</span> Trobeu la condició que han de complir \(\lambda,\mu,\nu\) perquè \(\tfrac{a}{2}(\lambda,\mu,\nu)\) sigui un punt de la xarxa FCC.</p></div>
+<div class="exercici" id="ex-1-4"><p><span class="ex-cap">Exercici 1.4 — Condició per a la xarxa BCC</span> La xarxa de Bravais BCC (<em>body-centered cubic</em>) té per vectors primitius
+\[\vec{a}_1 = \tfrac{a}{2} (-1, 1, 1), \quad \vec{a}_2 = \tfrac{a}{2} (1, -1, 1), \quad \vec{a}_3 = \tfrac{a}{2} (1, 1, -1),\]
+de manera que un punt de la xarxa ve donat per <span class="nw">\(\vec{T} = l\vec{a}_1 + m\vec{a}_2 + n\vec{a}_3\).</span> Trobeu la condició que han de complir \(\lambda,\mu,\nu\) perquè \(\tfrac{a}{2}(\lambda,\mu,\nu)\) sigui un punt de la xarxa BCC.</p></div>
+<div class="exercici" id="ex-1-5"><p><span class="ex-cap">Exercici 1.5 — Xarxa de l'aliatge Ni\(_3\)Al</span> El Ni cristal·litza en una estructura cúbica centrada en les cares (FCC) amb un àtom per cel·la elemental. En un sistema Al-Ni ordenat, els àtoms d'Al substitueixen els àtoms de Ni situats als vèrtexs del cub. Determineu: (a) la xarxa de Bravais de l'aliatge Al-Ni, (b) la base a la cel·la unitat, (c) la composició de l'aliatge.</p></div>
+<div class="exercici" id="ex-1-6"><p><span class="ex-cap">Exercici 1.6 — Xarxa del NaCl</span> Observeu l'estructura cristal·lina del NaCl. Responeu: (a) quina seria la xarxa de l'estructura si tots els àtoms fossin iguals; (b) quina és la xarxa de Bravais real del NaCl; (c) quina és la base a la cel·la unitat; (d) quina és la composició.</p></div>
+<div class="exercici" id="ex-1-7"><p><span class="ex-cap">Exercici 1.7 — Fracció d'ocupació</span> Trobeu el màxim percentatge de la cel·la que pot estar ocupat per esferes rígides en les següents estructures cristal·lines: (a) cúbica simple; (b) FCC (cúbica centrada en les cares); (c) tipus diamant.</p></div>
+<div class="exercici" id="ex-1-8"><p><span class="ex-cap">Exercici 1.8 — Formes al·lotròpiques del carboni</span> El carboni cristal·litza en dues formes al·lotròpiques diferents: diamant i grafit. El diamant cristal·litza en el sistema cúbic amb paràmetre de xarxa <span class="nw">\(a=3.57\,\text{Å}\),</span> i el grafit en l'hexagonal amb paràmetres <span class="nw">\(a=2.46\,\text{Å}\),</span> <span class="nw">\(c=6.71\,\text{Å}\).</span> La densitat del diamant és \(3.52\,\mathrm{g/cm^3}\) i la del grafit <span class="nw">\(2.25\,\mathrm{g/cm^3}\).</span> El pes atòmic del carboni és 12 i el nombre d'Avogadro <span class="nw">\(6.02\times10^{23}\,\text{àtoms/mol}\).</span> Calculeu el nombre d'àtoms a les cel·les unitat convencionals del diamant i del grafit.</p></div>
+<div class="exercici" id="ex-1-9"><p><span class="ex-cap">Exercici 1.9 — Densitat de nusos i distància entre plans (FCC i BCC)</span> En una xarxa cúbica centrada en les cares (FCC) i en una xarxa cúbica centrada en el cos (BCC), determineu quin dels plans <span class="nw">\((100)\),</span> \((110)\) i \((111)\) té una major densitat de nusos de la xarxa. Calculeu, en cada cas, l'espaiat \(d\) entre plans consecutius d'aquesta família.</p></div>
+<div class="exercici" id="ex-1-10"><p><span class="ex-cap">Exercici 1.10 — Vector normal a un pla i índexs de Miller</span> Si un pla intersecta els eixos <span class="nw">\(x\),</span> <span class="nw">\(y\),</span> \(z\) als punts <span class="nw">\(a\),</span> <span class="nw">\(b\),</span> \(c\) respectivament, trobeu un vector perpendicular al pla. Relacioneu el resultat amb la definició dels índexs de Miller <span class="nw">\((hkl)\).</span></p></div>
+<div class="exercici" id="ex-1-11"><p><span class="ex-cap">Exercici 1.11 — Grup de simetria del rectangle</span> Trobeu totes les simetries puntuals que deixen invariant un rectangle (no quadrat), construïu la taula de multiplicació i demostreu que formen un grup.</p></div>
+<div class="exercici" id="ex-1-12"><p><span class="ex-cap">Exercici 1.12 — Grup de simetria del triangle equilàter</span> Trobeu totes les simetries puntuals que deixen invariant un triangle equilàter, construïu la taula de multiplicació i demostreu que formen un grup.</p></div>
+<div class="exercici" id="ex-1-13"><p><span class="ex-cap">Exercici 1.13 — Volum de la cel·la primitiva</span> Siguin els vectors primitius de la xarxa FCC:
+\[\vec{a}_1 = \tfrac{a}{2}(0,1,1), \quad
+\vec{a}_2 = \tfrac{a}{2}(1,0,1), \quad
+\vec{a}_3 = \tfrac{a}{2}(1,1,0).\]
+(a) Calculeu el volum de la cel·la primitiva definida per aquests vectors. (b) Compareu-lo amb el volum de la cel·la convencional cúbica de costat <span class="nw">\(a\).</span> (c) Quina és la relació entre ambdós volums?</p></div>
+<div class="exercici" id="ex-1-14"><p><span class="ex-cap">Exercici 1.14 — Simetria de translació i propietats macroscòpiques</span> Expliqueu, de manera qualitativa, per què la simetria de translació en un sòlid cristal·lí és essencial per a: (a) la propagació ordenada d'ones acústiques (fonons); (b) la conducció elèctrica (electrons). (c) Què passaria si aquesta simetria es perdés, com per exemple en un vidre?</p></div>
+<div class="exercici" id="ex-1-15"><p><span class="ex-cap">Exercici 1.15 — Cel·la de Wigner-Seitz d'una xarxa hexagonal 2D</span> Considereu la xarxa de Bravais 2D hexagonal (triangular), de paràmetre <span class="nw">\(a\),</span> amb vectors primitius \(\vec a_1=a(1,0)\) i <span class="nw">\(\vec a_2=a\left(\tfrac12,\tfrac{\sqrt3}{2}\right)\).</span></p>
+<ol><li>Trobeu els 6 veïns més propers de l'origen i les seves distàncies.</li><li>Construïu la cel·la de Wigner-Seitz de l'origen (traceu les mediatrius dels segments que l'uneixen amb cadascun dels 6 veïns). Quina figura resulta?</li><li>Calculeu l'àrea d'aquesta cel·la i compareu-la amb l'àrea de la cel·la primitiva <span class="nw">\(|\vec a_1\times\vec a_2|\).</span></li></ol>
+<p><strong>Bonus opcional:</strong> la cel·la de Wigner-Seitz de la FCC (secció 1 dels apunts) és un dodecàedre ròmbic amb exactament 12 cares — i la FCC té exactament 12 veïns més propers, tots equidistants. Expliqueu, a partir del mètode de construcció (un pla per veí), per què això no és casualitat.</p></div>
+<div class="exercici" id="ex-1-16"><p><span class="ex-cap">Exercici 1.16 — Centre d'inversió: xarxa vs. cristall</span></p><ol><li>Demostreu, a partir de la definició de xarxa de Bravais, que tota xarxa de Bravais té centre d'inversió a l'origen (és a dir, que si \(\vec T\) és un punt de la xarxa, \(-\vec T\) també ho és).</li><li>El cristall complet (xarxa \(+\) base) hereta sempre aquest centre d'inversió? Considereu dues estructures amb exactament la mateixa xarxa FCC i la mateixa base geomètrica — dos àtoms a \((0,0,0)\) i \(\left(\tfrac a4,\tfrac a4,\tfrac a4\right)\) — però diferent composició química: el diamant (dos àtoms de carboni idèntics) i el zinc-blenda (per exemple GaAs: un àtom de Ga i un d'As). Té centre d'inversió cadascuna d'aquestes estructures? Raoneu-ho.</li></ol></div>
+  </article>
+</div>
+
+<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../apunts.js"></script>
+</body>
+</html>

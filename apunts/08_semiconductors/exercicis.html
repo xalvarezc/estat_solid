@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema 8: Física de Semiconductors — Exercicis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_apunts.css">
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2.5" y="4" width="19" height="16" rx="1.5"/><line x1="12" y1="4" x2="12" y2="20" stroke-dasharray="1.6 1.6"/><path d="M6 10 h4 M8 8 v4" stroke-width="1.4"/><path d="M6 16 h4" stroke-width="1.4"/><path d="M16 10 h4" stroke-width="1.4"/><path d="M16 16 h4" stroke-width="1.4"/></svg>Tema 8: Física de Semiconductors</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../index.html#index">Índex del curs</a>
+    <a href="../../simuladors/index.html">Simuladors</a>
+    <a href="../../mapa/">Mapa del curs</a>
+  </nav>
+</header>
+
+<div class="pagina">
+  <aside class="lateral">
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-8-1"><span class="num">8.1</span> Orbitals d'impuresa</a></li>
+<li><a href="#ex-8-2"><span class="num">8.2</span> Ionització de donants</a></li>
+<li><a href="#ex-8-3"><span class="num">8.3</span> Efecte Hall amb dos tipus de portadors</a></li>
+<li><a href="#ex-8-4"><span class="num">8.4</span> Resonància ciclotrònica per a una superfície d'energia esferoidal</a></li>
+<li><a href="#ex-8-5"><span class="num">8.5</span> Unió pn abrupta</a></li>
+<li><a href="#ex-8-6"><span class="num">8.6</span> Corrent de deriva amb dos portadors</a></li>
+<li><a href="#ex-8-7"><span class="num">8.7</span> Corrent de difusió en absència de camp</a></li>
+<li><a href="#ex-8-8"><span class="num">8.8</span> Distribució de Boltzmann i relació d’Einstein</a></li>
+<li><a href="#ex-8-9"><span class="num">8.9</span> Camp intern en un semiconductor amb dopatge no uniforme</a></li>
+</ol></nav>
+  </aside>
+
+  <article class="apunts exercicis">
+    <h1><span class="tema-num">Tema 8 · Exercicis</span>Física de Semiconductors</h1>
+<p class="recursos-tema"><a href="exercicis_08_enunciats.pdf" download>Enunciats en PDF</a></p>
+    <details class="index-mobil">
+      <summary>Índex</summary>
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-8-1"><span class="num">8.1</span> Orbitals d'impuresa</a></li>
+<li><a href="#ex-8-2"><span class="num">8.2</span> Ionització de donants</a></li>
+<li><a href="#ex-8-3"><span class="num">8.3</span> Efecte Hall amb dos tipus de portadors</a></li>
+<li><a href="#ex-8-4"><span class="num">8.4</span> Resonància ciclotrònica per a una superfície d'energia esferoidal</a></li>
+<li><a href="#ex-8-5"><span class="num">8.5</span> Unió pn abrupta</a></li>
+<li><a href="#ex-8-6"><span class="num">8.6</span> Corrent de deriva amb dos portadors</a></li>
+<li><a href="#ex-8-7"><span class="num">8.7</span> Corrent de difusió en absència de camp</a></li>
+<li><a href="#ex-8-8"><span class="num">8.8</span> Distribució de Boltzmann i relació d’Einstein</a></li>
+<li><a href="#ex-8-9"><span class="num">8.9</span> Camp intern en un semiconductor amb dopatge no uniforme</a></li>
+</ol></nav>
+    </details>
+<div class="exercici" id="ex-8-1"><p><span class="ex-cap">Exercici 8.1 — Orbitals d'impuresa</span> L'InSb té \(E_g = 0.23\) eV; la constant dielèctrica relativa és <span class="nw">\(\epsilon_r = \epsilon/\epsilon_0 = 18\);</span> la massa efectiva de l'electró <span class="nw">\(m^{*}_e = 0.015\, m_e\).</span> Calcula</p>
+<ol class="alfa"><li>L'energia d'ionització del donador</li><li>El radi de l'òrbita de l'estat fonamental</li><li>Amb quina concentració mínima de donants es produiran efectes apreciables de superposició entre les òrbites dels àtoms d'impuresa adjacents? Aquesta superposició tendeix a produir una banda d'impuresa, una sèrie de nivells d'energia que permeten la conductivitat presumiblement per un mecanisme de salts entre portadors, on els electrons es mouen d'un lloc d'impuresa a un lloc d'impuresa ionitzada veí.</li></ol></div>
+<div class="exercici" id="ex-8-2"><p><span class="ex-cap">Exercici 8.2 — Ionització de donants</span> En un semiconductor específic hi ha \(10^{13}\) donants/cm\(^3\) amb una energia d'ionització \(E_d\) d'1 meV i una massa efectiva de 0.01 m<span class="nw">\(_e\).</span></p>
+<ol class="alfa"><li>Estima la concentració d'electrons de conducció a 4 K.</li><li>Quin és el valor del coeficient Hall? Assumeix que no hi ha àtoms acceptors presents i que <span class="nw">\(E_g \gg k_BT\).</span></li></ol></div>
+<div class="exercici" id="ex-8-3"><p><span class="ex-cap">Exercici 8.3 — Efecte Hall amb dos tipus de portadors</span> Suposant les concentracions <span class="nw">\(n\),</span> <span class="nw">\(p\);</span> temps de relaxació <span class="nw">\(\tau_n\),</span> <span class="nw">\(\tau_p\);</span> i masses <span class="nw">\(m_e\),</span> <span class="nw">\(m_h\),</span> demostreu que el coeficient Hall en l'aproximació de la velocitat de deriva és:
+\[R_H=\frac{1}{e}\frac{p-nb^2}{(p+nb)^2}\]
+on \(b=\mu_e/\mu_h\) és el quocient entre mobilitats. En la derivació, descarta els termes d'ordre <span class="nw">\(B^2\).</span> Nota: En presència d'un camp elèctric longitudinal, troba el camp elèctric transversal de manera que la corrent transversal desaparegui. L'àlgebra pot semblar avorrida, però el resultat val la pena. Utilitza l'equació de l'exercici (6.9), però per a dos tipus de portadors; negligeix \((\omega_c \tau)^2\) en comparació amb \((\omega_c \tau)\)</p></div>
+<div class="exercici" id="ex-8-4"><p><span class="ex-cap">Exercici 8.4 — Resonància ciclotrònica per a una superfície d'energia esferoidal</span> Considerem la superfície d'energia 
+\[\epsilon(\mathbf{k})=\hbar^2\left(\frac{k_x^2+k_y^2}{2m_t}+\frac{k_z^2}{2m_l}\right),\]
+on \(m_t\) és el paràmetre de massa transversal i \(m_l\) és el paràmetre de massa longitudinal. Una superfície on \(\epsilon(\mathbf{k})\) és constant és un esferoide. Utilitza l'equació de moviment, 
+\[\hbar \frac{d\mathbf{k}}{dt} = -e \mathbf{v} \times \mathbf{B},\]
+amb <span class="nw">\(v = \frac{1}{\hbar} \nabla_k \epsilon(\mathbf{k})\),</span> per mostrar que \(\omega_c = eB/\sqrt{m_l m_t}\) quan el camp magnètic estàtic \(B\) es troba en el pla xy.</p></div>
+<div class="exercici" id="ex-8-5"><p><span class="ex-cap">Exercici 8.5 — Unió pn abrupta</span> Una unió \(pn\) abrupta de germani té les següents concentracions d'impureses:
+\[N_A = 5 \cdot 10^{20} \, \mathrm{m}^{-3}, \quad N_D = 10^{22} \, \mathrm{m}^{-3}.\]</p>
+<p>Les constants donades són:
+\[\varepsilon_r = 16.3, \quad \varepsilon_0 = 8.854 \cdot 10^{-12} \, \mathrm{F\cdot m}^{-1}, \quad \varepsilon = \varepsilon_r \cdot \varepsilon_0,\]
+i el producte <span class="nw">\(n_i^2 = 6 \cdot 10^{38} \, \mathrm{m}^{-6}\).</span></p>
+<ol class="alfa"><li>Calculeu el potencial de contacte a <span class="nw">\(T = 300 \, \mathrm{K}\).</span> El resultat hauria de ser <span class="nw">\(\Phi_T = 0.226 \, \mathrm{V}\).</span></li><li>Calculeu el camp elèctric màxim a la zona de càrrega d'espai i l'amplada d'aquesta zona per \(V = 0 \, \mathrm{V}\) i per <span class="nw">\(V = -20 \, \mathrm{V}\).</span></li></ol></div>
+<div class="exercici" id="ex-8-6"><p><span class="ex-cap">Exercici 8.6 — Corrent de deriva amb dos portadors</span> Un semiconductor de silici a \(T=300\,\mathrm{K}\) té una concentració d’electrons
+\(n = 5 \cdot 10^{21}\,\mathrm{m^{-3}}\) i de forats
+<span class="nw">\(p = 1 \cdot 10^{21}\,\mathrm{m^{-3}}\).</span> Les mobilitats són
+\(\mu_n = 0.135\,\mathrm{m^2/Vs}\) i <span class="nw">\(\mu_p = 0.048\,\mathrm{m^2/Vs}\).</span></p>
+<p>S’aplica un camp elèctric uniforme <span class="nw">\(E = 10^4\,\mathrm{V/m}\).</span></p>
+<ol class="alfa"><li>Calculeu les velocitats de deriva d’electrons i forats.</li><li>Calculeu el corrent de deriva associat a cada tipus de portador.</li><li>Quin portador domina el corrent total? Justifiqueu la resposta amb ordres de magnitud.</li></ol></div>
+<div class="exercici" id="ex-8-7"><p><span class="ex-cap">Exercici 8.7 — Corrent de difusió en absència de camp</span> En una mostra unidimensional de semiconductor no hi ha camp elèctric aplicat. La densitat d’electrons varia segons
+\[n(x)=n_0 e^{-x/L},\]
+on \(n_0 = 10^{22}\,\mathrm{m^{-3}}\) i <span class="nw">\(L = 1\,\mu\mathrm{m}\).</span>
+El coeficient de difusió electrònic és <span class="nw">\(D_n = 3.5 \cdot 10^{-3}\,\mathrm{m^2/s}\).</span></p>
+<ol class="alfa"><li>Calculeu el gradient de concentració <span class="nw">\(dn/dx\).</span></li><li>Determineu el corrent de difusió d’electrons.</li><li>Indiqueu el sentit del corrent elèctric i compareu-lo amb el sentit del moviment dels electrons.</li></ol></div>
+<div class="exercici" id="ex-8-8"><p><span class="ex-cap">Exercici 8.8 — Distribució de Boltzmann i relació d’Einstein</span> Un semiconductor no degenerat està en equilibri tèrmic a \(T=300\,\mathrm{K}\) sota un potencial electrostàtic
+\[\psi(x)=\alpha x,\]
+on <span class="nw">\(\alpha = 5 \cdot 10^4\,\mathrm{V/m}\).</span></p>
+<ol class="alfa"><li>Escriu la densitat d’electrons \(n(x)\) utilitzant el factor de Boltzmann.</li><li>Calculeu el quocient \(n(x_2)/n(x_1)\) per a <span class="nw">\(x_2-x_1=1\,\mu\mathrm{m}\).</span></li><li>Imposant la condició d’equilibri deriva–difusió, deduïu la relació d’Einstein.</li><li>Avalua numèricament el quocient \(D/\mu\) i compara’l amb <span class="nw">\(k_BT/e\).</span></li></ol></div>
+<div class="exercici" id="ex-8-9"><p><span class="ex-cap">Exercici 8.9 — Camp intern en un semiconductor amb dopatge no uniforme</span> En una regió d’un semiconductor la densitat d’electrons ve donada per
+\[n(x)=n_0\left(1+\frac{x}{L}\right),\]
+on \(n_0 = 10^{22}\,\mathrm{m^{-3}}\) i <span class="nw">\(L = 2\,\mu\mathrm{m}\).</span>
+El sistema es troba en equilibri a <span class="nw">\(T=300\,\mathrm{K}\).</span></p>
+<ol class="alfa"><li>Escriu l’expressió del corrent total d’electrons.</li><li>Imposant l’equilibri deriva–difusió, calcula el camp elèctric intern <span class="nw">\(E(x)\).</span></li><li>Avalua el valor del camp a \(x=0\) i dona’n l’ordre de magnitud.</li><li>Explica el paper físic d’aquest camp en el manteniment de l’equilibri.</li></ol></div>
+  </article>
+</div>
+
+<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../apunts.js"></script>
+</body>
+</html>

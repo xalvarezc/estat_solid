@@ -6,7 +6,7 @@
 <title>Física de l'Estat Sòlid</title>
 <meta name="description" content="Apunts i simuladors interactius de Física de l'Estat Sòlid, Grau en Física, Universitat Autònoma de Barcelona.">
 <!-- Portada de https://xalvarezc.github.io/estat_solid/
-     publica_simuladors.sh hi injecta la llista d'apunts publicats ([{"num": "01", "web": "apunts/01_xarxes_cristallines/", "pdf": "apunts/01_xarxes_cristallines/01_xarxes_cristallines.pdf", "pres": "presentacions/01_xarxes_cristallines.pdf"}, {"num": "02", "web": "apunts/02_xarxa_reciproca/", "pdf": "apunts/02_xarxa_reciproca/02_xarxa_reciproca.pdf", "pres": "presentacions/02_xarxa_reciproca.pdf"}, {"num": "03", "web": "apunts/03_cohesio/", "pdf": "apunts/03_cohesio/03_cohesio.pdf", "pres": "presentacions/03_cohesio.pdf"}, {"num": "04", "web": "apunts/04_dinamica_xarxa/", "pdf": "apunts/04_dinamica_xarxa/04_dinamica_xarxa.pdf", "pres": "presentacions/04_dinamica_xarxa.pdf"}]).
+     publica_simuladors.sh hi injecta la llista d'apunts publicats ([{"num": "01", "web": "apunts/01_xarxes_cristallines/", "pdf": "apunts/01_xarxes_cristallines/01_xarxes_cristallines.pdf", "ex": "apunts/01_xarxes_cristallines/exercicis.html", "expdf": "apunts/01_xarxes_cristallines/exercicis_01_enunciats.pdf", "pres": "presentacions/01_xarxes_cristallines.pdf"}, {"num": "02", "web": "apunts/02_xarxa_reciproca/", "pdf": "apunts/02_xarxa_reciproca/02_xarxa_reciproca.pdf", "ex": "apunts/02_xarxa_reciproca/exercicis.html", "expdf": "apunts/02_xarxa_reciproca/exercicis_02_enunciats.pdf", "pres": "presentacions/02_xarxa_reciproca.pdf"}, {"num": "03", "web": "apunts/03_cohesio/", "pdf": "apunts/03_cohesio/03_cohesio.pdf", "ex": "apunts/03_cohesio/exercicis.html", "expdf": "apunts/03_cohesio/exercicis_03_enunciats.pdf", "pres": "presentacions/03_cohesio.pdf"}, {"num": "04", "web": "apunts/04_dinamica_xarxa/", "pdf": "apunts/04_dinamica_xarxa/04_dinamica_xarxa.pdf", "ex": "apunts/04_dinamica_xarxa/exercicis.html", "expdf": "apunts/04_dinamica_xarxa/exercicis_04_enunciats.pdf", "pres": "presentacions/04_dinamica_xarxa.pdf"}, {"num": "05", "web": "apunts/05_fonons/", "pdf": "apunts/05_fonons/05_fonons.pdf", "ex": "apunts/05_fonons/exercicis.html", "expdf": "apunts/05_fonons/exercicis_05_enunciats.pdf"}, {"num": "06", "ex": "apunts/06_fermi_electrons/exercicis.html", "expdf": "apunts/06_fermi_electrons/exercicis_06_enunciats.pdf"}, {"num": "07", "ex": "apunts/07_bloch_bandes/exercicis.html", "expdf": "apunts/07_bloch_bandes/exercicis_07_enunciats.pdf"}, {"num": "08", "ex": "apunts/08_semiconductors/exercicis.html", "expdf": "apunts/08_semiconductors/exercicis_08_enunciats.pdf"}]).
      Els temes, les icones i els simuladors venen de simuladors/temes.js. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -173,7 +173,7 @@
   .part-nom { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 600; }
 
   .capitol {
-    display: grid; grid-template-columns: 64px 44px minmax(0, 1fr) auto; gap: 16px; align-items: center;
+    display: grid; grid-template-columns: 64px 44px minmax(0, 1fr) minmax(0, 440px); gap: 16px; align-items: center;
     padding: 16px 8px; border-bottom: 1px dotted var(--linia);
   }
   .capitol:last-child { border-bottom: 0; }
@@ -202,6 +202,8 @@
   a.xip.baixa { border: 1.5px solid var(--border); color: var(--ink-2); background: var(--paper); }
   a.xip.baixa:hover { border-color: var(--or); color: var(--ink); background: #FBF4E6; }
   span.xip.aviat { color: #9AA1AB; border: 1.5px dashed #D5D8DD; font-weight: 600; }
+  a.xip.exercicis { background: #E7F4EC; color: var(--uabgreen-dark); border: 1.5px solid #E7F4EC; }
+  a.xip.exercicis:hover { background: #D3EBDC; border-color: #D3EBDC; }
 
   .estat-llibre { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 18px; color: var(--muted); font-size: .88rem; }
   .estat-llibre b { color: var(--ink); font-family: var(--font-serif); font-size: 1.15rem; margin-right: 4px; }
@@ -251,6 +253,7 @@
   <nav class="cap-nav" aria-label="Seccions del curs">
     <a href="#index">Índex del curs</a>
     <a href="simuladors/">Simuladors</a>
+    <a href="mapa/">Mapa del curs</a>
   </nav>
 </header>
 
@@ -270,6 +273,10 @@
         <a class="boto buit" href="simuladors/">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 17c3-9 6-9 9 0s6 9 9 0"/></svg>
           Banc de simuladors
+        </a>
+        <a class="boto buit" href="mapa/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h7M14 6h7M3 12h4M11 12h10M3 18h11M18 18h3"/><circle cx="12" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg>
+          Mapa del curs
         </a>
       </div>
     </div>
@@ -330,7 +337,7 @@
 </footer>
 
 <!-- Apunts web publicats: els escriu publica_simuladors.sh -->
-<script type="application/json" id="apunts-publicats">[{"num": "01", "web": "apunts/01_xarxes_cristallines/", "pdf": "apunts/01_xarxes_cristallines/01_xarxes_cristallines.pdf", "pres": "presentacions/01_xarxes_cristallines.pdf"}, {"num": "02", "web": "apunts/02_xarxa_reciproca/", "pdf": "apunts/02_xarxa_reciproca/02_xarxa_reciproca.pdf", "pres": "presentacions/02_xarxa_reciproca.pdf"}, {"num": "03", "web": "apunts/03_cohesio/", "pdf": "apunts/03_cohesio/03_cohesio.pdf", "pres": "presentacions/03_cohesio.pdf"}, {"num": "04", "web": "apunts/04_dinamica_xarxa/", "pdf": "apunts/04_dinamica_xarxa/04_dinamica_xarxa.pdf", "pres": "presentacions/04_dinamica_xarxa.pdf"}]</script>
+<script type="application/json" id="apunts-publicats">[{"num": "01", "web": "apunts/01_xarxes_cristallines/", "pdf": "apunts/01_xarxes_cristallines/01_xarxes_cristallines.pdf", "ex": "apunts/01_xarxes_cristallines/exercicis.html", "expdf": "apunts/01_xarxes_cristallines/exercicis_01_enunciats.pdf", "pres": "presentacions/01_xarxes_cristallines.pdf"}, {"num": "02", "web": "apunts/02_xarxa_reciproca/", "pdf": "apunts/02_xarxa_reciproca/02_xarxa_reciproca.pdf", "ex": "apunts/02_xarxa_reciproca/exercicis.html", "expdf": "apunts/02_xarxa_reciproca/exercicis_02_enunciats.pdf", "pres": "presentacions/02_xarxa_reciproca.pdf"}, {"num": "03", "web": "apunts/03_cohesio/", "pdf": "apunts/03_cohesio/03_cohesio.pdf", "ex": "apunts/03_cohesio/exercicis.html", "expdf": "apunts/03_cohesio/exercicis_03_enunciats.pdf", "pres": "presentacions/03_cohesio.pdf"}, {"num": "04", "web": "apunts/04_dinamica_xarxa/", "pdf": "apunts/04_dinamica_xarxa/04_dinamica_xarxa.pdf", "ex": "apunts/04_dinamica_xarxa/exercicis.html", "expdf": "apunts/04_dinamica_xarxa/exercicis_04_enunciats.pdf", "pres": "presentacions/04_dinamica_xarxa.pdf"}, {"num": "05", "web": "apunts/05_fonons/", "pdf": "apunts/05_fonons/05_fonons.pdf", "ex": "apunts/05_fonons/exercicis.html", "expdf": "apunts/05_fonons/exercicis_05_enunciats.pdf"}, {"num": "06", "ex": "apunts/06_fermi_electrons/exercicis.html", "expdf": "apunts/06_fermi_electrons/exercicis_06_enunciats.pdf"}, {"num": "07", "ex": "apunts/07_bloch_bandes/exercicis.html", "expdf": "apunts/07_bloch_bandes/exercicis_07_enunciats.pdf"}, {"num": "08", "ex": "apunts/08_semiconductors/exercicis.html", "expdf": "apunts/08_semiconductors/exercicis_08_enunciats.pdf"}]</script>
 <script src="simuladors/temes.js"></script>
 <script>
 (function () {
@@ -368,23 +375,26 @@
 
   const IC_LLIBRE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5C4.7 20 4 19.3 4 18.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5z"/></svg>';
   const IC_ONA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 17c3-9 6-9 9 0s6 9 9 0"/></svg>';
+  const IC_LLAPIS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>';
   const IC_BAIXA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>';
   const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
   const cont = document.getElementById('capitols');
-  let nApunts = 0, nSims = 0, nTemes = 0, nPres = 0;
+  let nApunts = 0, nSims = 0, nTemes = 0, nPres = 0, nEx = 0;
   PARTS.forEach(part => {
     const sec = document.createElement('section');
     sec.className = 'part';
     sec.innerHTML = '<div class="part-cap"><span class="part-num">' + part.num + '</span><span class="part-nom">' + esc(part.nom) + '</span></div>';
     part.temes.forEach(c => {
       const a = recursosDe(c.num), n = simsDe(c.num);
-      if (!c.preliminar) { nTemes++; if (a.web) nApunts++; if (a.pres) nPres++; }
+      if (!c.preliminar) { nTemes++; if (a.web) nApunts++; if (a.pres) nPres++; if (a.ex) nEx++; }
       nSims += n;
       const rec = [];
       rec.push(a.web ? '<a class="xip apunts" href="' + esc(a.web) + '">' + IC_LLIBRE + 'Apunts</a>'
                      : '<span class="xip aviat" title="Els apunts web d\'aquest tema encara s\'estan preparant">Apunts · en preparació</span>');
       if (a.pdf) rec.push('<a class="xip baixa" href="' + esc(a.pdf) + '" title="Apunts del tema en PDF, per imprimir o treballar fora de línia" download>' + IC_BAIXA + 'PDF</a>');
+      if (a.ex) rec.push('<a class="xip exercicis" href="' + esc(a.ex) + '" title="Enunciats dels exercicis del tema">' + IC_LLAPIS + 'Exercicis</a>');
+      if (a.expdf) rec.push('<a class="xip baixa" href="' + esc(a.expdf) + '" title="Enunciats dels exercicis en PDF" download>' + IC_BAIXA + 'Exercicis PDF</a>');
       if (a.pres) rec.push('<a class="xip baixa" href="' + esc(a.pres) + '" title="Diapositives de classe del tema (PDF)" download>' + IC_BAIXA + 'Presentació</a>');
       rec.push(n ? '<a class="xip sims" href="simuladors/#tema-' + c.num + '">' + IC_ONA + n + ' simulador' + (n > 1 ? 's' : '') + '</a>'
                  : '<span class="xip aviat">Simuladors · en preparació</span>');
@@ -403,6 +413,7 @@
   document.getElementById('estat').innerHTML =
     '<span><b>' + nTemes + '</b>temes</span>' +
     '<span><b>' + nApunts + '</b>amb apunts web</span>' +
+    '<span><b>' + nEx + '</b>amb exercicis</span>' +
     '<span><b>' + nPres + '</b>presentacions</span>' +
     '<span><b>' + nSims + '</b>simuladors</span>';
 

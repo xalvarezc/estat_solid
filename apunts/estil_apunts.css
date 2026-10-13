@@ -206,3 +206,22 @@ figure.sim figcaption, figure figcaption {
 .centrat img { margin: 2px; vertical-align: middle; }
 .sims-costat { display: flex; flex-wrap: wrap; gap: 12px; }
 .sims-costat > .sim-incrustat { flex: 1 1 380px; }
+
+/* enllaços a les altres peces del tema (apunts ↔ exercicis ↔ PDF) */
+.recursos-tema { display: flex; flex-wrap: wrap; gap: 8px; margin: -14px 0 26px; font-size: .92rem; font-weight: 600; }
+.recursos-tema a {
+  display: inline-block; text-decoration: none; padding: 5px 13px; border-radius: 999px;
+  background: #E7F4EC; color: var(--uabgreen-dark);
+}
+.recursos-tema a:hover { background: var(--uabgreen-dark); color: #fff; }
+
+/* exercicis: capçalera en línia en verd, un exercici darrere l'altre com una llista */
+.exercici { margin: 0 0 22px; scroll-margin-top: 16px; }
+.exercici .ex-cap { font-weight: 700; color: var(--uabgreen); }
+
+/* apartats amb etiqueta pròpia: \item[(a)] */
+ol.amb-etiquetes, ul.amb-etiquetes { list-style: none; padding-left: 4px; }
+.item-et { font-weight: 700; margin-right: 4px; }
+/* apartats (a), (b), (c): enumerate[label=(\alph*)] */
+ol.alfa > li { list-style: none; position: relative; }
+ol.alfa > li::before { content: "(" counter(list-item, lower-alpha) ")"; position: absolute; left: -1.9em; font-weight: 600; }

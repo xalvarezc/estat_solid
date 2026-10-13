@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — La calor específica d'un cristall</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./fonons.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12 C4.5 4, 7.5 4, 10 12 C12.5 20, 15.5 20, 18 12 C19.5 7.5, 21 7.5, 22 10.5"/></svg>Tema 5: Fonons</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../#index">Índex del curs</a>
+    <a class="actiu" href="../index.html">Simuladors</a>
+  </nav>
+</header>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>La calor específica d'un cristall: fonons, Einstein i Debye</h1>
+  <p class="sub">Cada mode de vibració és un oscil·lador quàntic que només absorbeix energia en quàntums hν. Tria un material i una temperatura i mira quins modes estan «vius» (hν ≲ kT) i quins congelats, com en surt la calor específica a partir de la densitat d'estats del cristall, i com la reprodueixen, o no, els models d'Einstein i de Debye. A alta temperatura tots tendeixen a Dulong-Petit; a baixa, només Debye encerta la llei T³.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Material</div>
+      <div class="control-group">
+        <select class="sel-input" id="selMat"></select>
+      </div>
+      <p class="hint" id="notaMat"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Temperatura</div>
+      <div class="control-group">
+        <label class="control-label" for="slT">T <span class="val" id="valT"></span></label>
+        <input type="range" class="slider" id="slT" min="0" max="3.5" step="0.005" value="2.4771">
+      </div>
+      <div class="grup-btn" id="grupT">
+        <button type="button" class="btn-opcio" data-t="4">4 K</button>
+        <button type="button" class="btn-opcio" data-t="77">77 K</button>
+        <button type="button" class="btn-opcio" data-t="300">300 K</button>
+        <button type="button" class="btn-opcio" data-t="1000">1000 K</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Models</div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkDOS" checked> Densitat d'estats del cristall (càlcul harmònic)</label>
+        <label class="check-row"><input type="checkbox" id="chkDeb" checked> Model de Debye</label>
+        <label class="check-row"><input type="checkbox" id="chkEin" checked> Model d'Einstein</label>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slTD">Θ<sub>D</sub> (Debye) <span class="val" id="valTD"></span></label>
+        <input type="range" class="slider" id="slTD" min="1.3" max="3.5" step="0.002" value="3.35">
+      </div>
+      <div class="grup-btn" id="grupTD">
+        <button type="button" class="btn-opcio" data-td="cal">Θ<sub>D</sub> calorimètrica</button>
+        <button type="button" class="btn-opcio" data-td="el">Θ<sub>D</sub> del so (model)</button>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slTE">Θ<sub>E</sub> (Einstein) <span class="val" id="valTE"></span></label>
+        <input type="range" class="slider" id="slTE" min="1.3" max="3.5" step="0.002" value="3.25">
+      </div>
+      <p class="hint">Θ<sub>D</sub> i Θ<sub>E</sub> són els únics paràmetres dels dos models. La densitat d'estats no en té cap ajustat a la calor específica: surt d'un model de forces entre àtoms (dinàmica de xarxa, Tema 4) ajustat a les constants elàstiques i, al diamant i al silici, també a la freqüència Raman.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Gràfica de la calor específica</div>
+      <div class="grup-btn" id="grupEscala">
+        <button type="button" class="btn-opcio" data-v="lin">Escala lineal</button>
+        <button type="button" class="btn-opcio" data-v="log">Escala logarítmica (T³)</button>
+      </div>
+      <div class="grup-btn" id="grupUnitat" style="margin-top:6px;">
+        <button type="button" class="btn-opcio" data-v="mol">Per mol d'àtoms</button>
+        <button type="button" class="btn-opcio" data-v="kg">Per quilogram</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title">Densitat d'estats i modes actius</div>
+        <canvas id="canvasDOS" width="430" height="330"></canvas>
+        <p class="plot-desc" style="max-width:430px;">Histograma gris: g(ν), modes per àtom i per THz (n'hi ha 3 per àtom). Verd: g(ν)·E(hν/kT), la part de cada interval que contribueix a la calor específica a la temperatura triada. Blau: la paràbola de Debye; ataronjat: la freqüència d'Einstein. La línia vertical és kT/h.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Ocupació d'un mode: distribució de Planck</div>
+        <canvas id="canvasOcup" width="430" height="330"></canvas>
+        <p class="plot-desc" style="max-width:430px;">Nombre mitjà de fonons en un mode de freqüència ν, n = 1/(e<sup>hν/kT</sup> − 1) (verd), i el valor clàssic kT/hν (gris). Els modes amb hν ≫ kT gairebé no s'exciten: estan congelats.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Calor específica en funció de la temperatura</div>
+        <canvas id="canvasCv" width="880" height="360"></canvas>
+        <p class="plot-desc" style="max-width:880px;">C<sub>V</sub>/3R (o per quilogram) per a la densitat d'estats del cristall (verd), Debye (blau discontinu) i Einstein (ataronjat puntejat). La recta grisa és Dulong-Petit. El punt vermell és la C<sub>p</sub> experimental a 298 K. En escala logarítmica, la recta prima és la llei T³ de Debye.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Cada mode de vibració del Tema 4 és un oscil·lador harmònic quàntic d'energies hν(n + ½). A temperatura T, el nombre mitjà de fonons del mode és el de Planck, <strong>n = 1/(e<sup>hν/kT</sup> − 1)</strong>, i la seva contribució a la calor específica és <strong>k·E(x)</strong>, amb x = hν/kT i E(x) = x²eˣ/(eˣ − 1)².</p>
+      <p>La calor específica del cristall és la suma sobre tots els modes, <strong>C<sub>V</sub> = k Σ E(hν/kT)</strong>, que s'escriu amb la <strong>densitat d'estats</strong> g(ν). Aquí g(ν) surt de diagonalitzar la matriu dinàmica a milers de punts de la zona de Brillouin. Per al diamant, el Si i el Ge, el model de forces és el de Keating, que té en compte l'estirament i la flexió dels enllaços, ajustat a les constants elàstiques (al diamant i al Si, amb una molla entre segons veïns i ajustat també a la freqüència Raman); per a la resta, molles centrals com les del Tema 4. Aquests models de veïns propers posen les branques acústiques transversals massa altes a la vora de zona, i per això a temperatures intermèdies donen una calor específica una mica més baixa que la mesurada (al diamant a 300 K, un 11 % menys).</p>
+      <p><strong>Einstein</strong> posa tots els modes a la mateixa freqüència; <strong>Debye</strong> substitueix g(ν) per la paràbola del so, tallada perquè hi hagi 3 modes per àtom. Tots dos donen 3R a alta temperatura (Dulong-Petit).</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Diamant a 300 K: kT/h = 6.3 THz, i gairebé tota la densitat d'estats és per sobre. Només una quarta part de la calor específica clàssica: és l'«anomalia» del diamant que va explicar Einstein el 1907.</p>
+          <p><strong>2.</strong> El coure a 300 K ja és pràcticament a 3R: tres quartes parts dels seus modes tenen hν &lt; kT, i la resta, just per sobre. El que compta no és la temperatura sola, sinó T comparada amb Θ<sub>D</sub>.</p>
+          <p><strong>3.</strong> Baixa a 20 K en escala logarítmica: la corba del cristall i la de Debye segueixen la recta T³; la d'Einstein cau molt més de pressa, exponencialment.</p>
+          <p><strong>4.</strong> Mira la densitat d'estats a baixa temperatura: només la cua de freqüència baixa, la dels modes acústics, queda en verd. Per això a baixa T només importa el pendent del so, que és el que Debye fa bé.</p>
+          <p><strong>5.</strong> Canvia entre Θ<sub>D</sub> calorimètrica i la del so: a baixa temperatura, la que reprodueix la corba del cristall és la del so, perquè el límit T³ només depèn de les ones acústiques llargues.</p>
+          <p><strong>6.</strong> Passa a «per quilogram»: el diamant i el tungstè tenen límits clàssics molt diferents, perquè Dulong-Petit és universal per àtom, no per massa.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./fonons_comu.js"></script>
+<script src="./dades_fonons.js"></script>
+<script src="./calor_especifica.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>

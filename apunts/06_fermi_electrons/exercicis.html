@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema 6: Electrons lliures i estadística de Fermi-Dirac — Exercicis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_apunts.css">
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>Tema 6: Electrons lliures i estadística de Fermi-Dirac</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../index.html#index">Índex del curs</a>
+    <a href="../../simuladors/index.html">Simuladors</a>
+    <a href="../../mapa/">Mapa del curs</a>
+  </nav>
+</header>
+
+<div class="pagina">
+  <aside class="lateral">
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-6-1"><span class="num">6.1</span> Energia cinètica del gas d'electrons</a></li>
+<li><a href="#ex-6-2"><span class="num">6.2</span> Pressió i mòdul volumètric d'un gas d'electrons</a></li>
+<li><a href="#ex-6-3"><span class="num">6.3</span> Potencial químic en dues dimensions</a></li>
+<li><a href="#ex-6-4"><span class="num">6.4</span> Gasos de Fermi en astrofísica</a></li>
+<li><a href="#ex-6-5"><span class="num">6.5</span> Hel·li líquid</a></li>
+<li><a href="#ex-6-6"><span class="num">6.6</span> Dependència de la freqüència de la conductivitat elèctrica</a></li>
+<li><a href="#ex-6-7"><span class="num">6.7</span> Tensor de magnetoconductivitat dinàmica per a electrons lliures</a></li>
+<li><a href="#ex-6-8"><span class="num">6.8</span> Energia cohesiva d'un gas d'electrons lliures de Fermi</a></li>
+<li><a href="#ex-6-9"><span class="num">6.9</span> Tensor de magnetoconductivitat estàtica</a></li>
+<li><a href="#ex-6-10"><span class="num">6.10</span> Resistència de superfície màxima</a></li>
+</ol></nav>
+  </aside>
+
+  <article class="apunts exercicis">
+    <h1><span class="tema-num">Tema 6 · Exercicis</span>Electrons lliures i estadística de Fermi-Dirac</h1>
+<p class="recursos-tema"><a href="exercicis_06_enunciats.pdf" download>Enunciats en PDF</a></p>
+    <details class="index-mobil">
+      <summary>Índex</summary>
+<nav class="index" aria-label="Índex"><div class="index-titol">Índex</div><ol>
+<li><a href="#ex-6-1"><span class="num">6.1</span> Energia cinètica del gas d'electrons</a></li>
+<li><a href="#ex-6-2"><span class="num">6.2</span> Pressió i mòdul volumètric d'un gas d'electrons</a></li>
+<li><a href="#ex-6-3"><span class="num">6.3</span> Potencial químic en dues dimensions</a></li>
+<li><a href="#ex-6-4"><span class="num">6.4</span> Gasos de Fermi en astrofísica</a></li>
+<li><a href="#ex-6-5"><span class="num">6.5</span> Hel·li líquid</a></li>
+<li><a href="#ex-6-6"><span class="num">6.6</span> Dependència de la freqüència de la conductivitat elèctrica</a></li>
+<li><a href="#ex-6-7"><span class="num">6.7</span> Tensor de magnetoconductivitat dinàmica per a electrons lliures</a></li>
+<li><a href="#ex-6-8"><span class="num">6.8</span> Energia cohesiva d'un gas d'electrons lliures de Fermi</a></li>
+<li><a href="#ex-6-9"><span class="num">6.9</span> Tensor de magnetoconductivitat estàtica</a></li>
+<li><a href="#ex-6-10"><span class="num">6.10</span> Resistència de superfície màxima</a></li>
+</ol></nav>
+    </details>
+<div class="exercici" id="ex-6-1"><p><span class="ex-cap">Exercici 6.1 — Energia cinètica del gas d'electrons</span> Demostreu que l'energia cinètica d'un gas de N electrons lliures tridimensional a 0 K és
+\[U_0=\frac{3}{5}N\epsilon_{F}\]</p></div>
+<div class="exercici" id="ex-6-2"><p><span class="ex-cap">Exercici 6.2 — Pressió i mòdul volumètric d'un gas d'electrons</span> (a) Deriva una relació que connecti la pressió i el volum d'un gas d'electrons a 0 K. Utilitza el resultat del Problema 1 i la relació entre \(\epsilon_F\) i la concentració d'electrons. El resultat es pot escriure com a <span class="nw">\(p = \frac{2}{3} \frac{U_0}{V}\).</span> (b) Mostra que el mòdul de compressibilitat \(B = -V \left(\frac{\partial p}{\partial V}\right)\) d'un gas d'electrons a 0 K és <span class="nw">\(B = \frac{5p}{3} = \frac{10}{9} \frac{U_0}{V}\).</span> (c) Estima, per al potassi (\(n = 1.40\times10^{22}\) cm<span class="nw">\(^{-3}\)),</span> el valor de la contribució del gas d'electrons a <span class="nw">\(B\).</span></p></div>
+<div class="exercici" id="ex-6-3"><p><span class="ex-cap">Exercici 6.3 — Potencial químic en dues dimensions</span> Demostreu que el potencial químic d'un gas de Fermi en dues dimensions ve donat per:
+\[\mu = k_B T \ln \left(\exp \left( \frac{\pi n \hbar^2}{m k_B T}\right) - 1 \right)\]
+per a \(n\) electrons per unitat d'àrea. Nota: La densitat d'orbitals d'un gas d'electrons lliures en dues dimensions és independent de l'energia: \(D(e) = \frac{m}{\pi \hbar^2},\) per unitat d'àrea de l'espècimen.</p></div>
+<div class="exercici" id="ex-6-4"><p><span class="ex-cap">Exercici 6.4 — Gasos de Fermi en astrofísica</span> (a) Donat \(M_{\odot} = 2 \times 10^{33} \, \textrm{g}\) és la massa del Sol, estima el nombre d'electrons en el Sol. En una estrella nana blanca, aquest nombre d'electrons podria ionitzar-se i ser contingut en una esfera de radi <span class="nw">\(2 \times 10^9 \, \textrm{cm}\);</span> troba l'energia de Fermi dels electrons en electronvolts. (b) L'energia d'un electró en el límit relativista, <span class="nw">\(E \gg mc^2\),</span> està relacionada amb el vector d'ona com <span class="nw">\(E \simeq pc = \hbar kc\).</span> Demostreu que l'energia de Fermi en aquest límit és <span class="nw">\(\epsilon_F \approx \hbar c (N/V)^{1/3}\),</span> aproximadament. (c) Si el nombre d'electrons anterior estigués contingut dins d'un púlsar de radi <span class="nw">\(10 \, \textrm{km}\),</span> mostra que l'energia de Fermi seria de \(10^{8}\) eV. Aquest valor explica per què es creu que els púlsars estan composats principalment de neutrons en lloc de protons i electrons, ja que l'alliberament d'energia en la reacció \(n \rightarrow p + e^-\) és només de <span class="nw">\(0.8 \times 10^6 \, \textrm{eV}\),</span> que no és suficientment gran per permetre que molts electrons formin un mar de Fermi. La descomposició dels neutrons continua fins que la concentració d'electrons augmenta prou per crear un nivell de Fermi de \(0.8 \cdot 10^{6}\) eV, moment en què les concentracions de neutrons, protons i electrons estan en equilibri.</p></div>
+<div class="exercici" id="ex-6-5"><p><span class="ex-cap">Exercici 6.5 — Hel·li líquid</span> L'àtom He\(^3\) té espín i és un fermió. La densitat de l'heli líquid és de \(0.081 \, \textrm{g cm}^{-3}\) prop del zero absolut. Calcula l'energia de Fermi \(\epsilon_F\) i la temperatura de Fermi <span class="nw">\(T_F\).</span></p></div>
+<div class="exercici" id="ex-6-6"><p><span class="ex-cap">Exercici 6.6 — Dependència de la freqüència de la conductivitat elèctrica</span> Utilitza l'equació \(m(\frac{du}{dt} + \frac{v}{\tau}) = -eE\) per a la velocitat de deriva dels electrons \(v\) per mostrar que la conductivitat en freqüència angular \(\omega\) és
+\[\sigma(\omega) = \sigma(0) \frac{1+i\omega \tau}{1 + (\omega\tau)^2}.\]
+on \(\sigma(0)=ne^2\tau/m\)</p></div>
+<div class="exercici" id="ex-6-7"><p><span class="ex-cap">Exercici 6.7 — Tensor de magnetoconductivitat dinàmica per a electrons lliures</span> Un metall amb una concentració \(n\) d'electrons lliures de càrrega \(-e\) es troba en un camp magnètic estàtic <span class="nw">\(B\).</span> La densitat de corrent elèctric en el pla xy està relacionada amb el camp elèctric per
+\[j_x = \sigma_{xx} E_{x} + \sigma_{xy} E_{y} \ \ ;\ \ j_y = \sigma_{yx} E_{x} + \sigma_{yy} E_{y}.\]
+Assumiu que la freqüència \(\omega \gg \omega_C\) i <span class="nw">\(\omega \gg 1/\tau\),</span> on \(\omega_c = \frac{eB}{mc}\) i \(\tau\) és el temps de col·lisió. (a) Resol l'equació de la velocitat de deriva per trobar els components del tensor de magnetoconductivitat:
+\[\sigma_{xx} = \sigma_{yy} = i\omega_P^2/4\pi \omega \ \ ; \ \ \ \sigma_{xy} = \sigma_{yx} = i\omega_C \omega_P^2/4\pi \omega^2\]
+on \(\omega_P^2=4\pi n e^2/m\)
+(b) Nota des d'una equació de Maxwell que el tensor de la funció dielèctrica del medi es relaciona amb el tensor de conductivitat com <span class="nw">\(\mathbf{\epsilon} = 1 + i(4\pi/\omega) \sigma\).</span> Considera una ona electromagnètica amb vector d'ona <span class="nw">\(k = \hat{k}_z\).</span> Mostra que la relació de dispersió per a aquesta ona en el medi és
+\[c^2 k^2 = \omega^2 - \omega_p^2 \pm \frac{\omega_C\omega_P^2}{\omega},\]
+on \(\omega_p\) és la freqüència de plasmons. A una freqüència donada, hi ha dues modes de propagació amb diferents vectors d'ona i diferents velocitats. Les dues modes corresponen a ones propagades circularment polaritzades.</p></div>
+<div class="exercici" id="ex-6-8"><p><span class="ex-cap">Exercici 6.8 — Energia cohesiva d'un gas d'electrons lliures de Fermi</span> Definim la longitud adimensional <span class="nw">\(r_s = r_0/a_0\),</span> on \(r_0\) és el radi d'una esfera que conté un electró i \(a_0 = \hbar^2/me^2\) és el radi de Bohr (unitats gaussianes). (a) Mostra que l'energia cinètica mitjana per electró en un gas de Fermi d'electrons lliures a 0 K és <span class="nw">\(2.21/r_s^2\),</span> amb l'energia expressada en rydbergs, <span class="nw">\(1 \, \text{Ry} = me^4/2\hbar^2\).</span> (b) Mostra que l'energia coulombiana d'una càrrega positiva puntual \(e\) interaccionant amb la distribució uniforme d'electrons d'un electró en el volum de radi \(r_0\) és <span class="nw">\(-\frac{3e^2}{2r_0}\),</span> o \(-3/r_s\) en rydbergs. (c) Mostra que l'autoenergia coulombiana de la distribució d'electrons en l'esfera és <span class="nw">\(\frac{3e^2}{5r_0}\),</span> o \(6/5r_s\) en rydbergs. (d) La suma de (b) i (c) dona \(-1.80/r_s\) per a l'energia coulombiana total per electró. Mostra que el valor d'equilibri de \(r_s\) és 2.45. Aquest metall serà estable amb relació als àtoms separats d'H?</p></div>
+<div class="exercici" id="ex-6-9"><p><span class="ex-cap">Exercici 6.9 — Tensor de magnetoconductivitat estàtica</span> Per la teoria de la velocitat de deriva en un sistema on hi ha un camp elèctric \(\vec{E}\) i un camp magnètic <span class="nw">\(\vec{B}=B\hat{z}\),</span> mostra que la densitat de corrent estàtica es pot escriure en forma de matriu com
+\[\begin{bmatrix}
+j_x \\
+j_y \\
+j_z
+\end{bmatrix}
+= \frac{\sigma(0)}{1+(\omega_c\tau)^2}
+\begin{bmatrix}
+1 &amp; \omega_c \tau &amp; 0 \\
+-\omega_c \tau &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1+(\omega_c\tau)^2 
+\end{bmatrix}
+\begin{bmatrix}
+E_x \\
+E_y \\
+E_z
+\end{bmatrix}.\]</p>
+<p>En el límit de camp magnètic intens, <span class="nw">\(\omega_c \tau \gg 1\),</span> mostra que</p>
+<div class="formula">\[\sigma_{yx}=ne/B=-\sigma_{xy}\]</div>
+<p>En aquest límit, \(\sigma_{xx} = 0\) fins a l'ordre <span class="nw">\(1/\omega_C\tau\).</span> La quantitat \(\sigma_{yx}\) és anomenada conductivitat de Hall.</p></div>
+<div class="exercici" id="ex-6-10"><p><span class="ex-cap">Exercici 6.10 — Resistència de superfície màxima</span> Considera un full quadrat de costat <span class="nw">\(L\),</span> gruix <span class="nw">\(d\),</span> i resistivitat elèctrica <span class="nw">\(\rho\).</span> La resistència mesurada entre els costats oposats de la capa s'anomena resistència de superfície: <span class="nw">\(R_{\text{sq}} = \frac{\rho L}{Ld} = \frac{\rho}{d}\),</span> la qual és independent de l'àrea de la capa. (\(R_{\text{sq}}\) és anomenada resistència per quadrat i s'expressa en ohms per quadrat, ja que \(\rho/d\) té dimensions d'ohm). Si expressem \(\rho\) com <span class="nw">\(m/n e^2 \tau\),</span> aleshores <span class="nw">\(R_{\text{sq}} = \frac{m}{n d e^2 \tau}\).</span> Suposem ara que el valor mínim del temps de col·lisió està determinat per la dispersió des de les superfícies del full, de manera que <span class="nw">\(\tau = \frac{d}{v_{F}}\),</span> on \(v_{F}\) és la velocitat de Fermi. Així, la resistivitat màxima de la superfície és <span class="nw">\(R_{\text{sq}} = \frac{m v_{F}}{n d^2 e^2}\).</span> Mostra que per a un full metàl·lic amb un àtom de gruixada, <span class="nw">\(R_{\text{sq}} = \frac{\hbar}{e^2} = 4.1 \, \text{k}\Omega\).</span></p></div>
+  </article>
+</div>
+
+<footer class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../apunts.js"></script>
+</body>
+</html>
