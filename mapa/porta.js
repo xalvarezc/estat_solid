@@ -159,6 +159,7 @@
     if (props) for (const k in props) {
       if (k === 'class') e.className = props[k];
       else if (k === 'text') e.textContent = props[k];
+      else if (k === 'html') e.innerHTML = props[k];    // només per a icones SVG d'aquest fitxer
       else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), props[k]);
       else if (props[k] != null) e.setAttribute(k, props[k]);
     }
@@ -167,14 +168,15 @@
   }
 
   const TXT_DESAT = {
-    local: ['·', 'Només en aquest navegador (la connexió del curs no està configurada)'],
-    ok: ['✓ desat al curs', 'El teu progrés queda desat al curs amb el teu NIU'],
-    okbuit: ['✓ connectat', 'Connectat: el progrés es desarà al curs amb el teu NIU'],
-    desant: ['desant…', 'Desant el progrés al curs'],
-    error: ['⚠ sense connexió', 'Ara mateix no es pot desar al curs: el progrés queda en aquest navegador i es tornarà a provar'],
+    local: ['Només en aquest navegador', 'La connexió del curs no està configurada: el progrés queda en aquest navegador'],
+    ok: ['✓ Desat al curs', 'El teu progrés queda desat al curs amb el teu NIU'],
+    okbuit: ['✓ Connectat', 'Connectat: el progrés es desarà al curs amb el teu NIU'],
+    desant: ['Desant…', 'Desant el progrés al curs'],
+    error: ['⚠ Sense connexió', 'Ara mateix no es pot desar al curs: el progrés queda en aquest navegador i es tornarà a provar'],
   };
-  let elDesat = null;
+  let elDesat = null, elDot = null;
   function estatDesat(e) {
+    if (elDot) { elDot.dataset.e = e; elDot.title = TXT_DESAT[e][1]; }
     if (!elDesat) return;
     elDesat.textContent = TXT_DESAT[e][0];
     elDesat.title = TXT_DESAT[e][1];
@@ -274,14 +276,31 @@
       surt() { oblida(); location.reload(); },
     };
 
-    // barra de sessió a la capçalera
+    // menú de sessió a la capçalera (un sol botó desplegable)
     const nav = document.querySelector('.cap-nav');
     if (nav) {
-      elDesat = el('span', { class: 'cap-desat' });
-      const qui = el('span', { class: 'cap-niu', text: niu + (SESSIO.docent ? ' · docent' : '') });
-      const btnClau = el('button', { type: 'button', class: 'cap-clau', title: 'Canvia la teva contrasenya', onclick: obreCanviClau }, 'Contrasenya');
-      const surt = el('button', { type: 'button', class: 'cap-surt', title: 'Tanca la sessió en aquest navegador', onclick: SESSIO.surt }, 'Surt');
-      nav.append(elDesat, qui, btnClau, surt);
+      elDot = el('span', { class: 'cap-dot', 'aria-hidden': 'true' });
+      const toggle = el('button', {
+        type: 'button', class: 'cap-compte', 'aria-haspopup': 'true', 'aria-expanded': 'false',
+        title: 'La teva sessió',
+      }, elDot, el('span', { class: 'cap-compte-niu', text: niu }),
+        el('span', { class: 'cap-chevron', 'aria-hidden': 'true', html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>' }));
+
+      elDesat = el('div', { class: 'cap-menu-estat' });
+      const itClau = el('button', { type: 'button', class: 'cap-menu-item', role: 'menuitem' }, 'Canvia la contrasenya');
+      const itSurt = el('button', { type: 'button', class: 'cap-menu-item cap-menu-surt', role: 'menuitem' }, 'Tanca la sessió');
+      const menu = el('div', { class: 'cap-menu', role: 'menu', hidden: 'hidden' },
+        el('div', { class: 'cap-menu-cap', text: 'NIU ' + niu + (SESSIO.docent ? ' · docent' : '') }),
+        elDesat, itClau, itSurt);
+
+      const cont = el('div', { class: 'cap-compte-cont' }, toggle, menu);
+      function obre(estat) { menu.hidden = !estat; toggle.setAttribute('aria-expanded', estat ? 'true' : 'false'); }
+      toggle.addEventListener('click', ev => { ev.stopPropagation(); obre(menu.hidden); });
+      document.addEventListener('click', ev => { if (!cont.contains(ev.target)) obre(false); });
+      document.addEventListener('keydown', ev => { if (ev.key === 'Escape') obre(false); });
+      itClau.addEventListener('click', () => { obre(false); obreCanviClau(); });
+      itSurt.addEventListener('click', SESSIO.surt);
+      nav.append(cont);
     }
     estatDesat(!API ? 'local' : online ? (inicial ? 'ok' : 'okbuit') : 'error');
 

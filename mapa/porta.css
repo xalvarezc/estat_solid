@@ -38,29 +38,42 @@ body.porta-tancada main, body.porta-tancada footer { display: none; }
 .porta-error { color: var(--perdut); font-size: .88rem; min-height: 1.2em; margin: 2px 0 10px; }
 .porta-nota { font-size: .8rem; color: var(--muted); margin: 16px 0 0; line-height: 1.5; }
 
-/* ---------- sessió a la capçalera ---------- */
-.cap-desat { align-self: center; font-size: .74rem; color: var(--muted); white-space: nowrap; }
-.cap-desat[data-e="ok"], .cap-desat[data-e="okbuit"] { color: var(--ok); }
-.cap-desat[data-e="error"], .cap-desat[data-e="local"] { color: var(--afectat); }
-.cap-niu {
-  align-self: center; font-size: .8rem; font-weight: 700; color: var(--uabgreen-dark);
-  padding-left: 12px; border-left: 1px solid var(--linia); white-space: nowrap;
-}
-.cap-surt {
+/* ---------- menú de sessió a la capçalera (desplegable) ---------- */
+.cap-compte-cont { position: relative; display: flex; align-items: center; }
+.cap-compte {
+  display: inline-flex; align-items: center; gap: 7px;
   font-size: .85rem; font-weight: 600; color: var(--ink-2);
-  padding: 7px 13px; border: 0; border-radius: 999px; background: none; cursor: pointer;
-  white-space: nowrap;
+  padding: 6px 10px 6px 11px; border: 1px solid var(--linia); border-radius: 999px;
+  background: var(--blanc); cursor: pointer; white-space: nowrap;
 }
-.cap-surt:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
-.cap-clau {
-  font-size: .85rem; font-weight: 600; color: var(--ink-2);
-  padding: 7px 13px; border: 0; border-radius: 999px; background: none; cursor: pointer;
-  white-space: nowrap;
+.cap-compte:hover { background: #E7F4EC; color: var(--uabgreen-dark); border-color: #CFE6D8; }
+.cap-compte-niu { font-weight: 700; color: var(--uabgreen-dark); }
+.cap-chevron svg { width: 14px; height: 14px; display: block; transition: transform .15s; }
+.cap-compte[aria-expanded="true"] .cap-chevron svg { transform: rotate(180deg); }
+.cap-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.cap-dot[data-e="ok"], .cap-dot[data-e="okbuit"] { background: var(--ok); }
+.cap-dot[data-e="error"], .cap-dot[data-e="local"] { background: var(--afectat); }
+.cap-dot[data-e="desant"] { background: var(--dubte-punt); }
+
+.cap-menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 70;
+  min-width: 220px; padding: 7px;
+  background: var(--blanc); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 12px 34px rgba(11, 61, 36, .16);
 }
-.cap-clau:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
-@media (max-width: 640px) {
-  .cap-desat { display: none; }
+.cap-menu[hidden] { display: none; }
+.cap-menu-cap { font-size: .78rem; font-weight: 700; color: var(--uabgreen-dark); padding: 6px 10px 2px; }
+.cap-menu-estat { font-size: .76rem; color: var(--muted); padding: 2px 10px 8px; border-bottom: 1px solid var(--paper-2); margin-bottom: 5px; }
+.cap-menu-estat[data-e="ok"], .cap-menu-estat[data-e="okbuit"] { color: var(--ok); }
+.cap-menu-estat[data-e="error"], .cap-menu-estat[data-e="local"] { color: var(--afectat); }
+.cap-menu-item {
+  display: block; width: 100%; text-align: left;
+  font: inherit; font-size: .86rem; font-weight: 600; color: var(--ink-2);
+  padding: 9px 10px; border: 0; border-radius: 8px; background: none; cursor: pointer;
 }
+.cap-menu-item:hover { background: #E7F4EC; color: var(--uabgreen-dark); }
+.cap-menu-surt { color: var(--perdut); }
+.cap-menu-surt:hover { background: var(--perdut-bg); color: var(--perdut); }
 
 /* ---------- diàleg de canvi de contrasenya ---------- */
 .modal-fons {
