@@ -1,5 +1,5 @@
 // porta.js — porta d'accés al mapa del curs: identificació amb NIU i desat del progrés
-// al curs (Firestore per REST, claus a connexio_firebase.js). Si la connexió no està
+// al curs (bústia PHP al servidor, URL a connexio_servidor.js). Si la connexió no està
 // configurada o falla, el mapa funciona igualment i el progrés queda al navegador.
 // La llista de NIUs autoritzats no es publica en clar: només els sha256 de "REDACTAT."+NIU.
 (function () {
@@ -46,72 +46,53 @@
   const CLAU_SESSIO = 'estatsolid.mapa.sessio';
 
   // ---------------------------------------------------------------
-  // Connexió amb el Firestore del curs (REST, sense SDK)
+  // Connexió amb la bústia del curs (PHP a edatdepietrix.uab.cat)
+  // window.MAPA_API el defineix connexio_servidor.js; si no hi és, mode només-navegador.
   // ---------------------------------------------------------------
-  const CFG = window.FIREBASE_CONFIG || null;
-  const URL_DOCS = CFG && CFG.projectId && CFG.apiKey
-    ? 'https://firestore.googleapis.com/v1/projects/' + CFG.projectId + '/databases/(default)/documents'
-    : null;
-  const urlDoc = niu => URL_DOCS + '/progres/' + niu + '?key=' + encodeURIComponent(CFG.apiKey);
+  const API = window.MAPA_API ? window.MAPA_API.replace(/\/?$/, '/') : null;
 
   async function sha(text) {
     const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
     return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
   }
 
-  function desfesDoc(d) {                           // document REST → {niu, t, obj}
-    const f = d.fields || {};
-    let obj = null;
-    try { obj = JSON.parse(f.dades.stringValue); } catch (err) { /* document estrany: s'ignora */ }
-    return { niu: d.name.split('/').pop(), t: +((f.t || {}).integerValue || 0), obj };
+  async function crida(endpoint, cos, urgent) {
+    const text = JSON.stringify(cos);
+    // Content-Type "text/plain" = petició simple: el navegador no fa preflight CORS.
+    const r = await fetch(API + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: text,
+      keepalive: !!urgent && text.length < 60000,   // el navegador rebutja keepalive amb cossos grans
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.err || 'error');
+    return j;
   }
 
-  async function llegeixRemot(niu) {
-    if (!URL_DOCS) return null;
-    const r = await fetch(urlDoc(niu));
-    if (r.status === 404) return null;
-    if (!r.ok) throw new Error('lectura ' + r.status);
-    return desfesDoc(await r.json()).obj;
+  async function llegeixRemot(niu, clau) {
+    if (!API) return null;
+    const j = await crida('llegeix.php', { niu, clau });
+    return j.dades || null;
   }
 
-  async function llistaRemots() {                   // tots els progressos (panell docent)
-    if (!URL_DOCS) return [];
-    const tots = [];
-    let seguent = '';
-    do {
-      const r = await fetch(URL_DOCS + '/progres?pageSize=300&key=' + encodeURIComponent(CFG.apiKey)
-        + (seguent ? '&pageToken=' + encodeURIComponent(seguent) : ''));
-      if (!r.ok) throw new Error('llista ' + r.status);
-      const cos = await r.json();
-      (cos.documents || []).forEach(d => tots.push(desfesDoc(d)));
-      seguent = cos.nextPageToken || '';
-    } while (seguent);
-    return tots.filter(d => d.obj);
+  async function llistaRemots(niu, clau) {          // tots els progressos (panell docent)
+    if (!API) return [];
+    const j = await crida('llegeix.php', { niu, clau, tots: 1 });
+    return (j.alumnes || []).map(a => ({ niu: a.niu, obj: a.dades, t: (a.dades && a.dades.t) || 0 }));
   }
 
   // Desat amb retard: molts clics seguits → una sola escriptura
   let SESSIO = null, tSync = null, pendent = null, enviant = false;
   async function envia(urgent) {
-    if (!URL_DOCS || !pendent || enviant) return;
+    if (!API || !pendent || enviant) return;
     const dades = pendent;
     pendent = null;
     enviant = true;
     estatDesat('desant');
     try {
-      const cos = JSON.stringify({
-        fields: {
-          clau: { stringValue: SESSIO.clau },
-          t: { integerValue: String(dades.t || Date.now()) },
-          dades: { stringValue: JSON.stringify(dades) },
-        },
-      });
-      const r = await fetch(urlDoc(SESSIO.niu), {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: cos,
-        keepalive: !!urgent && cos.length < 60000,  // el navegador rebutja keepalive amb cossos grans
-      });
-      if (!r.ok) throw new Error('escriptura ' + r.status);
+      await crida('desa.php', { niu: SESSIO.niu, clau: SESSIO.clau, dades }, urgent);
       estatDesat('ok');
     } catch (err) {
       if (!pendent) pendent = dades;                // es reintentarà
@@ -123,7 +104,7 @@
     }
   }
   function sync(dades) {
-    if (!URL_DOCS) return;
+    if (!API) return;
     pendent = dades;
     clearTimeout(tSync);
     tSync = setTimeout(envia, 1200);
@@ -170,7 +151,7 @@
       panell: H_PANELL.has(hash),
       inicial: null,
       sync,
-      llistaRemots,
+      llistaRemots: () => llistaRemots(niu, PREFIX + niu),
       esDocent: async n => H_DOCENTS.has(await sha(SAL + n)),
       surt() {
         try { localStorage.removeItem(CLAU_SESSIO); } catch (err) { /* res */ }
@@ -195,9 +176,9 @@
       nav.append(elDesat, qui, surt);
     }
 
-    if (URL_DOCS) {
+    if (API) {
       try {
-        SESSIO.inicial = await llegeixRemot(niu);
+        SESSIO.inicial = await llegeixRemot(niu, SESSIO.clau);
         estatDesat(SESSIO.inicial ? 'ok' : 'okbuit');
       } catch (err) {
         estatDesat('error');

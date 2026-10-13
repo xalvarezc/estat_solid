@@ -100,7 +100,7 @@
   let avisatDesa = false;
   function desa() {
     const dades = { v: 1, t: Date.now(), e: estat.e, n: estat.n, x: estat.x, h: estat.h };
-    if (SESSIO) SESSIO.sync(dades);             // cap al Firestore del curs (amb retard, a porta.js)
+    if (SESSIO) SESSIO.sync(dades);             // cap a la bústia del curs (amb retard, a porta.js)
     try {
       localStorage.setItem(CLAU_DESA, JSON.stringify(dades));
     } catch (err) {

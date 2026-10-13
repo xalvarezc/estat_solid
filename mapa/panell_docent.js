@@ -1,6 +1,6 @@
 // panell_docent.js — seguiment estadístic del grup. Només es carrega (des de porta.js)
 // quan la sessió és del docent amb accés al panell. Llegeix tots els progressos desats
-// al Firestore del curs i en treu mitjanes; els docents no compten a l'estadística.
+// a la bústia del curs i en treu mitjanes; els docents no compten a l'estadística.
 (function () {
   'use strict';
   const S = window.SESSIO;
