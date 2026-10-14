@@ -80,7 +80,7 @@
     // resum per alumne
     const files = alumnes.map(d => {
       const e = d.obj.e || {}, n = d.obj.n || {}, x = d.obj.x || {};
-      const r = { niu: d.niu, t: d.t || d.obj.t || 0, ok: 0, dubte: 0, perdut: 0, ex: Object.keys(x).length, notes: Object.keys(n).length, e };
+      const r = { niu: d.niu, t: d.t || d.obj.t || 0, ok: 0, dubte: 0, perdut: 0, ex: Object.keys(x).length, notes: Object.keys(n).length, e, x };
       for (const id in e) if (r[e[id]] != null) r[e[id]]++;
       return r;
     });
@@ -116,6 +116,68 @@
     b1.append(el('summary', null, 'Per línia argumental'), tl);
     b1.open = true;
     cos.append(b1);
+
+    // per tema → subtema (estació del mapa) → concepte
+    const estad = (cs, exs) => {
+      const tot = files.length * cs.length;
+      const comp = v => files.reduce((s, r) => s + cs.filter(c => r.e[c.id] === v).length, 0) / tot;
+      return {
+        ok: comp('ok'), dubte: comp('dubte'), perdut: comp('perdut'),
+        actius: files.filter(r => cs.some(c => r.e[c.id])).length,
+        nDubte: files.filter(r => cs.some(c => r.e[c.id] === 'dubte')).length,
+        nPerdut: files.filter(r => cs.some(c => r.e[c.id] === 'perdut')).length,
+        ex: exs.length ? mitjana(r => exs.filter(k => r.x[k]).length).toFixed(1) + ' de ' + exs.length : '—',
+      };
+    };
+    const filaArbre = (nivell, nom, s, color) => {
+      const f = el('div', 'pa-fila pa-n' + nivell);
+      const n = el('span', 'pa-nom', nom);
+      if (color) { n.classList.add('pan-linia'); n.style.setProperty('--c', color); }
+      const barra = el('span', 'barra pa-barra');
+      [['b-ok', s.ok], ['b-dubte', s.dubte], ['b-perdut', s.perdut]].forEach(([c, v]) => {
+        const b = el('span', c); b.style.width = (100 * v).toFixed(1) + '%'; barra.append(b);
+      });
+      barra.title = pc(s.ok) + ' entès · ' + pc(s.dubte) + ' amb dubtes · ' + pc(s.perdut) + ' perdut · '
+        + pc(1 - s.ok - s.dubte - s.perdut) + ' sense marcar';
+      f.append(n, barra, el('span', 'pa-num', pc(s.ok)), el('span', 'pa-num', s.actius + '/' + files.length),
+        el('span', 'pa-num' + (s.nDubte ? ' pa-dubte' : ''), s.nDubte),
+        el('span', 'pa-num' + (s.nPerdut ? ' pa-perdut' : ''), s.nPerdut), el('span', 'pa-num pa-ex', s.ex));
+      return f;
+    };
+    const exsDe = cs => [...new Set(cs.flatMap(c => c.ex || []))];
+    const arbre = el('div', 'pan-arbre');
+    const capA = el('div', 'pa-fila pa-cap');
+    ['Tema / subtema / concepte', 'Distribució', 'Entesos', 'Actius', 'Dubtes', 'Perduts', 'Exercicis']
+      .forEach(t => capA.append(el('span', null, t)));
+    arbre.append(capA);
+    [...new Set(MAPA.linies.flatMap(l => l.estacions.map(e => e.tema)))].sort().forEach(t => {
+      const ests = [];
+      MAPA.linies.forEach(l => l.estacions.forEach(e => { if (e.tema === t) ests.push({ e, l }); }));
+      const cs = ests.flatMap(x => x.e.conceptes);
+      const exsTema = (window.EXERCICIS || []).filter(x => x.tema === t).map(x => x.num);
+      const dT = el('details', 'pa-tema');
+      const sT = el('summary');
+      const nomT = t === '00' ? 'Repàs de cursos anteriors' : 'Tema ' + (+t) + ((window.NOMS_TEMES || {})[t] ? ' · ' + NOMS_TEMES[t] : '');
+      sT.append(filaArbre(1, nomT, estad(cs, exsTema)));
+      dT.append(sT);
+      ests.forEach(({ e, l }) => {
+        const dE = el('details', 'pa-est');
+        const sE = el('summary');
+        sE.append(filaArbre(2, e.nom, estad(e.conceptes, exsDe(e.conceptes)), l.color));
+        dE.append(sE);
+        e.conceptes.forEach(c => dE.append(filaArbre(3, c.nom, estad([c], exsDe([c])))));
+        dT.append(dE);
+      });
+      arbre.append(dT);
+    });
+    const bT = el('details', 'pan-bloc');
+    bT.append(el('summary', null, 'Per tema i subtema'), arbre, el('p', 'pan-peu',
+      'Cada tema es desplega en els seus subtemes (les estacions del mapa), i cada subtema en els seus conceptes. '
+      + 'La barra reparteix totes les marques possibles (alumnes × conceptes): verd, entès; groc, amb dubtes; vermell, «m\'he perdut»; gris, sense marcar. '
+      + 'Entesos: percentatge mitjà de conceptes entesos. Actius: alumnes que hi han marcat algun concepte. Dubtes i Perduts: alumnes que en tenen almenys un. '
+      + 'Exercicis: mitjana de fets per alumne, dels exercicis del full del tema o dels que practiquen aquells conceptes.'));
+    bT.open = true;
+    cos.append(bT);
 
     // conceptes que més costen
     const problema = CONCEPTES.map(c => ({

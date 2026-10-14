@@ -146,8 +146,41 @@ body.porta-tancada main, body.porta-tancada footer { display: none; }
 .pan-taula th { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .pan-linia { font-weight: 600; border-left: 4px solid var(--c, var(--linia)); padding-left: 8px; }
 .pan-peu, .pan-buit { font-size: .8rem; color: var(--muted); margin: 10px 0 0; }
+
+/* per tema → subtema → concepte */
+.pan-arbre { font-size: .88rem; margin: 8px 0 4px; }
+.pa-fila {
+  display: grid; align-items: center; gap: 10px;
+  grid-template-columns: minmax(150px, 2.4fr) minmax(80px, 1.5fr) 4.2rem 4.2rem 4.2rem 4.2rem 5.6rem;
+  padding: 6px 10px; border-bottom: 1px solid var(--paper-2);
+}
+.pa-cap { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+.pa-num { text-align: right; font-variant-numeric: tabular-nums; }
+.pa-cap span:nth-child(n+3) { text-align: right; }
+.pa-dubte { color: var(--dubte); font-weight: 700; }
+.pa-perdut { color: var(--perdut); font-weight: 700; }
+.pa-barra { height: 9px; }
+.pan-arbre summary { list-style: none; cursor: pointer; font-weight: normal; padding: 0; }
+.pan-arbre summary::-webkit-details-marker { display: none; }
+.pan-arbre summary:hover .pa-fila { background: var(--paper-2); }
+.pa-n1 .pa-nom { font-weight: 700; }
+.pa-n2 .pa-nom { padding-left: 18px; }
+.pa-n2 .pa-nom.pan-linia { margin-left: 18px; padding-left: 8px; font-weight: 600; }
+.pa-n3 { font-size: .82rem; color: var(--ink-2); }
+.pa-n3 .pa-nom { padding-left: 48px; }
+.pa-n1 .pa-nom::before, .pa-n2 .pa-nom::before {
+  content: '▸'; display: inline-block; width: 1.1em; color: var(--muted); transition: transform .15s;
+}
+details[open] > summary .pa-nom::before { transform: rotate(90deg); }
+.pa-tema[open] { background: #FDFCF8; }
 @media (max-width: 640px) {
   .panell { padding: 16px; }
   .pan-taula { font-size: .8rem; }
   .pan-taula th, .pan-taula td { padding: 5px 6px; }
+  .pa-fila { grid-template-columns: minmax(0, 1fr) 70px 3.4rem 3rem; gap: 6px; padding: 6px 4px; }
+  .pa-cap { font-size: .6rem; letter-spacing: .02em; }
+  .pan-bloc { overflow-x: auto; }
+  .pa-fila > :nth-child(4), .pa-fila > :nth-child(5), .pa-fila > :nth-child(7) { display: none; }
+  .pa-n2 .pa-nom, .pa-n2 .pa-nom.pan-linia { margin-left: 8px; }
+  .pa-n3 .pa-nom { padding-left: 22px; }
 }
