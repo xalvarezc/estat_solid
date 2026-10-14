@@ -1,50 +1,12 @@
 // porta.js — porta d'accés al mapa del curs: identificació amb NIU i contrasenya, i desat del
-// progrés al curs (bústia PHP al servidor, URL a connexio_servidor.js). La contrasenya es
-// verifica al servidor: per defecte és "REDACTAT"+NIU, però cada usuari se la pot canviar
-// (es desa com a hash al servidor). Si la connexió no està configurada o falla, el mapa
-// funciona igualment amb la contrasenya per defecte i el progrés queda al navegador.
-// La llista de NIUs autoritzats no es publica en clar: només els sha256 de "REDACTAT."+NIU.
+// progrés al curs (bústia PHP al servidor, URL a connexio_servidor.js). Tota la comprovació
+// (NIU de la llista, contrasenya, docent o no) la fa el servidor: aquest codi és públic i no porta
+// cap llista ni cap pista de la contrasenya inicial. La contrasenya inicial només serveix per
+// posar-ne una de pròpia la primera vegada. Si la connexió no està configurada, el mapa
+// funciona només amb el navegador.
 (function () {
   'use strict';
 
-  // ---------------------------------------------------------------
-  // Llista del curs (sha256 de "REDACTAT."+NIU)
-  // ---------------------------------------------------------------
-  const AUTORITZATS = new Set([
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-    'REDACTAT',
-  ]);
-  // docents (no compten a l'estadística del grup); qui veu el panell de seguiment
-  const H_DOCENTS = new Set([
-    'REDACTAT',
-    'REDACTAT',
-  ]);
-  const H_PANELL = new Set(['REDACTAT']);
-
-  const PREFIX = 'REDACTAT';                      // contrasenya per defecte = PREFIX + NIU
-  const SAL = 'REDACTAT.';                        // hash = sha256(SAL + NIU)
   const CLAU_SESSIO = 'estatsolid.mapa.sessio';
 
   // ---------------------------------------------------------------
@@ -52,11 +14,6 @@
   // window.MAPA_API el defineix connexio_servidor.js; si no hi és, mode només-navegador.
   // ---------------------------------------------------------------
   const API = window.MAPA_API ? window.MAPA_API.replace(/\/?$/, '/') : null;
-
-  async function sha(text) {
-    const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-    return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
-  }
 
   async function crida(endpoint, cos, urgent) {
     const text = JSON.stringify(cos);
@@ -67,30 +24,35 @@
       body: text,
       keepalive: !!urgent && text.length < 60000,   // el navegador rebutja keepalive amb cossos grans
     });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const j = await r.json();
-    if (!j.ok) throw new Error(j.err || 'error');
+    let j = null;
+    try { j = await r.json(); } catch (err) { j = null; }
+    if (!r.ok) throw new Error('HTTP ' + r.status + (j && j.err ? ' ' + j.err : ''));
+    if (!j || !j.ok) throw new Error((j && j.err) || 'error');
     return j;
   }
 
+  const DOCENTS = new Set();                          // NIUs docents, segons el servidor (panell)
   async function llistaRemots(niu, clau) {          // tots els progressos (panell docent)
     if (!API) return [];
     const j = await crida('llegeix.php', { niu, clau, tots: 1 });
+    (j.alumnes || []).forEach(a => { if (a.docent) DOCENTS.add(a.niu); });
     return (j.alumnes || []).map(a => ({ niu: a.niu, obj: a.dades, t: (a.dades && a.dades.t) || 0 }));
   }
 
-  // Verifica la contrasenya contra el servidor (i de passada en treu el progrés desat).
-  // Retorna estat: 'ok' (servidor), 'oklocal' (sense servidor, contrasenya per defecte),
-  // 'dolenta' (contrasenya incorrecta) o 'nopuc' (no es pot verificar ara mateix).
+  // Verifica NIU i contrasenya al servidor (i de passada en treu el progrés desat).
+  // estat: 'ok', 'local' (sense servidor configurat), 'canvi' (contrasenya inicial: cal posar-ne
+  // una de pròpia), 'niu' (no és a la llista), 'dolenta', 'bloquejat' o 'nopuc' (sense connexió).
   async function verificaClau(niu, clau) {
-    if (!API) return { estat: clau === PREFIX + niu ? 'oklocal' : 'dolenta', dades: null };
+    if (!API) return { estat: 'local', dades: null };
     try {
       const j = await crida('llegeix.php', { niu, clau });
-      return { estat: 'ok', dades: j.dades || null };
+      return { estat: 'ok', dades: j.dades || null, docent: !!j.docent, panell: !!j.panell };
     } catch (err) {
-      if (/\b403\b/.test(err.message)) return { estat: 'dolenta', dades: null };
-      // error de xarxa: no es pot verificar → només val la de defecte, en mode local
-      return { estat: clau === PREFIX + niu ? 'oklocal' : 'nopuc', dades: null };
+      const m = err.message;
+      if (/\b428\b/.test(m)) return { estat: 'canvi', dades: null };
+      if (/\b429\b/.test(m)) return { estat: 'bloquejat', dades: null };
+      if (/\b403\b/.test(m)) return { estat: /\bniu\b/.test(m) ? 'niu' : 'dolenta', dades: null };
+      return { estat: 'nopuc', dades: null };
     }
   }
 
@@ -144,11 +106,8 @@
     if (!r) return null;
     let o = null;
     try { o = JSON.parse(r); } catch (err) { o = null; }
-    if (o && typeof o === 'object' && o.niu) {          // format nou: {niu, clau}
-      return { niu: String(o.niu), clau: o.clau || (PREFIX + String(o.niu)) };
-    }
-    const niu = String(r).replace(/[^0-9]/g, '');       // format antic: el text és el NIU
-    return niu ? { niu, clau: PREFIX + niu } : null;
+    if (o && typeof o === 'object' && o.niu && o.clau) return { niu: String(o.niu), clau: String(o.clau) };
+    return null;                                         // formats antics: cal tornar a entrar
   }
 
   // ---------------------------------------------------------------
@@ -194,8 +153,56 @@
   }
 
   // ---------------------------------------------------------------
-  // Diàleg de canvi de contrasenya
+  // Diàlegs de contrasenya: canvi des del menú, i la primera vegada (amb la contrasenya inicial)
   // ---------------------------------------------------------------
+  function missatgeErrorClau(m) {
+    if (/nova_defecte/.test(m)) return 'La contrasenya nova no pot ser la inicial.';
+    if (/\b403\b/.test(m)) return 'La contrasenya actual no és correcta.';
+    if (/\b429\b/.test(m)) return 'Massa intents fallits: el compte està bloquejat durant 15 minuts.';
+    return 'No s\'ha pogut canviar la contrasenya. Torna-ho a provar.';
+  }
+
+  function primeraClau(niu, inicial) {
+    if (document.getElementById('modalClau')) return;
+    const nova = el('input', { type: 'password', autocomplete: 'new-password', minlength: '6', required: 'required' });
+    const repeteix = el('input', { type: 'password', autocomplete: 'new-password', minlength: '6', required: 'required' });
+    const err = el('p', { class: 'modal-error', role: 'alert' });
+    const desa = el('button', { type: 'submit' }, 'Desa i entra');
+    const cancella = el('button', { type: 'button', class: 'modal-sec' }, 'Cancel·la');
+    const form = el('form', { autocomplete: 'off' },
+      el('label', null, 'Contrasenya nova (mínim 6 caràcters)', nova),
+      el('label', null, 'Repeteix la contrasenya nova', repeteix),
+      err,
+      el('div', { class: 'modal-botons' }, cancella, desa));
+    const fons = el('div', { class: 'modal-fons', id: 'modalClau' },
+      el('div', { class: 'modal-caixa' },
+        el('h2', null, 'Posa una contrasenya pròpia'),
+        el('p', { class: 'modal-nota' }, 'És la primera vegada que entres: la contrasenya inicial només serveix per triar-ne una de pròpia. Si l\'oblides, el professor te la pot restablir.'),
+        form));
+    function tanca() { fons.remove(); }
+    cancella.addEventListener('click', tanca);
+    form.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      err.textContent = '';
+      if (nova.value.length < 6) { err.textContent = 'La contrasenya nova ha de tenir almenys 6 caràcters.'; return; }
+      if (nova.value !== repeteix.value) { err.textContent = 'Les dues contrasenyes no coincideixen.'; return; }
+      desa.disabled = true;
+      try {
+        await crida('canvia_clau.php', { niu, clau: inicial, nova: nova.value });
+        const v = await verificaClau(niu, nova.value);
+        if (v.estat !== 'ok') throw new Error(v.estat);
+        tanca();
+        recorda(niu, nova.value);
+        await entra(niu, nova.value, v);
+      } catch (e2) {
+        err.textContent = missatgeErrorClau(e2.message);
+        desa.disabled = false;
+      }
+    });
+    document.body.append(fons);
+    nova.focus();
+  }
+
   function obreCanviClau() {
     if (document.getElementById('modalClau')) return;
     const actual = el('input', { type: 'password', autocomplete: 'current-password', required: 'required' });
@@ -237,9 +244,7 @@
         estatDesat(API ? 'ok' : 'local');
         missatgeCapcalera('Contrasenya canviada.');
       } catch (e2) {
-        err.textContent = /\b403\b/.test(e2.message)
-          ? 'La contrasenya actual no és correcta.'
-          : 'No s\'ha pogut canviar la contrasenya. Torna-ho a provar.';
+        err.textContent = missatgeErrorClau(e2.message);
         desa.disabled = false;
       }
     });
@@ -260,19 +265,19 @@
   // ---------------------------------------------------------------
   // Entrada
   // ---------------------------------------------------------------
-  async function entra(niu, clau, inicial, online) {
-    const hash = await sha(SAL + niu);
+  async function entra(niu, clau, v) {                // v: resultat de verificaClau
+    const inicial = v.dades, online = v.estat === 'ok';
     SESSIO = window.SESSIO = {
       niu,
       clau,
-      docent: H_DOCENTS.has(hash),
-      panell: H_PANELL.has(hash),
+      docent: !!v.docent,
+      panell: !!v.panell,
       inicial: inicial || null,
       sync,
       llistaRemots: () => llistaRemots(SESSIO.niu, SESSIO.clau),
       canviaClau,
       resetClau: altre => crida('canvia_clau.php', { niu: SESSIO.niu, clau: SESSIO.clau, reset_niu: altre }),
-      esDocent: async n => H_DOCENTS.has(await sha(SAL + n)),
+      esDocent: async n => DOCENTS.has(n),
       surt() { oblida(); location.reload(); },
     };
 
@@ -315,13 +320,15 @@
   async function identifica(niu, contrasenya) {
     niu = (niu || '').trim();
     if (!/^[0-9]{6,8}$/.test(niu)) return 'El NIU són només xifres, sense espais ni lletres.';
-    if (!AUTORITZATS.has(await sha(SAL + niu))) return 'Aquest NIU no és a la llista del curs. Si hi hauries de ser, escriu al professor.';
     const clau = (contrasenya || '').trim();
     const v = await verificaClau(niu, clau);
+    if (v.estat === 'niu') return 'Aquest NIU no és a la llista del curs. Si hi hauries de ser, escriu al professor.';
     if (v.estat === 'dolenta') return 'Contrasenya incorrecta.';
+    if (v.estat === 'bloquejat') return 'Massa intents fallits: aquest NIU està bloquejat durant 15 minuts. Torna-ho a provar més tard o escriu al professor.';
     if (v.estat === 'nopuc') return 'Ara no es pot verificar la contrasenya (sense connexió amb el curs). Torna-ho a provar d\'aquí a una estona.';
+    if (v.estat === 'canvi') { primeraClau(niu, clau); return ''; }
     recorda(niu, clau);
-    await entra(niu, clau, v.dades, v.estat === 'ok');
+    await entra(niu, clau, v);
     return '';
   }
 
@@ -352,10 +359,11 @@
 
   (async function inici() {
     const rec = llegeixRecord();
-    if (rec && AUTORITZATS.has(await sha(SAL + rec.niu))) {
+    if (rec) {
       const v = await verificaClau(rec.niu, rec.clau);
-      if (v.estat === 'ok' || v.estat === 'oklocal') { await entra(rec.niu, rec.clau, v.dades, v.estat === 'ok'); return; }
-      if (v.estat === 'dolenta') oblida();            // la contrasenya s'ha canviat en un altre lloc
+      // sense connexió: s'entra igualment (en aquest navegador ja s'havia verificat) i es desarà quan torni
+      if (v.estat === 'ok' || v.estat === 'local' || v.estat === 'nopuc') { await entra(rec.niu, rec.clau, v); return; }
+      if (v.estat !== 'bloquejat') oblida();          // contrasenya canviada en un altre lloc, o restablerta
     }
     formulari();
   })();

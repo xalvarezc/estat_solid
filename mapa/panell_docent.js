@@ -143,7 +143,7 @@
       bReset.type = 'button';
       bReset.title = 'Torna la contrasenya d\'aquest alumne a la de defecte';
       bReset.addEventListener('click', async () => {
-        if (!confirm('Restablir la contrasenya de ' + r.niu + ' a la de defecte (REDACTAT' + r.niu + ')?\nL\'alumne hi podrà tornar a entrar amb aquesta.')) return;
+        if (!confirm('Restablir la contrasenya de ' + r.niu + ' a la inicial?\nL\'alumne hi entrarà amb la contrasenya inicial i n\'haurà de triar una de nova.')) return;
         bReset.disabled = true; bReset.textContent = '…';
         try { await S.resetClau(r.niu); bReset.textContent = 'Restablerta'; }
         catch (e) { bReset.textContent = 'Error'; bReset.disabled = false; }
