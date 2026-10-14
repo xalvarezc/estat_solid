@@ -392,9 +392,7 @@
       const rec = [];
       rec.push(a.web ? '<a class="xip apunts" href="' + esc(a.web) + '">' + IC_LLIBRE + 'Apunts</a>'
                      : '<span class="xip aviat" title="Els apunts web d\'aquest tema encara s\'estan preparant">Apunts · en preparació</span>');
-      if (a.pdf) rec.push('<a class="xip baixa" href="' + esc(a.pdf) + '" title="Apunts del tema en PDF, per imprimir o treballar fora de línia" download>' + IC_BAIXA + 'PDF</a>');
       if (a.ex) rec.push('<a class="xip exercicis" href="' + esc(a.ex) + '" title="Enunciats dels exercicis del tema">' + IC_LLAPIS + 'Exercicis</a>');
-      if (a.expdf) rec.push('<a class="xip baixa" href="' + esc(a.expdf) + '" title="Enunciats dels exercicis en PDF" download>' + IC_BAIXA + 'Exercicis PDF</a>');
       if (a.pres) rec.push('<a class="xip baixa" href="' + esc(a.pres) + '" title="Diapositives de classe del tema (PDF)" download>' + IC_BAIXA + 'Presentació</a>');
       rec.push(n ? '<a class="xip sims" href="simuladors/#tema-' + c.num + '">' + IC_ONA + n + ' simulador' + (n > 1 ? 's' : '') + '</a>'
                  : '<span class="xip aviat">Simuladors · en preparació</span>');
