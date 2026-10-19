@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Funcions periòdiques i xarxa recíproca</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="./fourier_xarxa.css">
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:960px; margin:0 0 6px; }
+</style>
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9" stroke-dasharray="1.5 2" opacity=".4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7.7" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="16.3" r="1.3" fill="currentColor" stroke="none"/></svg>Tema 2: Xarxa recíproca / difracció</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../#index">Índex del curs</a>
+    <a class="actiu" href="../index.html">Simuladors</a>
+  </nav>
+</header>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/></svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Funcions periòdiques i xarxa recíproca: de la sèrie de Fourier a e<sup>iG·T</sup> = 1</h1>
+  <p class="sub">Qualsevol magnitud que tingui la periodicitat del cristall (la densitat electrònica, el potencial que sent un electró) es pot escriure com una suma d'ones. La primera part ho mostra en una dimensió, on és la sèrie de Fourier de sempre: només hi entren ones amb un nombre enter de longituds d'ona dins de cada període. La segona part fa el mateix en dues dimensions, i hi apareix la xarxa recíproca: els vectors d'ona permesos són justament els G que compleixen e<sup>iG·T</sup> = 1 per a tots els vectors T de la xarxa.</p>
+</div>
+
+<!-- ═══════════════════════ PART 1: 1D ═══════════════════════ -->
+<div class="part-cap">
+  <h2>1. Una dimensió: la sèrie de Fourier d'una funció de període a</h2>
+  <p>Una cadena d'àtoms separats per una distància a. La funció f(x) es repeteix a cada cel·la: f(x + a) = f(x). Mira quines ones calen per reconstruir-la i per què no n'hi pot entrar cap altra.</p>
+</div>
+
+<main class="main-content" id="part1">
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>La funció periòdica</div>
+      <div class="card-body">
+        <div class="control-group">
+          <label class="control-label" for="f1">Funció f(x)</label>
+          <select class="sel-input" id="f1">
+            <option value="gauss">Un àtom per cel·la (gaussianes)</option>
+            <option value="base">Dos àtoms per cel·la (base)</option>
+            <option value="harm">Suma de tres harmònics</option>
+            <option value="quad">Funció esglaó (quadrada)</option>
+            <option value="serra">Dent de serra</option>
+          </select>
+        </div>
+        <div class="control-group" id="grupSigma1">
+          <label class="control-label" for="sigma1">Amplada dels àtoms σ/a <span class="val" id="sigma1_val">0.08</span></label>
+          <input type="range" class="slider" id="sigma1" min="0.03" max="0.25" step="0.01" value="0.08">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="N1">Harmònics a la suma |n| ≤ N <span class="val" id="N1_val">4</span></label>
+          <input type="range" class="slider" id="N1" min="0" max="30" step="1" value="4">
+        </div>
+        <p class="hint">Amb N = 0 només hi ha el valor mitjà. Cada n afegeix una ona de període a/n: a, a/2, a/3…</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Una ona de prova</div>
+      <div class="card-body">
+        <div class="control-group">
+          <label class="control-label" for="nu1">Vector d'ona q = ν · 2π/a, ν = <span class="val" id="nu1_val">1.00</span></label>
+          <input type="range" class="slider" id="nu1" min="-6" max="6" step="1" value="1">
+        </div>
+        <label class="check"><input type="checkbox" id="snap1" checked> Només valors de la xarxa recíproca (ν enter)</label>
+        <div class="control-group">
+          <label class="control-label" for="m1">Translació T = m·a, m = <span class="val" id="m1_val">1</span></label>
+          <input type="range" class="slider" id="m1" min="-3" max="3" step="1" value="1">
+        </div>
+        <p class="hint">Desmarca la casella i posa ν = 1.3: l'ona ja no té el període de la xarxa.</p>
+      </div>
+    </div>
+  </aside>
+
+  <section class="center-panel">
+    <div class="card">
+      <p class="plot-title">La funció i la seva suma de Fourier amb |n| ≤ N</p>
+      <div class="canvas-wrap"><canvas id="cv1a" class="wide c-alt-l"></canvas></div>
+      <p class="plot-desc">Gris: f(x). Verd: la suma de les ones fins a |n| = N. Els punts són la xarxa, x = m·a, i les franges alternes, les cel·les.</p>
+    </div>
+    <div class="card">
+      <p class="plot-title">Els termes de la suma: ones de període a, a/2, a/3…</p>
+      <div class="canvas-wrap"><canvas id="cv1b" class="wide c-alt-m"></canvas></div>
+      <p class="plot-desc">Cada fila és c<sub>n</sub>e<sup>iG<sub>n</sub>x</sup> + c<sub>−n</sub>e<sup>−iG<sub>n</sub>x</sup> = A<sub>n</sub>cos(G<sub>n</sub>x) + B<sub>n</sub>sin(G<sub>n</sub>x), amb G<sub>n</sub> = n·2π/a: totes caben un nombre enter de vegades (n) dins de cada cel·la. Sumant-les totes s'obté la corba verda de dalt.</p>
+    </div>
+    <div class="card">
+      <p class="plot-title">L'espectre: els coeficients |c<sub>n</sub>| sobre l'eix dels vectors d'ona — la xarxa recíproca en 1D</p>
+      <div class="canvas-wrap"><canvas id="cv1c" class="wide c-alt-s"></canvas></div>
+      <p class="plot-desc">Els coeficients només existeixen als punts G<sub>n</sub> = n·2π/a, separats 2π/a. El triangle vermell és l'ona de prova q.</p>
+    </div>
+    <div class="card">
+      <p class="plot-title">Per què només G = n·2π/a: la fase de l'ona de prova a cada punt de la xarxa</p>
+      <div class="fila-fasor">
+        <div class="canvas-wrap"><canvas id="cv1d" class="wide c-alt-s"></canvas></div>
+        <canvas id="cv1e" class="cercle"></canvas>
+      </div>
+      <div class="readout-row">
+        <span>q·a = <strong id="qa1">—</strong></span>
+        <span>e<sup>iqT</sup> amb T = <span id="T1">a</span>: <strong id="eiqT1">—</strong></span>
+        <span id="badge1" class="badge constructiva">—</span>
+      </div>
+      <p class="plot-desc">Esquerra: Re e<sup>iqx</sup> = cos(qx) i el seu valor a cada punt x = m·a. Dreta: el fasor e<sup>iqma</sup> de cada punt de la xarxa al cercle unitat. Si q és de la xarxa recíproca, tots cauen a 1 i l'ona es repeteix a cada cel·la.</p>
+    </div>
+  </section>
+
+  <aside class="right-panel">
+    <div class="card theory-box">
+      <h3>Periodicitat i sèrie de Fourier</h3>
+      <p>Si f(x + a) = f(x), la funció es pot escriure com una sèrie de Fourier:</p>
+      <p class="formula">f(x) = Σ<sub>n</sub> c<sub>n</sub> e<sup>i G<sub>n</sub> x</sup>, &nbsp; G<sub>n</sub> = n·2π/a</p>
+      <p>Cada terme amb n ≠ 0 té període a/|n|, un divisor del període a: dins de cada cel·la hi cap exactament |n| vegades. Els termes ±n junts formen un cosinus i un sinus reals: c<sub>n</sub>e<sup>iG<sub>n</sub>x</sup> + c<sub>−n</sub>e<sup>−iG<sub>n</sub>x</sup> = A<sub>n</sub>cos G<sub>n</sub>x + B<sub>n</sub>sin G<sub>n</sub>x.</p>
+      <hr>
+      <h3>Els coeficients</h3>
+      <p class="formula">c<sub>n</sub> = (1/a) ∫<sub>cel·la</sub> f(x) e<sup>−iG<sub>n</sub>x</sup> dx</p>
+      <p>c<sub>0</sub> és el valor mitjà. Com més estreta és una estructura dins de la cel·la (σ petita, un salt brusc), més harmònics alts calen per reproduir-la.</p>
+      <hr>
+      <h3>Per què només aquestes ones</h3>
+      <p>Una ona e<sup>iqx</sup> té el període de la xarxa si e<sup>iq(x+a)</sup> = e<sup>iqx</sup>, és a dir, si</p>
+      <p class="formula">e<sup>iqa</sup> = 1 &nbsp;⇔&nbsp; q·a = 2πn &nbsp;⇔&nbsp; q = n·2π/a</p>
+      <p>I llavors, per a qualsevol translació de la xarxa T = m·a, e<sup>iG<sub>n</sub>T</sup> = e<sup>i2πnm</sup> = 1. És la versió 1D de <strong>e<sup>iG·T</sup> = 1</strong>.</p>
+      <p>Els punts G<sub>n</sub> = n·2π/a formen una xarxa, separada 2π/a: és la <strong>xarxa recíproca</strong> de la cadena. Com més petit és a, més separats queden.</p>
+    </div>
+  </aside>
+</main>
+
+<!-- ═══════════════════════ PART 2: 2D ═══════════════════════ -->
+<div class="part-cap">
+  <h2>2. Dues dimensions: el desenvolupament en la xarxa recíproca</h2>
+  <p>Ara la funció es repeteix en dues direccions, f(r + T) = f(r) per a tots els T = n<sub>1</sub>a<sub>1</sub> + n<sub>2</sub>a<sub>2</sub>. Les ones que hi entren ja no són n·2π/a, sinó els vectors G = h b<sub>1</sub> + k b<sub>2</sub> de la xarxa recíproca. És exactament la mateixa idea que a la part 1.</p>
+</div>
+
+<main class="main-content" id="part2">
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>La xarxa real</div>
+      <div class="card-body">
+        <div class="control-group">
+          <label class="control-label" for="xarxa2">Tipus de xarxa</label>
+          <select class="sel-input" id="xarxa2">
+            <option value="quad">Quadrada</option>
+            <option value="rect">Rectangular</option>
+            <option value="hex" selected>Hexagonal</option>
+            <option value="obl">Oblíqua</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="ratio2">|a₂| / |a₁| <span class="val" id="ratio2_val">1.00</span></label>
+          <input type="range" class="slider" id="ratio2" min="0.6" max="1.6" step="0.01" value="1">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="gamma2">Angle entre a₁ i a₂ (°) <span class="val" id="gamma2_val">120</span></label>
+          <input type="range" class="slider" id="gamma2" min="60" max="120" step="1" value="120">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="f2">Funció f(r)</label>
+          <select class="sel-input" id="f2">
+            <option value="gauss">Un àtom per cel·la</option>
+            <option value="base">Dos àtoms per cel·la (base)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="sigma2">Amplada dels àtoms σ/a₁ <span class="val" id="sigma2_val">0.12</span></label>
+          <input type="range" class="slider" id="sigma2" min="0.05" max="0.3" step="0.01" value="0.12">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="N2">Vectors G a la suma: |h|, |k| ≤ N <span class="val" id="N2_val">2</span></label>
+          <input type="range" class="slider" id="N2" min="0" max="6" step="1" value="2">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Una ona plana de prova</div>
+      <div class="card-body">
+        <div class="control-group">
+          <label class="control-label" for="h2">q = h b₁ + k b₂, h = <span class="val" id="h2_val">1</span></label>
+          <input type="range" class="slider" id="h2" min="-3" max="3" step="1" value="1">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="k2">k = <span class="val" id="k2_val">0</span></label>
+          <input type="range" class="slider" id="k2" min="-3" max="3" step="1" value="0">
+        </div>
+        <label class="check"><input type="checkbox" id="snap2" checked> Només vectors de la xarxa recíproca (h, k enters)</label>
+        <div class="control-row">
+          <div class="control-group">
+            <label class="control-label" for="n1_2">T: n₁ = <span class="val" id="n1_2_val">1</span></label>
+            <input type="range" class="slider" id="n1_2" min="-2" max="2" step="1" value="1">
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="n2_2">n₂ = <span class="val" id="n2_2_val">1</span></label>
+            <input type="range" class="slider" id="n2_2" min="-2" max="2" step="1" value="1">
+          </div>
+        </div>
+        <p class="hint">També pots triar q fent clic a l'espai recíproc. Sense la casella, el clic deixa q en qualsevol punt.</p>
+      </div>
+    </div>
+  </aside>
+
+  <section class="center-panel">
+    <div class="card">
+      <p class="plot-title">La funció f(r) i la seva suma de Fourier amb |h|, |k| ≤ N</p>
+      <div class="fila-2">
+        <div><canvas id="cv2a" class="quadrat"></canvas><p class="plot-desc">f(r) exacta, amb la cel·la i els vectors a<sub>1</sub>, a<sub>2</sub></p></div>
+        <div><canvas id="cv2b" class="quadrat"></canvas><p class="plot-desc">Σ c<sub>G</sub> e<sup>iG·r</sup>, amb <span id="nG2">—</span> vectors G</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="plot-title">L'espai recíproc i l'ona plana de prova a l'espai real</p>
+      <div class="fila-2">
+        <div><canvas id="cv2c" class="quadrat"></canvas><p class="plot-desc">Punts G = h b<sub>1</sub> + k b<sub>2</sub>; l'àrea de cada cercle és proporcional a |c<sub>G</sub>|. Plens: els que entren a la suma. Triangle vermell: l'ona de prova q.</p></div>
+        <div><canvas id="cv2d" class="quadrat"></canvas><p class="plot-desc">cos(q·r): vermell positiu, blau negatiu. Cada punt de la xarxa porta el color del seu valor cos(q·T); el contorn negre marca el T triat.</p></div>
+      </div>
+      <div class="readout-row">
+        <span>q·T = 2π(h n<sub>1</sub> + k n<sub>2</sub>) = <strong id="qT2">—</strong></span>
+        <span>e<sup>iq·T</sup> = <strong id="eiqT2">—</strong></span>
+        <span id="badge2" class="badge constructiva">—</span>
+      </div>
+      <div class="readout-row">
+        <span>Distància entre fronts d'ona 2π/|q| = <strong id="d2">—</strong> a<sub>1</sub></span>
+      </div>
+    </div>
+  </section>
+
+  <aside class="right-panel">
+    <div class="card theory-box">
+      <h3>D'on surt la xarxa recíproca</h3>
+      <p>Una ona plana e<sup>iq·r</sup> té la periodicitat de la xarxa si e<sup>iq·(r+T)</sup> = e<sup>iq·r</sup> per a tots els T, és a dir, si</p>
+      <p class="formula">e<sup>iq·T</sup> = 1 per a tot T = n<sub>1</sub>a<sub>1</sub> + n<sub>2</sub>a<sub>2</sub></p>
+      <p>N'hi ha prou que es compleixi per als dos vectors primitius: q·a<sub>1</sub> = 2πh i q·a<sub>2</sub> = 2πk, amb h i k enters. Si es defineixen b<sub>1</sub>, b<sub>2</sub> amb</p>
+      <p class="formula">a<sub>i</sub>·b<sub>j</sub> = 2π δ<sub>ij</sub></p>
+      <p>la solució és q = h b<sub>1</sub> + k b<sub>2</sub> = G, i llavors G·T = 2π(h n<sub>1</sub> + k n<sub>2</sub>), un múltiple de 2π: <strong>e<sup>iG·T</sup> = 1</strong>.</p>
+      <p id="prodEscalars" class="hint">—</p>
+      <hr>
+      <h3>El desenvolupament</h3>
+      <p class="formula">f(r) = Σ<sub>G</sub> c<sub>G</sub> e<sup>iG·r</sup>, &nbsp; c<sub>G</sub> = (1/A<sub>c</sub>) ∫<sub>cel·la</sub> f(r) e<sup>−iG·r</sup> d<sup>2</sup>r</p>
+      <p>Els fronts d'ona de e<sup>iG·r</sup> són rectes de la xarxa, separades 2π/|G|: passen per tots els punts de la xarxa amb un nombre enter de longituds d'ona entre l'un i l'altre. Són les famílies de plans (hk) de la difracció.</p>
+      <hr>
+      <h3>Diccionari 1D ↔ 2D</h3>
+      <table class="taula-dic">
+        <tr><th></th><th>1D</th><th>2D</th></tr>
+        <tr><td>Xarxa real</td><td>T = m a</td><td>T = n<sub>1</sub>a<sub>1</sub> + n<sub>2</sub>a<sub>2</sub></td></tr>
+        <tr><td>Xarxa recíproca</td><td>G = n·2π/a</td><td>G = h b<sub>1</sub> + k b<sub>2</sub></td></tr>
+        <tr><td>Condició</td><td>a·(2π/a) = 2π</td><td>a<sub>i</sub>·b<sub>j</sub> = 2πδ<sub>ij</sub></td></tr>
+        <tr><td>Fase</td><td>e<sup>iG<sub>n</sub>ma</sup> = e<sup>i2πnm</sup> = 1</td><td>e<sup>iG·T</sup> = e<sup>i2π(hn<sub>1</sub>+kn<sub>2</sub>)</sup> = 1</td></tr>
+        <tr><td>Període de l'ona</td><td>a/|n|</td><td>2π/|G| (plans (hk))</td></tr>
+        <tr><td>Sèrie</td><td>Σ c<sub>n</sub> e<sup>iG<sub>n</sub>x</sup></td><td>Σ c<sub>G</sub> e<sup>iG·r</sup></td></tr>
+      </table>
+    </div>
+  </aside>
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 2: Xarxa recíproca / difracció</div>
+
+<script src="./fourier_xarxa.js"></script>
+</body>
+</html>

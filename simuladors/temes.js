@@ -30,6 +30,8 @@ var TEMES = [
      desc:"Tria un sistema cristal·lí (Ci, C2h, D2h, D4h, D3d, D6h, Oh) i veuràs la seva cel·la; el mateix menú de 46 operacions candidates es colora en verd o vermell segons si són o no una simetria real d'aquell cristall, i el lliscador interpola de la identitat a l'operació completa."}
   ]},
   {num:"02", nom:"Xarxa recíproca / difracció", carpeta:"02_xarxa_reciproca_difraccio", simuladors:[
+    {nom:"Funcions periòdiques i xarxa recíproca: de la sèrie de Fourier a exp(iG·T) = 1", href:"02_xarxa_reciproca_difraccio/fourier_xarxa.html",
+     desc:"En 1D, una funció de període a es descompon en ones de període a, a/2, a/3…, les úniques amb exp(iqa) = 1. En 2D, el mateix argument porta a les ones e^(iG·r) amb G de la xarxa recíproca: canvia la xarxa, la funció i el nombre de termes, i prova ones que no en són."},
     {nom:"La condició de Bragg — dos plans, una interferència", href:"02_xarxa_reciproca_difraccio/bragg_interferencia.html",
      desc:"Dos rajos reboten en dos plans consecutius separats per d; mou l'angle d'observació i veges en directe si arriben en fase (constructiva) o en oposició de fase (destructiva)."},
     {nom:"Difracció de pols — de la cel·la unitat als pics", href:"02_xarxa_reciproca_difraccio/difraccio_pols.html",
