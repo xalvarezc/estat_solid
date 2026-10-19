@@ -244,3 +244,7 @@ canvas.wide {
   .fila-2, .fila-fasor { grid-template-columns: 1fr; }
   .fila-fasor canvas.cercle { margin: 0 auto; }
 }
+
+.plot-title.collapsible-title { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 6px; }
+.plot-title.collapsible-title:hover { color: var(--uab); }
+.card.collapsed .plot-title { margin-bottom: 0; }

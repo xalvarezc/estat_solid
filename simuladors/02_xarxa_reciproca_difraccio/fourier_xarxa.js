@@ -393,7 +393,23 @@
   $('cv2c').addEventListener('click', () => [elH, elK].forEach(sl => sl.dispatchEvent(new Event('input'))));
 
   // targetes plegables (com a la resta de simuladors)
-  document.querySelectorAll('.collapsible-title').forEach(t => t.addEventListener('click', () => t.closest('.card').classList.toggle('collapsed')));
+  // també les caixes dels gràfics i la de teoria: el títol fa de botó i la resta va a .card-body
+  document.querySelectorAll('.card').forEach(card => {
+    if (card.querySelector('.collapsible-title')) return;
+    let tit = card.querySelector(':scope > .plot-title');
+    if (!tit) { tit = document.createElement('p'); tit.className = 'plot-title'; tit.textContent = 'Teoria'; card.prepend(tit); }
+    const cos = document.createElement('div'); cos.className = 'card-body';
+    while (tit.nextSibling) cos.appendChild(tit.nextSibling);
+    card.appendChild(cos);
+    const txt = document.createElement('span'); while (tit.firstChild) txt.appendChild(tit.firstChild); tit.appendChild(txt);
+    tit.classList.add('collapsible-title');
+    const tri = document.createElement('span'); tri.className = 'card-tri'; tri.textContent = '▼'; tit.prepend(tri);
+  });
+  document.querySelectorAll('.collapsible-title').forEach(t => t.addEventListener('click', () => {
+    const card = t.closest('.card'); card.classList.toggle('collapsed');
+    const tri = t.querySelector('.card-tri'); if (tri) tri.textContent = card.classList.contains('collapsed') ? '▶' : '▼';
+    window.dispatchEvent(new Event('resize'));       // els gràfics que tornen a ser visibles es redibuixen
+  }));
 
   let espera = null;
   window.addEventListener('resize', () => { clearTimeout(espera); espera = setTimeout(() => { refresca1(false); refresca2(); }, 120); });
