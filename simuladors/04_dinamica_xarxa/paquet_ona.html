@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Paquet d'ona: velocitat de fase i velocitat de grup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="./paquet_ona.css">
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:960px; margin:0 0 6px; }
+</style>
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 L6 16 L7 18 L9 10" opacity=".8"/><path d="M9 10 L11 18 L12 16 L15 20" opacity=".8"/><path d="M15 20 L18 17 L19 19 L21 17" opacity=".8"/><circle cx="3" cy="17" r="1.6" fill="currentColor" stroke="none"/><circle cx="9" cy="10" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="20" r="1.6" fill="currentColor" stroke="none"/><circle cx="21" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Tema 4: Dinàmica de xarxa</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../#index">Índex del curs</a>
+    <a class="actiu" href="../index.html">Simuladors</a>
+  </nav>
+</header>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/></svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Paquet d'ona: velocitat de fase i velocitat de grup</h1>
+  <p class="sub">Un pols que viatja per la cadena no és una sola ona, sinó una suma d'ones amb vectors d'ona dins d'un interval Δk al voltant de k<sub>0</sub>. Cada una avança amb la seva ω(k)/k. Les crestes de dins del paquet es mouen amb la velocitat de fase ω/k, però el paquet sencer, l'envolvent, es mou amb la velocitat de grup Δω/Δk, que per a Δk petit és el pendent dω/dk de la relació de dispersió. Com més estret és el paquet en k, més ample és en x: Δx·Δk ≈ 1.</p>
+</div>
+
+<main class="main-content">
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Relació de dispersió</div>
+      <div class="card-body">
+        <div class="control-group">
+          <label class="control-label" for="disp">ω(k)</label>
+          <select class="sel-input" id="disp">
+            <option value="mono" selected>Cadena monoatòmica: ω = ω<sub>m</sub>|sin(ka/2)|</option>
+            <option value="ac">Cadena diatòmica: branca acústica</option>
+            <option value="op">Cadena diatòmica: branca òptica</option>
+            <option value="lin">Sense dispersió: ω = v k (medi continu)</option>
+          </select>
+        </div>
+        <p class="hint">Unitats: a = 1 (distància entre àtoms o cel·les), ω<sub>m</sub> = 1. A la diatòmica, M₂ = 2M₁ i una sola constant de molla.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>El paquet</div>
+      <div class="card-body">
+        <div class="control-group">
+          <label class="control-label" for="tipus">Forma</label>
+          <select class="sel-input" id="tipus">
+            <option value="gauss" selected>Paquet gaussià (moltes ones a Δk)</option>
+            <option value="dues">Dues ones, k₀ ± Δk/2 (batecs)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="k0">Vector d'ona central k₀ a/π <span class="val" id="k0_val">0.40</span></label>
+          <input type="range" class="slider" id="k0" min="0.05" max="1" step="0.01" value="0.4">
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="dk">Amplada Δk a/π <span class="val" id="dk_val">0.06</span></label>
+          <input type="range" class="slider" id="dk" min="0.01" max="0.3" step="0.005" value="0.06">
+        </div>
+        <label class="check"><input type="checkbox" id="atoms" checked> Mostra els àtoms (la cadena només existeix a x = n·a)</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title collapsible-title"><span class="card-tri">▼</span>Temps</div>
+      <div class="card-body">
+        <div class="botons">
+          <button class="btn-play" id="play" type="button">⏸ Pausa</button>
+          <button class="btn-play playing" id="reinicia" type="button">↺ Reinicia</button>
+        </div>
+        <div class="control-group" style="margin-top:9px">
+          <label class="control-label" for="vel">Velocitat de reproducció <span class="val" id="vel_val">1.0</span></label>
+          <input type="range" class="slider" id="vel" min="0.2" max="4" step="0.1" value="1">
+        </div>
+        <p class="hint">t = <strong id="tval">0</strong> (en unitats de 1/ω<sub>m</sub>)</p>
+      </div>
+    </div>
+  </aside>
+
+  <section class="center-panel">
+    <div class="card">
+      <p class="plot-title">La relació de dispersió: d'on surten les dues velocitats</p>
+      <div class="canvas-wrap"><canvas id="cvDisp" class="wide"></canvas></div>
+      <div class="llegenda">
+        <span><i style="background:#c0392b"></i>recta per l'origen: pendent ω₀/k₀ = v<sub>f</sub></span>
+        <span><i style="background:#009639"></i>corda entre k₀ ± Δk/2: pendent Δω/Δk</span>
+        <span><i style="background:#1f6feb"></i>tangent a k₀: pendent dω/dk = v<sub>g</sub></span>
+      </div>
+      <p class="plot-desc">La franja és l'interval de vectors d'ona del paquet. Com més petit és Δk, més s'acosta la corda a la tangent.</p>
+    </div>
+    <div class="card">
+      <p class="plot-title">El paquet a la cadena: les crestes i l'envolvent</p>
+      <div class="canvas-wrap"><canvas id="cvOna" class="wide"></canvas></div>
+      <div class="llegenda">
+        <span><i style="background:#1f6feb"></i>desplaçament u(x, t)</span>
+        <span><i style="background:#888"></i>envolvent</span>
+        <span>● vermell: una cresta, que avança a v<sub>f</sub></span>
+        <span>▼ verd: el centre del paquet, que avança a v<sub>g</sub></span>
+      </div>
+      <div class="readout-row">
+        <span>v<sub>f</sub> = ω₀/k₀ = <strong id="vf">—</strong></span>
+        <span>Δω/Δk = <strong id="vdd">—</strong></span>
+        <span>v<sub>g</sub> = dω/dk = <strong id="vg">—</strong></span>
+        <span>Δx = <strong id="dx">—</strong> a</span>
+      </div>
+      <p class="plot-desc">El punt vermell segueix una cresta; quan surt de l'envolvent, en seguim una altra. Si v<sub>f</sub> &gt; v<sub>g</sub>, les crestes neixen a la cua del paquet i moren al davant; si v<sub>g</sub> &lt; 0, el paquet va cap enrere mentre les crestes van endavant.</p>
+    </div>
+    <div class="card">
+      <p class="plot-title">Diagrama x–t: el pendent de cada traça és una velocitat</p>
+      <div class="canvas-wrap"><canvas id="cvXT" class="wide"></canvas></div>
+      <p class="plot-desc">Cada fila horitzontal és la cadena en un instant (el temps creix cap amunt). Les ratlles de color són les crestes, inclinades segons v<sub>f</sub>; la banda on hi ha ona és l'envolvent, inclinada segons v<sub>g</sub>. Línies: vermella, x = v<sub>f</sub>t; verda, x = v<sub>g</sub>t.</p>
+    </div>
+  </section>
+
+  <aside class="right-panel">
+    <div class="card theory-box">
+      <h3>Una sola ona no transporta res localitzat</h3>
+      <p>Una ona u = cos(kx − ωt) ocupa tota la cadena. Les crestes avancen amb la <strong>velocitat de fase</strong></p>
+      <p class="formula">v<sub>f</sub> = ω/k</p>
+      <hr>
+      <h3>Dues ones: els batecs</h3>
+      <p>Sumant dues ones de k₀ ± Δk/2 i ω₀ ± Δω/2:</p>
+      <p class="formula">u = 2 cos(Δk x/2 − Δω t/2) · cos(k₀x − ω₀t)</p>
+      <p>L'ona interna avança a ω₀/k₀; l'envolvent, a <strong>Δω/Δk</strong>.</p>
+      <hr>
+      <h3>El paquet i la velocitat de grup</h3>
+      <p>Amb moltes ones en un interval Δk, l'envolvent és un pols d'amplada Δx ≈ 1/Δk. Si Δk és petit, ω(k) ≈ ω₀ + (dω/dk)(k − k₀) a dins de l'interval i el pols avança a</p>
+      <p class="formula">v<sub>g</sub> = dω/dk</p>
+      <p>És la velocitat amb què viatja l'energia. Si Δk és gran, la corba ω(k) no és recta a l'interval i el paquet es deforma i s'eixampla: és la <strong>dispersió</strong>.</p>
+      <hr>
+      <h3>A la cadena</h3>
+      <p>Per a k petit, ω ≈ v<sub>s</sub>k i les dues velocitats coincideixen amb la del so. Prop de la vora de la zona (ka → π), v<sub>g</sub> → 0: l'ona és estacionària i el paquet no avança, tot i que les crestes es mouen. A la branca òptica, v<sub>g</sub> té el signe contrari de k: el paquet i les crestes van en sentits oposats.</p>
+      <p>Sense dispersió (ω = v k), v<sub>f</sub> = v<sub>g</sub> i el paquet es manté rígid.</p>
+    </div>
+  </aside>
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid — Tema 4: Dinàmica de xarxa</div>
+
+<script src="./paquet_ona.js"></script>
+</body>
+</html>

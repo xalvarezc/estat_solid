@@ -68,6 +68,8 @@ var TEMES = [
      desc:"Àtoms idèntics units per molles (plans (100) de coure o alumini, o unitats reduïdes). Tria q i mira la cadena, el punt sobre ω(q) i les velocitats de fase i de grup; surt de la primera zona i comprova que els àtoms fan el mateix; afegeix molles amb segons i tercers veïns i recupera les constants de força amb la integral de Fourier."},
     {nom:"La cadena diatòmica: branques acústica i òptica", href:"04_dinamica_xarxa/cadena_diatomica.html",
      desc:"Dos àtoms per cel·la amb masses M₁, M₂ i molles alternes C, D: les dues branques, com es mou cada àtom (en fase o en oposició, centre de masses quiet), el buit de freqüències en funció de les masses o de les molles, el plegament de la zona quan els àtoms són iguals, i el NaCl amb la molla ajustada a l'infraroig."},
+    {nom:"Paquet d'ona: velocitat de fase i velocitat de grup", href:"04_dinamica_xarxa/paquet_ona.html",
+     desc:"Tria una relació de dispersió (cadena monoatòmica, branques acústica i òptica, o sense dispersió), k₀ i Δk, i mira el paquet avançar: les crestes a ω/k, l'envolvent a Δω/Δk ≈ dω/dk, amb Δx·Δk ≈ 1 i el diagrama x–t."},
     {nom:"La matriu dinàmica en 3D: branques acústiques i òptiques d'un cristall real", href:"04_dinamica_xarxa/fonons_3d.html",
      desc:"SC, BCC, FCC, CsCl, NaCl i diamant amb molles centrals entre primers i segons veïns ajustades a materials reals (Cu, Al, W, Fe, NaCl, C, Si). Construeix i diagonalitza D(q) al llarg de la zona de Brillouin, mostra la matriu i la cel·la amb les molles, classifica els modes (L/T, acústic/òptic) i en treu C₁₁, C₁₂ i C₄₄ per comparar amb l'experiment."}
   ]},
