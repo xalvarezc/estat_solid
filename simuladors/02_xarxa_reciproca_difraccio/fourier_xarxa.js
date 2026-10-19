@@ -334,7 +334,7 @@
   slider('m1', s1, 'm', 0, () => refresca1(false));
   $('f1').addEventListener('change', e => { s1.f = e.target.value; $('grupSigma1').style.display = (s1.f === 'gauss' || s1.f === 'base') ? '' : 'none'; refresca1(true); });
   $('snap1').addEventListener('change', e => {
-    s1.snap = e.target.checked; elNu.step = s1.snap ? 1 : 0.05;
+    s1.snap = e.target.checked; elNu.step = s1.snap ? 1 : 0.01;
     if (s1.snap) { elNu.value = Math.round(+elNu.value); s1.nu = +elNu.value; $('nu1_val').textContent = s1.nu.toFixed(2); }
     refresca1(false);
   });
@@ -357,7 +357,7 @@
     $('h2_val').textContent = s2.snap ? String(h) : h.toFixed(2); $('k2_val').textContent = s2.snap ? String(k) : k.toFixed(2);
   }
   $('snap2').addEventListener('change', e => {
-    s2.snap = e.target.checked; elH.step = elK.step = s2.snap ? 1 : 0.05;
+    s2.snap = e.target.checked; elH.step = elK.step = s2.snap ? 1 : 0.01;
     if (s2.snap) posaHK(Math.round(s2.h), Math.round(s2.k));
     refresca2Ona();
   });
@@ -368,10 +368,29 @@
     const qx = ((ev.clientX - r.left) - w / 2) / (w / 2) * Gmax, qy = (h / 2 - (ev.clientY - r.top)) / (h / 2) * Gmax;
     // q = h b1 + k b2  ⇒  h = q·a1/2π, k = q·a2/2π
     let hh = (qx * a1[0] + qy * a1[1]) / TAU, kk = (qx * a2[0] + qy * a2[1]) / TAU;
-    if (s2.snap) { hh = Math.round(hh); kk = Math.round(kk); } else { hh = Math.round(hh * 20) / 20; kk = Math.round(kk * 20) / 20; }
+    if (s2.snap) { hh = Math.round(hh); kk = Math.round(kk); } else { hh = Math.round(hh * 100) / 100; kk = Math.round(kk * 100) / 100; }
     posaHK(Math.max(-3, Math.min(3, hh)), Math.max(-3, Math.min(3, kk)));
     refresca2Ona();
   });
+
+  // casella numèrica al costat de cada lliscador de l'ona de prova, per escriure valors fraccionaris
+  function caixaNum(sl, snapEl) {
+    const n = document.createElement('input');
+    n.type = 'number'; n.className = 'num-input'; n.step = '0.01'; n.min = sl.min; n.max = sl.max; n.value = sl.value;
+    n.style.marginTop = '4px';
+    sl.insertAdjacentElement('afterend', n);
+    sl.addEventListener('input', () => { n.value = (+sl.value).toFixed(2).replace(/\.00$/, ''); });
+    n.addEventListener('change', () => {
+      let v = parseFloat(n.value); if (isNaN(v)) return;
+      v = Math.max(+sl.min, Math.min(+sl.max, v));
+      if (v !== Math.round(v) && snapEl.checked) { snapEl.checked = false; snapEl.dispatchEvent(new Event('change')); }
+      sl.value = v; sl.dispatchEvent(new Event('input'));
+      n.value = (+sl.value).toFixed(2).replace(/\.00$/, '');
+    });
+    snapEl.addEventListener('change', () => { n.value = (+sl.value).toFixed(2).replace(/\.00$/, ''); });
+  }
+  caixaNum(elNu, $('snap1')); caixaNum(elH, $('snap2')); caixaNum(elK, $('snap2'));
+  $('cv2c').addEventListener('click', () => [elH, elK].forEach(sl => sl.dispatchEvent(new Event('input'))));
 
   // targetes plegables (com a la resta de simuladors)
   document.querySelectorAll('.collapsible-title').forEach(t => t.addEventListener('click', () => t.closest('.card').classList.toggle('collapsed')));
