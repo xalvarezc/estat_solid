@@ -222,3 +222,7 @@ dialog::backdrop { background: rgba(0,0,0,.35); }
 .cos .katex { font-size: 1.08em; }
 .cos .katex-display { overflow-x: auto; overflow-y: hidden; padding: .3rem 0; margin: .6rem 0; }
 .nota-lectura .katex { font-size: 1em; }
+
+/* ---- feina que espera per un límit (botó a la targeta: obre els topalls) ---- */
+button.xip.espera { min-height: 0; border: 1px solid var(--ambre); background: var(--superficie); color: var(--ambre);
+  font-size: .74rem; padding: .05rem .55rem; border-radius: 999px; font-weight: 600; }

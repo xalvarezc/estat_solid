@@ -466,6 +466,9 @@
         fora.replaceChildren();
         d = nova();
         pinta();
+        const e = estatTreballador(), avui = e && e.dades && e.dades.avui;
+        if (avui && avui.feines >= avui.limit) barra.append(el('button', { class: 'xip espera',
+          onclick: () => configuracio().catch(x => alert(x.message)) }, textEspera('límit diari')));
       }));
       barra.replaceChildren(el('div', { class: 'aplica' },
         el('div', {}, `El ${agentDe(issue)} refarà ${nom} seguint ${d.notes.length === 1 ? 'la nota' : 'les ' + d.notes.length + ' notes'}, i a la issue t'explicarà què n'ha fet.`),
@@ -569,6 +572,17 @@
     let dades = null;
     try { dades = m ? JSON.parse(m[1]) : null; } catch (e) {}
     return { issue: i, dades, pausa: noms(i).includes('pausa'), atura: noms(i).includes('atura') };
+  }
+  // Feines que el vigilant fa esperar per un límit (les publica a l'estat): {número: motiu}.
+  function esperaDe(num) {
+    const e = estatTreballador();
+    return (e && e.dades && e.dades.espera && e.dades.espera[String(num)]) || '';
+  }
+  function textEspera(motiu) {
+    if (/diari/.test(motiu)) return '⏳ demà: límit de feines d\'avui · canvia-ho ›';
+    if (/passada/.test(motiu)) return '⏳ a la passada següent';
+    if (/intents/.test(motiu)) return '⚠️ ha fallat dues vegades: es reprèn d\'aquí a 12 h';
+    return '⏳ ' + motiu;
   }
   const xifra = (v, t) => el('div', { class: 'xifra' }, el('b', {}, String(v)), el('span', {}, t));
   const llistaIssues = ns => ns.map(n => '#' + n).join(ns.length === 2 ? ' i ' : ', ');
@@ -791,7 +805,13 @@
     const xips = el('div', { class: 'xips' });
     if (t) xips.append(el('span', { class: 'xip tema' }, 'Tema ' + t));
     if (treballant(i)) xips.append(el('span', { class: 'xip treballant' }, 'treballant…'));
-    else if (fe) xips.append(el('span', { class: 'xip cua' }, FEINES[fe] || fe));
+    else if (fe) {
+      xips.append(el('span', { class: 'xip cua' }, FEINES[fe] || fe));
+      // Si el vigilant la fa esperar per un límit, es diu a la targeta, amb accés directe als topalls.
+      const motiu = esperaDe(i.number);
+      if (motiu) xips.append(el('button', { class: 'xip espera', title: 'Topalls i model',
+        onclick: () => configuracio().catch(e => alert(e.message)) }, textEspera(motiu)));
+    }
     const botons = el('div', { class: 'botons' });
     const ocupat = !!fe;
     const b = (text, fn, cls) => { const x = el('button', { class: cls || '', onclick: fn }, text); x.disabled = ocupat && cls !== 'sempre'; return x; };
@@ -849,7 +869,9 @@
   // Només redibuixa si les issues han canviat (així no es mou res mentre llegeixes); el panell, sempre.
   async function refresca() {
     await carregaIssues();
-    const sig = JSON.stringify(issues.filter(i => !esEstat(i)).map(i => [i.number, i.updated_at, i.state, noms(i).join()]));
+    const e = estatTreballador();
+    const sig = JSON.stringify([issues.filter(i => !esEstat(i)).map(i => [i.number, i.updated_at, i.state, noms(i).join()]),
+                                (e && e.dades && e.dades.espera) || {}]);
     if (sig !== signatura) { signatura = sig; dibuixa(); } else dibuixaPanell();
     $('estat').textContent = 'Actualitzat ' + quan(new Date()) + '. Es torna a carregar cada minut.';
   }
