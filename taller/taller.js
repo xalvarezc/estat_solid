@@ -32,10 +32,15 @@
   let token = '';
   let issues = [];
   let arbre = null;          // fitxers del repositori (git tree), es carrega quan cal
+  let signatura = '';        // estat de les issues l'últim cop que s'ha dibuixat: si no canvia, no es redibuixa
+  const detallsOberts = new Set(); // targetes amb «detalls i historial» obert: es mantenen obertes en refrescar
 
-  // ---------- emmagatzematge del token ----------
+  // ---------- emmagatzematge del navegador ----------
   function llegeixToken() { try { return localStorage.getItem(CLAU) || ''; } catch (e) { return token; } }
   function desaToken(t) { token = t; try { t ? localStorage.setItem(CLAU, t) : localStorage.removeItem(CLAU); } catch (e) {} }
+  const CLAU_PLEGADES = 'taller_plegades';  // seccions plegades (es recorden en aquest navegador)
+  const plegades = new Set((() => { try { return JSON.parse(localStorage.getItem(CLAU_PLEGADES) || '[]'); } catch (e) { return []; } })());
+  function desaPlegades() { try { localStorage.setItem(CLAU_PLEGADES, JSON.stringify([...plegades])); } catch (e) {} }
 
   // ---------- API ----------
   async function api(cami, opcions = {}) {
@@ -143,10 +148,47 @@
     });
   }
 
+  // Diàleg amb indicacions opcionals per a l'agent i un o més botons d'acció.
+  // Retorna { valor, text } o null si es cancel·la.
+  function demanaIndicacions(titol, explicacio, botons) {
+    return new Promise(resol => {
+      let fet = false;
+      const acaba = v => { if (fet) return; fet = true; tancaDialeg(); resol(v); };
+      const ta = el('textarea', { rows: 5, placeholder: '(opcional) p. ex. centra\'t en…, fes servir aquest objecte…, evita…' });
+      const f = el('form', {}, el('label', {}, explicacio, ta),
+        el('div', { class: 'botons' },
+          ...botons.map(b => el('button', { type: 'button', class: b.primari ? 'primari' : '',
+            onclick: () => acaba({ valor: b.valor, text: ta.value.trim() }) }, b.text)),
+          el('button', { type: 'button', onclick: () => acaba(null) }, 'Cancel·la')));
+      f.addEventListener('submit', e => e.preventDefault());
+      obreDialeg(titol, f); ta.focus();
+      $('dlg').addEventListener('close', () => { if (!fet) { fet = true; resol(null); } }, { once: true });
+    });
+  }
+
   // ---------- accions de les targetes ----------
-  const accepta = i => accio(async () => posaEtiquetes(i, ['fase:*', 'feina:*'], ['fase:acceptat', 'feina:documenta']));
-  const presenta = i => accio(async () => posaEtiquetes(i, ['feina:*'], ['feina:presenta']));
-  const documenta = i => accio(async () => posaEtiquetes(i, ['feina:*'], ['feina:documenta']));
+  // Les indicacions es desen com a comentari; l'agent les llegeix abans de començar.
+  const INDICA_DOC = 'Indicacions per al documentalista (opcional). Les llegirà abans de començar.';
+  const INDICA_PRE = 'Indicacions per al presentador (opcional). Les llegirà abans de començar.';
+  const accepta = i => accio(async () => {
+    const r = await demanaIndicacions('Accepta #' + i.number, INDICA_DOC,
+      [{ text: 'Accepta i documenta', valor: 'documenta', primari: true }, { text: 'Només accepta', valor: 'accepta' }]);
+    if (!r) return;
+    if (r.text) await comenta(i, '**Indicacions per al documentalista:** ' + r.text);
+    await posaEtiquetes(i, ['fase:*', 'feina:*'], r.valor === 'documenta' ? ['fase:acceptat', 'feina:documenta'] : ['fase:acceptat']);
+  });
+  const documenta = i => accio(async () => {
+    const r = await demanaIndicacions('Documenta #' + i.number, INDICA_DOC, [{ text: 'Documenta', valor: 'si', primari: true }]);
+    if (!r) return;
+    if (r.text) await comenta(i, '**Indicacions per al documentalista:** ' + r.text);
+    await posaEtiquetes(i, ['feina:*'], ['feina:documenta']);
+  });
+  const presenta = i => accio(async () => {
+    const r = await demanaIndicacions('Presentació de #' + i.number, INDICA_PRE, [{ text: 'Fes la presentació', valor: 'si', primari: true }]);
+    if (!r) return;
+    if (r.text) await comenta(i, '**Indicacions per al presentador:** ' + r.text);
+    await posaEtiquetes(i, ['feina:*'], ['feina:presenta']);
+  });
   const llest = i => accio(async () => posaEtiquetes(i, ['fase:*'], ['fase:llest']));
   const torna = (i, f) => accio(async () => posaEtiquetes(i, ['fase:*'], ['fase:' + f]));
   const descarta = i => accio(async () => {
@@ -247,12 +289,16 @@
 
     const mes = el('details', { class: 'mes' }, el('summary', {}, 'detalls i historial'));
     let carregat = false;
-    mes.addEventListener('toggle', () => {
-      if (!mes.open || carregat) return; carregat = true;
+    const carrega = () => {
+      if (carregat) return; carregat = true;
       const com = el('div', { class: 'comentaris' }, el('p', { class: 'nota' }, 'Carregant…'));
       mes.append(markdown(i.body), com);
       historial(i, com).catch(e => com.replaceChildren(el('p', { class: 'error' }, e.message)));
+    };
+    mes.addEventListener('toggle', () => {
+      if (mes.open) { detallsOberts.add(i.number); carrega(); } else detallsOberts.delete(i.number);
     });
+    if (detallsOberts.has(i.number)) { mes.open = true; carrega(); }
     return el('article', { class: 'targeta' },
       el('h3', {}, el('span', { class: 'num' }, '#' + i.number), i.title),
       xips, el('div', { class: 'resum' }, ganxo(i)), botons, mes);
@@ -263,7 +309,13 @@
     const cols = $('columnes'); cols.replaceChildren();
     for (const F of FASES) {
       const aquestes = obertes.filter(i => fase(i) === F.id).sort((a, b) => b.number - a.number);
-      const col = el('section', { class: 'columna' }, el('h2', {}, F.titol, el('span', {}, String(aquestes.length))));
+      const enCua = aquestes.filter(i => feina(i)).length;
+      // Cada secció es pot plegar fent clic al títol; es recorda en aquest navegador.
+      const col = el('details', { class: 'columna' },
+        el('summary', { title: 'Plega o desplega' }, el('h2', {}, F.titol,
+          el('span', {}, (enCua ? enCua + ' a la cua · ' : '') + aquestes.length))));
+      col.open = !plegades.has(F.id);
+      col.addEventListener('toggle', () => { col.open ? plegades.delete(F.id) : plegades.add(F.id); desaPlegades(); });
       if (!aquestes.length) col.append(el('div', { class: 'buida' }, F.id === 'proposta' ? 'Cap proposta. Demana\'n de noves.' : '—'));
       aquestes.forEach(i => col.append(targeta(i)));
       cols.append(col);
@@ -276,15 +328,18 @@
     desc.replaceChildren(el('h2', {}, 'Descartats'), ...issues.filter(i => fase(i) === 'descartat').map(targeta));
   }
 
+  // Només redibuixa si les issues han canviat (així no es mou res mentre llegeixes).
   async function refresca() {
-    $('estat').textContent = 'Carregant…';
     await carregaIssues();
-    dibuixa();
+    const sig = JSON.stringify(issues.map(i => [i.number, i.updated_at, i.state, noms(i).join()]));
+    if (sig !== signatura) { signatura = sig; dibuixa(); }
     let ultim = '';
     try { const c = await api(`/repos/${REPO}/commits?per_page=1`); ultim = ' · última feina desada: ' + quan(c[0].commit.author.date); } catch (e) {}
     const cua = issues.filter(i => i.state === 'open' && feina(i)).length;
-    $('estat').textContent = `${cua ? cua + ' a la cua' : 'Cua buida'} · actualitzat ${quan(new Date())}${ultim}. ` +
-      'La feina la fa Claude Code amb /taller a l\'ordinador.';
+    const treballant = issues.filter(i => i.state === 'open' && noms(i).includes('treballant')).length;
+    $('estat').textContent = `${cua ? cua + ' a la cua' + (treballant ? ` (${treballant} en marxa)` : '') : 'Cua buida'} · ` +
+      `actualitzat ${quan(new Date())}${ultim}. La feina la fa Claude Code a l'ordinador: mira la cua cada minut i ` +
+      'hi posa l\'agent que toca (Accepta → documentalista; Fes la presentació → presentador).';
   }
 
   // ---------- peticions i esquema ----------

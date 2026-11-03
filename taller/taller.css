@@ -59,11 +59,25 @@ main { padding: 16px; }
 .peticions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .peticio { background: var(--blau-clar); border: 1px solid var(--vora); border-radius: 8px; padding: 6px 10px; font-size: .88rem; }
 
-.columnes { display: grid; grid-template-columns: repeat(5, minmax(240px, 1fr)); gap: 12px; align-items: start; overflow-x: auto; }
-@media (max-width: 900px) { .columnes { grid-template-columns: 1fr; } }
-.columna { background: var(--superficie-2); border-radius: 10px; padding: 10px; min-width: 0; }
+/* Seccions plegables: en pantalla ampla, una plegada es queda com una franja estreta amb el títol vertical;
+   en pantalla estreta (seccions una sota l'altra), es queda només el títol. */
+.columnes { display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; }
+.columna { background: var(--superficie-2); border-radius: 10px; padding: 10px; flex: 1 1 0; min-width: 240px; }
+.columna:not([open]) { flex: 0 0 auto; min-width: 0; padding: 10px 6px; }
+.columna > summary { list-style: none; cursor: pointer; border-radius: 6px; }
+.columna > summary::-webkit-details-marker { display: none; }
+.columna > summary:hover h2 { color: var(--verd-fosc); }
 .columna h2 { margin: 2px 4px 10px; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-2);
-  display: flex; justify-content: space-between; }
+  display: flex; gap: 6px; align-items: baseline; }
+.columna h2::before { content: '▾'; }
+.columna:not([open]) h2::before { content: '▸'; }
+.columna h2 span { margin-inline-start: auto; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.columna:not([open]) h2 { writing-mode: vertical-rl; margin: 0; gap: 10px; }
+@media (max-width: 900px) {
+  .columnes { flex-direction: column; align-items: stretch; }
+  .columna, .columna:not([open]) { flex: none; min-width: 0; padding: 10px; }
+  .columna:not([open]) h2 { writing-mode: horizontal-tb; }
+}
 .columna .buida { color: var(--apagat); font-size: .85rem; padding: 8px 4px; }
 
 .targeta { background: var(--superficie); border: 1px solid var(--vora); border-radius: 8px; padding: 10px 12px;
