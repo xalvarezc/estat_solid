@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Taller de vídeos</title>
+<link rel="stylesheet" href="taller.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body>
+<header class="capcalera">
+  <div class="marca"><b>Taller de vídeos</b><span>Física de l'Estat Sòlid · privat</span></div>
+  <nav id="accions" hidden>
+    <button id="bPropostes" class="primari">Demana propostes</button>
+    <button id="bEsquema">Esquema</button>
+    <button id="bRefresca" title="Torna a carregar">↻</button>
+    <label class="interruptor"><input type="checkbox" id="vDescartats"> descartats</label>
+    <button id="bSurt" class="discret">Surt</button>
+  </nav>
+</header>
+
+<main>
+  <section id="porta" class="porta" hidden>
+    <h1>Accés al taller</h1>
+    <p>Aquesta pàgina llegeix i escriu les <em>issues</em> del repositori privat
+      <code>xalvarezc/taller_videos</code>. Sense un token amb accés a aquest repositori no mostra res.</p>
+    <ol>
+      <li>GitHub → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → <i>Generate new token</i>.</li>
+      <li>Repository access: <i>Only select repositories</i> → <code>taller_videos</code>.</li>
+      <li>Permissions → Repository: <b>Contents</b> i <b>Issues</b>: <i>Read and write</i>.</li>
+    </ol>
+    <form id="fToken">
+      <input type="password" id="token" placeholder="github_pat_…" autocomplete="off" required>
+      <button class="primari">Entra</button>
+    </form>
+    <p class="nota">El token només es desa en aquest navegador.</p>
+    <p id="errPorta" class="error"></p>
+  </section>
+
+  <section id="taulell" hidden>
+    <div id="estat" class="estat"></div>
+    <div id="peticions" class="peticions"></div>
+    <div class="columnes" id="columnes"></div>
+    <div id="descartats" class="descartats" hidden></div>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" class="dlg-cap"><h2 id="dlgTitol"></h2><button aria-label="Tanca">✕</button></form>
+  <div id="dlgCos" class="dlg-cos"></div>
+</dialog>
+
+<script src="taller.js"></script>
+</body>
+</html>
