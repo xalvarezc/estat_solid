@@ -391,12 +391,13 @@
       el('option', { value: '' }, 'El per defecte de Claude Code (canvia amb /model)'));
     sel.value = MODELS.some(x => x[0] === cfg.model) ? cfg.model : '';
     const form = el('form', {},
-      el('p', { class: 'nota' }, 'El vigilant els llegeix abans de cada passada. El model també el fan servir els agents de la passada; el cost de cada passada surt al Registre.'),
+      el('p', { class: 'nota' }, 'El vigilant els llegeix abans de cada passada. Els agents (explorador, documentalista, presentador) tenen el seu propi model, als seus fitxers; el cost de cada passada surt al Registre.'),
       el('label', {}, 'Model del treballador', sel),
       l1, l2, l3, el('div', { class: 'botons' }, el('button', { class: 'primari' }, 'Desa')));
     form.addEventListener('submit', ev => ev.preventDefault());
     form.addEventListener('submit', accio(async () => {
-      const nou = { max_per_passada: +i1.value || 1, max_feines_dia: +i2.value || 1, max_minuts_passada: +i3.value || 30, model: sel.value };
+      // Es parteix de la configuració que hi ha, perquè no es perdi cap clau que aquest formulari no mostri.
+      const nou = { ...cfg, max_per_passada: +i1.value || 1, max_feines_dia: +i2.value || 1, max_minuts_passada: +i3.value || 30, model: sel.value };
       await api(`/repos/${REPO}/contents/config_taller.json`, json('PUT', {
         message: 'Topalls editats des del taulell', content: b64(JSON.stringify(nou, null, 2) + '\n'), sha: f.sha }));
       tancaDialeg();
@@ -404,7 +405,7 @@
     cos.replaceChildren(form);
   }
 
-  const RESULTATS = { ok: '✅ fet', error: '⚠️ error', aturat: '⏹ aturat', temps: '⏱ temps esgotat' };
+  const RESULTATS = { ok: '✅ fet', error: '⚠️ error', aturat: '⏹ aturat', temps: '⏱ temps esgotat', tallat: '✂️ tallat' };
   function registre(d) {
     const t = el('table', {}, el('tr', {}, ...['Inici', 'Issues', 'Model', 'Min', 'Tokens nous', 'Escrits', 'Cost (API)', 'Resultat'].map(x => el('th', {}, x))));
     for (const r of d.ultimes) t.append(el('tr', {},
