@@ -200,3 +200,20 @@ dialog::backdrop { background: rgba(0,0,0,.35); }
 .fitxers .dir { color: var(--apagat); font-size: .8rem; margin-top: .5rem; }
 .fitxer-vista { margin-top: .9rem; border-top: 1px solid var(--vora); padding-top: .6rem; }
 .fitxer-cap { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-bottom: .4rem; }
+
+/* ---- notes de lectura (visor de fitxers .md d'un tema) ---- */
+.notes-barra { display: flex; flex-wrap: wrap; gap: .4rem .7rem; align-items: center; background: var(--superficie-2);
+  border-radius: 8px; padding: .45rem .65rem; margin-bottom: .6rem; font-size: .9rem; }
+.notes-barra .aplica { display: grid; gap: .45rem; width: 100%; }
+.notes-barra textarea, .editor-nota textarea { font-family: inherit; font-size: .95rem; }
+.notes-fora { border: 1px dashed var(--vora); border-radius: 8px; padding: .3rem .6rem; margin-bottom: .6rem; }
+.fitxer-vista .cos > *, .fitxer-vista .cos li { cursor: pointer; }
+.bloc-actiu { background: var(--ambre-clar); border-radius: 4px; box-shadow: 0 0 0 .3rem var(--ambre-clar); }
+.boto-nota { font-size: .8rem; min-height: 1.9rem; padding: .1rem .7rem; margin-left: .4rem; vertical-align: middle;
+  border-radius: 999px; background: var(--ambre); border-color: var(--ambre); color: #fff; font-weight: 600; }
+.nota-lectura { background: var(--ambre-clar); border-left: 4px solid var(--ambre); border-radius: 6px;
+  padding: .45rem .65rem; margin: .4rem 0 .7rem; font-size: .92rem; cursor: default; white-space: pre-wrap; }
+.nota-peu { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; color: var(--apagat); font-size: .75rem;
+  margin-top: .3rem; white-space: normal; }
+.nota-peu button { min-height: 1.9rem; padding: .1rem .55rem; font-size: .8rem; }
+.editor-nota { display: grid; gap: .4rem; margin: .4rem 0 .7rem; cursor: default; }

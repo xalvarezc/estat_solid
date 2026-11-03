@@ -302,7 +302,180 @@
     const text = await blob.text();
     const cap = el('div', { class: 'fitxer-cap' }, el('span', { class: 'nota' }, cami),
       EDITABLE.test(cami) ? el('button', { onclick: () => editaFitxer(cami, on).catch(e => on.replaceChildren(el('p', { class: 'error' }, e.message))) }, '✎ Edita') : null);
-    on.replaceChildren(cap, ext === 'md' ? markdown(text, cami) : el('pre', {}, text));
+    if (ext !== 'md') { on.replaceChildren(cap, el('pre', {}, text)); return; }
+    const cos = markdown(text, cami);
+    on.replaceChildren(cap, cos);
+    activaNotes(cami, cos, cap).catch(e => cap.after(el('p', { class: 'error' }, 'Notes: ' + e.message)));
+  }
+
+  // ---------- notes de lectura ----------
+  // Mentre es llegeix un fitxer .md d'un tema (temes/NNN_…), es toca un paràgraf (o se'n selecciona un tros)
+  // i s'hi afegeix una nota, que es veu en groc sota el paràgraf. Les notes pendents d'un fitxer es desen en
+  // un sol comentari de la issue NNN («📝 Notes de lectura»): una part llegible, per a l'agent, i les dades
+  // en JSON dins d'un comentari HTML, per al taulell. «Aplica les notes» les marca com a enviades i posa
+  // feina:revisa: l'agent de la fase refà el fitxer seguint-les.
+  const BLOCS = 'p, li, h1, h2, h3, h4, h5, blockquote, pre, table';
+  const numDeCami = cami => { const m = /^temes\/(\d{3})_/.exec(cami); return m ? +m[1] : null; };
+  const normNota = s => (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  function textBloc(bloc) {
+    const c = bloc.cloneNode(true);
+    c.querySelectorAll('.boto-nota, .nota-lectura, .editor-nota, ul, ol').forEach(x => x.remove());   // les sublistes són blocs a part
+    return c.textContent.replace(/\s+/g, ' ').trim();
+  }
+  const RE_NOTES = /<!-- notes (\{[\s\S]*?\}) -->/;
+  function llegeixNotes(c) {
+    const m = RE_NOTES.exec(c.body || '');
+    if (!m) return null;
+    try { return { ...JSON.parse(m[1]), id: c.id }; } catch (e) { return null; }
+  }
+  function cosNotes(d) {
+    const nom = d.fitxer.split('/').pop();
+    const L = [`📝 **Notes de lectura** · \`${nom}\` · ${d.estat}`, ''];
+    d.notes.forEach((n, i) => { L.push(`${i + 1}. Sobre «${n.cita}»:`); n.text.split('\n').forEach(l => L.push('   ' + l)); });
+    if (d.estat === 'pendents') L.push('', '_Encara no s\'han enviat a l\'agent: es fa amb «Aplica les notes» al taulell._');
+    const dades = JSON.stringify({ v: 1, fitxer: d.fitxer, estat: d.estat, notes: d.notes }).replace(/-->/g, '--\\u003e');
+    return L.join('\n') + '\n\n<!-- notes ' + dades + ' -->';
+  }
+  async function desaNotes(num, d) {
+    const body = cosNotes(d);
+    if (d.id) await api(`/repos/${REPO}/issues/comments/${d.id}`, json('PATCH', { body }));
+    else d.id = (await api(`/repos/${REPO}/issues/${num}/comments`, json('POST', { body }))).id;
+  }
+  const agentDe = i => ({ proposta: 'explorador', presentat: 'presentador', llest: 'presentador' })[fase(i)] || 'documentalista';
+
+  async function activaNotes(cami, cos, cap) {
+    const num = numDeCami(cami);
+    if (!num) return;
+    const nom = cami.split('/').pop();
+    const barra = el('div', { class: 'notes-barra' }, el('span', { class: 'nota' }, 'Carregant les notes…'));
+    const fora = el('div', { class: 'notes-fora' });   // notes que ja no troben el seu paràgraf
+    cap.after(barra, fora);
+    const cs = await api(`/repos/${REPO}/issues/${num}/comments?per_page=100`);
+    const totes = cs.map(llegeixNotes).filter(x => x && x.fitxer === cami);
+    const nova = () => ({ id: null, fitxer: cami, estat: 'pendents', notes: [] });
+    let d = [...totes].reverse().find(x => x.estat === 'pendents') || nova();
+    let enviades = totes.filter(x => x.estat === 'enviades').reduce((s, x) => s + x.notes.length, 0);
+    const issue = issues.find(i => i.number === num);
+    const ocupat = () => !!(issue && (feina(issue) || treballant(issue)));
+    let ultimaSel = '';
+
+    const blocs = () => [...cos.querySelectorAll(BLOCS)].filter(b => !b.closest('.nota-lectura, .editor-nota'));
+    // Posa una nota (o l'editor) sota el seu bloc, després de les notes que ja hi hagi.
+    function posa(bloc, node) {
+      if (!bloc) return fora.append(node);
+      if (bloc.tagName === 'LI') return bloc.append(node);
+      let x = bloc;
+      while (x.nextElementSibling && x.nextElementSibling.matches('.nota-lectura, .editor-nota')) x = x.nextElementSibling;
+      x.after(node);
+    }
+    function marca(bloc) {
+      cos.querySelectorAll('.boto-nota').forEach(x => x.remove());
+      cos.querySelectorAll('.bloc-actiu').forEach(x => x.classList.remove('bloc-actiu'));
+      if (!bloc) return;
+      bloc.classList.add('bloc-actiu');
+      const xip = el('button', { class: 'boto-nota', onclick: ev => { ev.stopPropagation(); const sel = ultimaSel; marca(null); editor(bloc, null, null, sel); } }, '＋ nota');
+      if (['PRE', 'TABLE'].includes(bloc.tagName)) bloc.after(xip); else bloc.append(xip);
+    }
+    function targeta(n, bloc) {
+      const t = el('div', { class: 'nota-lectura' }, el('div', { class: 'nota-text' }, n.text));
+      t.append(el('div', { class: 'nota-peu' }, el('span', {}, quan(n.quan)),
+        el('button', { onclick: () => editor(bloc, n, t) }, '✎ Edita'),
+        el('button', { class: 'perill', onclick: async ev => {
+          const b = ev.currentTarget; b.disabled = true;
+          const abans = d.notes;
+          d.notes = d.notes.filter(x => x.id !== n.id);
+          try { await desaNotes(num, d); t.remove(); pinta(); }
+          catch (e) { d.notes = abans; b.disabled = false; alert('No s\'ha pogut esborrar: ' + e.message); }
+        } }, '🗑 Esborra')));
+      return t;
+    }
+    function editor(bloc, n, substitueix, sel) {
+      cos.querySelectorAll('.editor-nota').forEach(x => x.remove());
+      const ta = el('textarea', { rows: 3, placeholder: 'Què s\'hi ha de canviar? P. ex.: «aquesta xifra no quadra amb el Kittel», «explica-ho sense integrals».' });
+      if (n) ta.value = n.text;
+      const desa = el('button', { class: 'primari' }, n ? 'Desa' : 'Desa la nota');
+      const ed = el('div', { class: 'editor-nota' }, ta, el('div', { class: 'botons' }, desa,
+        el('button', { onclick: () => { ed.remove(); if (substitueix) substitueix.hidden = false; } }, 'Cancel·la')));
+      desa.addEventListener('click', async () => {
+        const text = ta.value.trim();
+        if (!text) return ta.focus();
+        desa.disabled = true;
+        let nou = n;
+        if (n) n.text = text;
+        else {
+          const tb = textBloc(bloc), base = sel && tb.includes(sel) ? sel : tb;
+          nou = { id: Date.now().toString(36), ancora: normNota(tb).slice(0, 160),
+                  cita: base.length > 140 ? base.slice(0, 140) + '…' : base, text, quan: new Date().toISOString() };
+          d.notes.push(nou);
+        }
+        try { await desaNotes(num, d); }
+        catch (e) { if (!n) d.notes.pop(); desa.disabled = false; alert('No s\'ha pogut desar la nota: ' + e.message); return; }
+        const t = targeta(nou, bloc);
+        if (substitueix) substitueix.replaceWith(t);
+        ed.replaceWith(t);
+        pinta();
+      });
+      if (substitueix) { substitueix.hidden = true; substitueix.after(ed); } else posa(bloc, ed);
+      ta.focus({ preventScroll: true });
+    }
+    function pinta() {
+      const n = d.notes.length;
+      const fills = [el('span', {}, n ? `📝 ${n} ${n === 1 ? 'nota' : 'notes'} sense enviar` : '📝 Toca un paràgraf, o selecciona\'n un tros, per afegir-hi una nota.')];
+      if (enviades) fills.push(el('span', { class: 'nota' }, `${enviades} enviades abans`));
+      if (n) fills.push(el('button', { class: 'primari', disabled: ocupat(), onclick: confirma }, ocupat() ? 'L\'agent hi treballa: espera' : 'Aplica les notes'));
+      barra.replaceChildren(...fills);
+      fora.hidden = !fora.querySelector('.nota-lectura');
+    }
+    function confirma() {
+      const ta = el('textarea', { rows: 2, placeholder: '(opcional) indicacions generals per a l\'agent' });
+      const envia = el('button', { class: 'primari' }, 'Envia');
+      envia.addEventListener('click', accio(async () => {
+        const k = d.notes.length;
+        d.estat = 'enviades';
+        await desaNotes(num, d);
+        await comenta(issue, `**Canvis demanats:** Aplica ${k === 1 ? 'la nota' : 'les ' + k + ' notes'} de lectura de \`${nom}\` (comentari «📝 Notes de lectura · ${nom} · enviades»).` + (ta.value.trim() ? ' ' + ta.value.trim() : ''));
+        await posaEtiquetes(issue, ['feina:*'], ['feina:revisa']);
+        enviades += k;
+        cos.querySelectorAll('.nota-lectura').forEach(x => x.remove());
+        fora.replaceChildren();
+        d = nova();
+        pinta();
+      }));
+      barra.replaceChildren(el('div', { class: 'aplica' },
+        el('div', {}, `El ${agentDe(issue)} refarà ${nom} seguint ${d.notes.length === 1 ? 'la nota' : 'les ' + d.notes.length + ' notes'}, i a la issue t'explicarà què n'ha fet.`),
+        ta, el('div', { class: 'botons' }, envia, el('button', { onclick: pinta }, 'Cancel·la'))));
+    }
+
+    // Notes desades: cadascuna sota el bloc que comença igual (o que conté la cita).
+    const bs = blocs();
+    for (const n of d.notes) {
+      const b = bs.find(x => normNota(textBloc(x)).startsWith(n.ancora)) ||
+                bs.find(x => normNota(textBloc(x)).includes(normNota(n.cita).replace(/…$/, '')));
+      posa(b || null, targeta(n, b || null));
+    }
+    if (fora.children.length) fora.prepend(el('p', { class: 'nota' }, 'Aquestes notes ja no troben el seu paràgraf (el fitxer ha canviat):'));
+    pinta();
+
+    // Tocar un bloc el marca i hi posa «＋ nota». Si abans s'hi ha seleccionat un tros, la nota el cita.
+    cos.addEventListener('click', ev => {
+      if (ev.target.closest('a, button, textarea, input, .nota-lectura, .editor-nota')) return;
+      const bloc = ev.target.closest(BLOCS);
+      if (!bloc || !cos.contains(bloc)) return marca(null);
+      const s = window.getSelection();
+      ultimaSel = s && !s.isCollapsed && bloc.contains(s.anchorNode) ? String(s).trim() : '';
+      marca(bloc);
+    });
+    const enSeleccio = () => {
+      if (!cos.isConnected) return document.removeEventListener('selectionchange', enSeleccio);
+      const s = window.getSelection();
+      if (!s || s.isCollapsed || !s.rangeCount) return;
+      const node = s.anchorNode && (s.anchorNode.nodeType === 1 ? s.anchorNode : s.anchorNode.parentElement);
+      const bloc = node && node.closest && node.closest(BLOCS);
+      if (!bloc || !cos.contains(bloc) || bloc.closest('.nota-lectura, .editor-nota')) return;
+      ultimaSel = String(s).trim();
+      if (!bloc.classList.contains('bloc-actiu')) marca(bloc);
+    };
+    document.addEventListener('selectionchange', enSeleccio);
   }
   // Obre un fitxer o una carpeta del repositori dins del taulell: a la mateixa vista si l'enllaç és dins
   // d'un fitxer que ja es mostra, o en una finestra nova si ve d'un comentari.
