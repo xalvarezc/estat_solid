@@ -25,6 +25,7 @@
 /* La mida de lletra de base la fixa el control A− / A+ (17 px per defecte); tota la resta va en rem. */
 html { font-size: 17px; }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }   /* que cap regla (p. ex. nav { display: flex }) no mostri el que és hidden */
 body { margin: 0; background: var(--fons); color: var(--tinta);
   font: 1rem/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
 button { font: inherit; font-size: .95rem; cursor: pointer; border: 1px solid var(--vora); background: var(--superficie);
