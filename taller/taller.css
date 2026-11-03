@@ -44,10 +44,11 @@ a { color: var(--blau); }
 
 .capcalera { display: flex; flex-wrap: wrap; gap: .5rem .8rem; align-items: center; justify-content: space-between;
   padding: .5rem 1rem; background: var(--superficie); border-bottom: 3px solid var(--verd); position: sticky; top: 0; z-index: 5; }
-.marca b { font-size: 1.1rem; color: var(--verd-fosc); margin-right: .5rem; }
-.marca span { color: var(--apagat); font-size: .8rem; }
+.marca { display: flex; align-items: center; gap: .55rem; }
+.marca .logo { width: 1.9rem; height: 1.9rem; display: block; }
+.marca b { font-size: 1.2rem; color: var(--verd-fosc); }
 nav { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
-#bRefresca, #bConfig { min-width: 2.6rem; padding-inline: .5rem; }
+#bConfig { min-width: 2.6rem; padding-inline: .5rem; }
 /* Punt d'estat del treballador al botó de configuració (l'única pista a la pantalla principal) */
 #bConfig { position: relative; }
 .punt { position: absolute; top: .2rem; right: .2rem; width: .55rem; height: .55rem; border-radius: 50%;
@@ -57,7 +58,10 @@ nav { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
 .punt.pausa, .punt-menu.pausa { background: var(--blau); }
 .punt-menu { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; background: var(--apagat); margin-right: .55rem; }
 
-main { padding: .8rem 1rem 3rem; }
+main { padding: .8rem 1rem 6rem; }   /* a baix, espai per al botó «Demana idees» */
+/* «Demana idees»: fix a baix a la dreta, a l'abast del polze al mòbil */
+.flotant { position: fixed; right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); z-index: 6;
+  border-radius: 999px; padding: .75rem 1.3rem; min-height: 3rem; font-size: 1rem; box-shadow: 0 4px 14px rgba(0,0,0,.22); }
 .porta { max-width: 560px; margin: 1.5rem auto; background: var(--superficie); padding: 1.2rem 1.5rem;
   border-radius: 10px; box-shadow: var(--ombra); border: 1px solid var(--vora); }
 .porta h1 { margin-top: 0; font-size: 1.3rem; color: var(--verd-fosc); }

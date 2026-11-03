@@ -675,7 +675,6 @@
   }
 
   $('fToken').addEventListener('submit', ev => { ev.preventDefault(); desaToken($('token').value.trim()); $('token').value = ''; entra(); });
-  $('bRefresca').addEventListener('click', accio(refresca));
   $('bIdees').addEventListener('click', demanaIdees);
   $('bConfig').addEventListener('click', menu);
   // Cada minut es torna a carregar; amb un diàleg obert, no (no es perdria el que s'hi escriu), llevat dels Detalls.
