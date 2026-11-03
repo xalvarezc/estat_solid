@@ -225,3 +225,4 @@ ol.amb-etiquetes, ul.amb-etiquetes { list-style: none; padding-left: 4px; }
 /* apartats (a), (b), (c): enumerate[label=(\alph*)] */
 ol.alfa > li { list-style: none; position: relative; }
 ol.alfa > li::before { content: "(" counter(list-item, lower-alpha) ")"; position: absolute; left: -1.9em; font-weight: 600; }
+.peu-taula { font-size: .86rem; color: var(--ink-2, #3C4250); margin: -6px 0 16px; text-align: center; }

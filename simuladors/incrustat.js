@@ -5,6 +5,9 @@
 // tots els panells, i només queden visibles els elements de ?mostra=id1,id2…
 // (un canvas mostra el seu bloc amb títol; un slider, la seva etiqueta).
 // La resta de paràmetres de l'URL els llegeix el mateix simulador com sempre.
+// Els simuladors que no en llegeixen poden rebre l'estat dels controls amb ?c.<id>=valor
+// (un slider o un desplegable amb aquest id) o ?c.<nom>=valor (el botó d'opció amb aquest
+// name i aquest value).
 //
 // A més:
 //  - comunica l'alçada a la pàgina pare (postMessage {tipus:'alcada', h});
@@ -34,16 +37,41 @@
   });
 
   // ---- què es mostra ----
+  // (dos formats de simulador: .bloc-canvas/.control-group/.card, i .panel/.controls/.readout)
   function contenidor(el) {
-    if (el.tagName === 'CANVAS') return el.closest('.bloc-canvas') || el;
-    if (el.matches('input, select')) return el.closest('.control-group') || el;
+    if (el.tagName === 'CANVAS') return el.closest('.bloc-canvas') || el.closest('.panel') || el;
+    if (el.tagName.toLowerCase() === 'svg') return el.closest('.panel') || el;
+    if (el.matches('input, select')) return el.closest('.control-group') || el.closest('.controls') || el;
     if (el.tagName === 'TBODY') return el.closest('.card') || el.closest('table') || el;
-    return el;
+    return el.closest('.readout') || el;
   }
 
+  // estat inicial dels controls des de l'URL (?c.id=valor, ?c.nom=valor per als botons d'opció)
+  const fixats = [];
+  function fixaControls() {
+    p.forEach((v, k) => {
+      if (!k.startsWith('c.')) return;
+      const nom = k.slice(2);
+      const el = document.getElementById(nom);
+      if (el && el.matches('input, select')) {
+        if (el.type === 'checkbox') el.checked = v === '1'; else el.value = v;
+        fixats.push(el);
+        return;
+      }
+      const r = document.querySelector('input[type="radio"][name="' + CSS.escape(nom) + '"][value="' + CSS.escape(v) + '"]');
+      if (r) { r.checked = true; fixats.push(r); }
+    });
+  }
+  // un cop el simulador ja s'ha inicialitzat, que reaccioni als valors fixats
+  window.addEventListener('load', () => fixats.forEach(el => {
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }));
+
   document.addEventListener('DOMContentLoaded', () => {
+    fixaControls();
     const ids = (p.get('mostra') || '').split(',').map(s => s.trim()).filter(Boolean);
-    const panells = '.fila-canvas, .center-panel, .controls-panel, .right-panel';
+    const panells = '.fila-canvas, .center-panel, .controls-panel, .right-panel, .columna-grafics, .barra-lateral, .controls-sticky, .controls-rest';
     ids.forEach((id, k) => {
       const el = document.getElementById(id);
       if (!el) { console.warn('incrustat: no existeix #' + id); return; }

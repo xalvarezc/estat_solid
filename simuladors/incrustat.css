@@ -61,3 +61,32 @@ html.incrustat .control-group.inc-mostra { min-width: 240px; }
 @media (max-width: 700px) {
   html.incrustat canvas { width: 100% !important; height: auto !important; }
 }
+
+/* ---- simuladors amb .layout: gràfics en .panel a .columna-grafics, controls a .barra-lateral ---- */
+html.incrustat .layout :not(.inc-mostra):not(.inc-cami):not(.inc-mostra *) { display: none !important; }
+html.incrustat .layout {
+  display: flex !important; flex-direction: column !important; gap: 8px; max-width: none; margin: 0; padding: 4px 2px 6px;
+}
+html.incrustat .columna-grafics { display: flex; flex-direction: column; gap: 10px; }
+html.incrustat .panel { margin-bottom: 0; }
+html.incrustat .panel h2 { font-size: .95rem; margin: 0 0 4px; }
+html.incrustat .panel .obs, html.incrustat .panel .note,
+html.incrustat .panel > p { display: none !important; }
+html.incrustat .barra-lateral {
+  display: block !important; width: 100%; position: static !important; max-height: none; overflow: visible;
+}
+html.incrustat .barra-lateral .controls-sticky,
+html.incrustat .barra-lateral .controls-rest {
+  display: flex !important; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 6px 18px;
+  position: static !important; border: none !important; padding: 0 !important; margin: 0 !important; background: none !important;
+}
+html.incrustat .barra-lateral .controls.inc-mostra,
+html.incrustat .barra-lateral .modes.inc-mostra,
+html.incrustat .barra-lateral .readout.inc-mostra { min-width: 220px; }
+@media (min-width: 701px) {
+  html.incrustat.inc-costat .layout { flex-direction: row !important; align-items: flex-start; }
+  html.incrustat.inc-costat .columna-grafics { flex: 1; min-width: 0; }
+  html.incrustat.inc-costat .barra-lateral { width: 270px; flex-shrink: 0; }
+  html.incrustat.inc-costat .barra-lateral .controls-sticky,
+  html.incrustat.inc-costat .barra-lateral .controls-rest { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
+}

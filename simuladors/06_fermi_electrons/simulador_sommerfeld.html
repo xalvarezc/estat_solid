@@ -6,6 +6,8 @@
 <title>Simulador — Expansió de Sommerfeld</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
 <link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
 <style>
   :root{
     --hole:#2F7A4F; --hole-bg:#E4F2E9;
@@ -107,7 +109,7 @@
       Vídeo d'introducció
     </a>
     <h1>Densitat d'estats, distribució de Fermi-Dirac i conservació de N</h1>
-    <p class="sub">Acompanya la secció "Densitat electrònica i energia a T≠0. Expansió de Sommerfeld" de <code>01_electrons_lliures.tex</code>. Mou el control de la dreta i observa els gràfics alhora. Si és el primer cop que hi entres, mira primer el vídeo d'introducció — cada panell té un requadre "Què has d'observar" que resumeix el que s'hi explica, per si el vols repassar sense tornar a veure'l sencer.</p>
+    <p class="sub">Acompanya la secció 6, «Temperatura finita: l'expansió de Sommerfeld», dels apunts del Tema 6. Mou el control de la dreta i observa els gràfics alhora. Si és el primer cop que hi entres, mira primer el vídeo d'introducció — cada panell té un requadre "Què has d'observar" que resumeix el que s'hi explica, per si el vols repassar sense tornar a veure'l sencer.</p>
 
     <div class="panel">
       <h2>1. Densitat d'estats g(<span class="simbol">ε</span>) — no depèn de T ni de <span class="simbol">μ</span></h2>
@@ -183,7 +185,7 @@
         <label for="tslider">T / T_F = <span id="tval">0.00</span></label>
         <input type="range" id="tslider" min="0" max="120" value="0" step="1">
       </div>
-      <div class="modes">
+      <div class="modes" id="modes">
         <label><input type="radio" name="mode" value="real" checked> μ(T) ajustat (correcte — conserva N)</label>
         <label><input type="radio" name="mode" value="fix"> μ fix a ε<sub>F</sub> (incorrecte — NO conserva N)</label>
       </div>

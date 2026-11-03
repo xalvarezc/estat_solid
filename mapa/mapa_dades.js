@@ -21,7 +21,8 @@ var APUNTS_WEB = {
   '02': '02_xarxa_reciproca',
   '03': '03_cohesio',
   '04': '04_dinamica_xarxa',
-  '05': '05_fonons'
+  '05': '05_fonons',
+  '06': '06_fermi_electrons'
 };
 
 var NOMS_TEMES = {
