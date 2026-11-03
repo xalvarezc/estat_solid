@@ -34,6 +34,14 @@
   for (let t = 1; t <= 8; t++) ETIQUETES['tema:' + t] = 'e3f2e8';
 
   const $ = id => document.getElementById(id);
+  // Qualsevol error de JavaScript es mostra a la pàgina (en lloc de deixar-la en blanc).
+  function avisa(text) {
+    let b = $('avis');
+    if (!b) { b = document.createElement('div'); b.id = 'avis'; b.className = 'avis'; document.querySelector('main').prepend(b); }
+    b.textContent = text;
+  }
+  window.addEventListener('error', e => avisa('Error a la pàgina: ' + e.message + ' (línia ' + e.lineno + '). Recarrega-la del tot (Ctrl+Maj+R).'));
+  window.addEventListener('unhandledrejection', e => avisa('Error: ' + ((e.reason && e.reason.message) || e.reason) + '. Recarrega la pàgina.'));
   let token = '';
   let issues = [];
   let arbre = null;                // fitxers del repositori (git tree), es carrega quan cal
@@ -613,9 +621,11 @@
       return;
     }
     $('porta').hidden = true; $('taulell').hidden = false; $('accions').hidden = false;
-    $('estat').textContent = 'Carregant…';
+    $('panell').replaceChildren(el('div', { class: 'panell apagat' }, el('div', { class: 'semafor' }),
+      el('div', { class: 'panell-text' }, el('div', { class: 'panell-titol' }, 'Carregant…'), el('div', { class: 'panell-detall' }, 'Llegint les issues del repositori.'))));
     try { await asseguraEtiquetes(); } catch (e) { console.warn('etiquetes:', e.message); }
-    await refresca().catch(e => { $('estat').textContent = 'Error: ' + e.message; });
+    try { await refresca(); }
+    catch (e) { avisa('No s\'ha pogut carregar el taulell: ' + e.message + '. Prova de recarregar la pàgina (Ctrl+Maj+R).'); console.error(e); }
   }
 
   $('fToken').addEventListener('submit', ev => { ev.preventDefault(); desaToken($('token').value.trim()); $('token').value = ''; entra(); });
