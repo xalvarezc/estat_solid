@@ -127,9 +127,33 @@
     }
     return null;
   }
+  // Fórmules LaTeX ($…$, $$…$$, \(…\), \[…\]) fora del codi: es treuen abans del Markdown (perquè no les
+  // espatlli) i es dibuixen després amb KaTeX. Un $ seguit d'espai o tancat davant d'una xifra no és
+  // fórmula («25 $ en total»). Si KaTeX no s'ha carregat, es mostra el LaTeX tal qual.
+  function treuFormules(text) {
+    const tex = [];
+    const ph = (t, d) => { tex.push({ t, d }); return `<span class="math-ph" data-i="${tex.length - 1}"></span>`; };
+    const fora = s => s
+      .replace(/\$\$([\s\S]+?)\$\$/g, (_, t) => ph(t, true))
+      .replace(/\\\[([\s\S]+?)\\\]/g, (_, t) => ph(t, true))
+      .replace(/\\\(([\s\S]+?)\\\)/g, (_, t) => ph(t, false))
+      .replace(/(^|[^\\$])\$([^\s$](?:[^$\n]*?[^\s\\$])?)\$(?!\d)/g, (_, a, t) => a + ph(t, false));
+    const parts = text.split(/(```[\s\S]*?```|~~~[\s\S]*?~~~|`+[^`\n]*`+)/);   // el codi no es toca
+    return { text: parts.map((p, i) => (i % 2 ? p : fora(p))).join(''), tex };
+  }
   function markdown(text, base) {
     const div = el('div', { class: 'cos' });
-    div.innerHTML = DOMPurify.sanitize(marked.parse(text || ''));
+    const f = treuFormules(text || '');
+    div.innerHTML = DOMPurify.sanitize(marked.parse(f.text));
+    div.querySelectorAll('.math-ph').forEach(sp => {
+      const m = f.tex[+sp.dataset.i];
+      if (!m) return;
+      sp.dataset.tex = m.t; sp.dataset.d = m.d ? '1' : '';
+      if (window.katex) {
+        try { katex.render(m.t, sp, { displayMode: m.d, throwOnError: false }); return; } catch (e) {}
+      }
+      sp.textContent = (m.d ? '$$' : '$') + m.t + (m.d ? '$$' : '$');
+    });
     div.querySelectorAll('a').forEach(a => {
       const r = camiRepo(a.getAttribute('href'), base);
       if (!r) { a.target = '_blank'; a.rel = 'noopener'; return; }
@@ -320,6 +344,8 @@
   function textBloc(bloc) {
     const c = bloc.cloneNode(true);
     c.querySelectorAll('.boto-nota, .nota-lectura, .editor-nota, ul, ol').forEach(x => x.remove());   // les sublistes són blocs a part
+    // les fórmules compten pel seu LaTeX (així la nota troba el paràgraf encara que KaTeX no s'hagi carregat)
+    c.querySelectorAll('.math-ph').forEach(x => x.replaceWith((x.dataset.d ? '$$' : '$') + (x.dataset.tex || '') + (x.dataset.d ? '$$' : '$')));
     return c.textContent.replace(/\s+/g, ' ').trim();
   }
   const RE_NOTES = /<!-- notes (\{[\s\S]*?\}) -->/;
