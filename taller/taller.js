@@ -13,6 +13,10 @@
   const API = 'https://api.github.com';
   const CLAU = 'taller_token';
   const MIDES = [15, 17, 19, 21];   // mides de lletra (px) del control A− / A+
+  // Models que es poden triar per al treballador (config_taller.json → claude -p --model …).
+  const MODELS = [['claude-opus-5-5', 'Opus 5.5'], ['claude-fable-5-1', 'Fable 5.1'],
+                  ['claude-sonnet-5-5', 'Sonnet 5.5'], ['claude-haiku-5-5', 'Haiku 5.5']];
+  const nomModel = m => m ? (MODELS.find(x => x[0] === m) || [m, m])[1] : 'model per defecte';
 
   const SECCIONS = [
     { id: 'idea',       titol: 'Idees triades',      buida: 'Cap. Tria idees de la llista d\'una petició.' },
@@ -369,7 +373,8 @@
     p.append(el('div', { class: 'panell ' + classe },
       el('div', { class: 'semafor' }),
       el('div', { class: 'panell-text' },
-        el('div', { class: 'panell-titol' }, titol, d ? el('span', { class: 'vist' }, ' · vist fa ' + durada(vist)) : null),
+        el('div', { class: 'panell-titol' }, titol, d ? el('span', { class: 'vist' }, ' · vist fa ' + durada(vist) +
+          ' · ' + nomModel((d.feina && d.feina.model) || (d.config && d.config.model))) : null),
         el('div', { class: 'panell-detall' }, detall)),
       xifres, botons));
   }
@@ -382,12 +387,16 @@
     const [l1, i1] = camp('max_per_passada', 'Feines alhora en una passada', 1, 6);
     const [l2, i2] = camp('max_feines_dia', 'Feines al dia (s\'esperen a l\'endemà si se supera)', 1, 40);
     const [l3, i3] = camp('max_minuts_passada', 'Minuts com a màxim per passada (després s\'atura)', 10, 240);
+    const sel = el('select', {}, ...MODELS.map(([id, nom]) => el('option', { value: id }, nom)),
+      el('option', { value: '' }, 'El per defecte de Claude Code (canvia amb /model)'));
+    sel.value = MODELS.some(x => x[0] === cfg.model) ? cfg.model : '';
     const form = el('form', {},
-      el('p', { class: 'nota' }, 'El vigilant els llegeix abans de cada passada. Avui, desenvolupar una proposta ha costat uns 25–30 k tokens nous; una documentació en costarà més.'),
+      el('p', { class: 'nota' }, 'El vigilant els llegeix abans de cada passada. El model també el fan servir els agents de la passada; el cost de cada passada surt al Registre.'),
+      el('label', {}, 'Model del treballador', sel),
       l1, l2, l3, el('div', { class: 'botons' }, el('button', { class: 'primari' }, 'Desa')));
     form.addEventListener('submit', ev => ev.preventDefault());
     form.addEventListener('submit', accio(async () => {
-      const nou = { max_per_passada: +i1.value || 1, max_feines_dia: +i2.value || 1, max_minuts_passada: +i3.value || 30 };
+      const nou = { max_per_passada: +i1.value || 1, max_feines_dia: +i2.value || 1, max_minuts_passada: +i3.value || 30, model: sel.value };
       await api(`/repos/${REPO}/contents/config_taller.json`, json('PUT', {
         message: 'Topalls editats des del taulell', content: b64(JSON.stringify(nou, null, 2) + '\n'), sha: f.sha }));
       tancaDialeg();
@@ -397,9 +406,10 @@
 
   const RESULTATS = { ok: '✅ fet', error: '⚠️ error', aturat: '⏹ aturat', temps: '⏱ temps esgotat' };
   function registre(d) {
-    const t = el('table', {}, el('tr', {}, ...['Inici', 'Issues', 'Min', 'Tokens nous', 'Escrits', 'Cost (API)', 'Resultat'].map(x => el('th', {}, x))));
+    const t = el('table', {}, el('tr', {}, ...['Inici', 'Issues', 'Model', 'Min', 'Tokens nous', 'Escrits', 'Cost (API)', 'Resultat'].map(x => el('th', {}, x))));
     for (const r of d.ultimes) t.append(el('tr', {},
       el('td', {}, r.inici ? quan(r.inici) : '?'), el('td', {}, (r.issues || []).map(n => '#' + n).join(', ')),
+      el('td', {}, r.model ? nomModel(r.model) : '—'),
       el('td', {}, r.minuts == null ? '—' : String(r.minuts)), el('td', {}, k(r.tokens_nous)), el('td', {}, k(r.sortida)),
       el('td', {}, r.cost_usd == null ? '—' : r.cost_usd.toFixed(2) + ' $'),
       el('td', {}, (RESULTATS[r.resultat] || r.resultat || '') + (r.nota ? ' — ' + r.nota : ''))));
