@@ -13,11 +13,10 @@
 <header class="capcalera">
   <div class="marca"><b>Taller de vídeos</b><span>Física de l'Estat Sòlid · privat</span></div>
   <nav id="accions" hidden>
-    <button id="bPropostes" class="primari">Demana propostes</button>
-    <button id="bEsquema">Esquema</button>
+    <button id="bIdees" class="primari">Demana idees</button>
     <button id="bRefresca" title="Torna a carregar">↻</button>
-    <label class="interruptor"><input type="checkbox" id="vDescartats"> descartats</label>
-    <button id="bSurt" class="discret">Surt</button>
+    <span class="lletra"><button id="bMenys" title="Lletra més petita">A−</button><button id="bMes" title="Lletra més gran">A+</button></span>
+    <button id="bMenu" title="Més opcions">⋯</button>
   </nav>
 </header>
 
@@ -40,10 +39,12 @@
   </section>
 
   <section id="taulell" hidden>
-    <div id="estat" class="estat"></div>
+    <div id="panell"></div>
+    <div id="salts" class="salts"></div>
     <div id="peticions" class="peticions"></div>
     <div class="columnes" id="columnes"></div>
     <div id="descartats" class="descartats" hidden></div>
+    <div id="estat" class="estat"></div>
   </section>
 </main>
 
