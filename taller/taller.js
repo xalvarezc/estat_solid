@@ -12,7 +12,7 @@
   const REPO = 'xalvarezc/taller_videos';
   const API = 'https://api.github.com';
   const CLAU = 'taller_token';
-  const MIDES = [15, 17, 19, 21];   // mides de lletra (px) del control A− / A+
+  const MIDES = [15, 17, 19, 21];   // mides de lletra (px): Petita, Normal, Gran, Molt gran (menú Configuració)
   // Models que es poden triar per al treballador (config_taller.json → claude -p --model …).
   const MODELS = [['claude-opus-5-5', 'Opus 5.5'], ['claude-fable-5-1', 'Fable 5.1'],
                   ['claude-sonnet-5-5', 'Sonnet 5.5'], ['claude-haiku-5-5', 'Haiku 5.5']];
@@ -363,13 +363,13 @@
     return { e, d, cua, vist, classe, titol, curt, detall };
   }
 
-  // Pantalla principal: només l'estat en una línia i el botó «Detalls».
+  // La pantalla principal no mostra res del treballador: només un punt de color al botó de configuració
+  // (verd lliure, taronja treballant, blau en pausa, gris sense senyal). La resta és a Configuració.
   function dibuixaPanell() {
     const r = resumTreballador();
-    $('panell').replaceChildren(el('div', { class: 'barra ' + r.classe },
-      el('div', { class: 'semafor' }),
-      el('div', { class: 'barra-text' }, el('div', { class: 'barra-titol' }, r.titol), el('div', { class: 'barra-curt' }, r.curt)),
-      el('button', { onclick: obreTreballador }, 'Detalls ›')));
+    const p = $('bConfig').querySelector('.punt');
+    if (p) p.className = 'punt ' + r.classe;
+    $('bConfig').title = 'Configuració · treballador: ' + r.titol.toLowerCase();
     if ($('dlg').open && $('dlg').dataset.vista === 'treballador') obreTreballador();   // es manté al dia mentre és obert
   }
 
@@ -635,17 +635,26 @@
     }));
     cos.replaceChildren(form);
   }
+  // Menú de configuració: la mida de la lletra, la informació del treballador i la resta d'opcions.
+  const NOMS_LLETRA = ['Petita', 'Normal', 'Gran', 'Molt gran'];
   function menu() {
-    obreDialeg('Més', el('div', { class: 'menu' },
-      el('button', { onclick: () => { tancaDialeg(); esquema().catch(e => alert(e.message)); } }, '📝 Esquema del vídeo'),
-      el('button', { onclick: () => { tancaDialeg(); configuracio().catch(e => alert(e.message)); } }, '⚙ Topalls del vigilant'),
+    const r = resumTreballador();
+    const canvia = delta => () => { lletra = Math.min(MIDES.length - 1, Math.max(0, lletra + delta)); aplicaLletra(); menu(); };
+    obreDialeg('Configuració', el('div', { class: 'menu' },
+      el('div', { class: 'menu-lletra' }, el('span', {}, 'Mida de la lletra'),
+        el('div', { class: 'lletra' },
+          el('button', { onclick: canvia(-1), disabled: lletra === 0, title: 'Més petita' }, 'A−'),
+          el('span', { class: 'lletra-nom' }, NOMS_LLETRA[lletra]),
+          el('button', { onclick: canvia(+1), disabled: lletra === MIDES.length - 1, title: 'Més gran' }, 'A+'))),
+      el('button', { onclick: obreTreballador }, el('span', { class: 'punt-menu ' + r.classe }), 'Informació del treballador · ' + r.titol.toLowerCase()),
+      el('button', { onclick: () => configuracio().catch(e => alert(e.message)) }, '⚙ Topalls i model'),
+      el('button', { onclick: () => esquema().catch(e => alert(e.message)) }, '📝 Esquema del vídeo'),
       el('button', { onclick: () => { mostraDescartats = !mostraDescartats; tancaDialeg(); dibuixa(); } }, (mostraDescartats ? '🙈 Amaga' : '👁 Mostra') + ' els descartats'),
       el('button', { onclick: () => window.open('https://github.com/' + REPO + '/issues', '_blank') }, '🐙 Obre les issues a GitHub'),
       el('button', { class: 'perill', onclick: () => { desaToken(''); location.reload(); } }, 'Surt (esborra el token)')));
   }
   function aplicaLletra() {
     document.documentElement.style.fontSize = MIDES[lletra] + 'px';
-    $('bMenys').disabled = lletra === 0; $('bMes').disabled = lletra === MIDES.length - 1;
     desa('taller_lletra', String(lletra));
   }
 
@@ -659,8 +668,7 @@
       return;
     }
     $('porta').hidden = true; $('taulell').hidden = false; $('accions').hidden = false;
-    $('panell').replaceChildren(el('div', { class: 'barra apagat' }, el('div', { class: 'semafor' }),
-      el('div', { class: 'barra-text' }, el('div', { class: 'barra-titol' }, 'Carregant…'), el('div', { class: 'barra-curt' }, 'Llegint les issues del repositori.'))));
+    $('estat').textContent = 'Carregant…';
     try { await asseguraEtiquetes(); } catch (e) { console.warn('etiquetes:', e.message); }
     try { await refresca(); }
     catch (e) { avisa('No s\'ha pogut carregar el taulell: ' + e.message + '. Prova de recarregar la pàgina (Ctrl+Maj+R).'); console.error(e); }
@@ -669,9 +677,7 @@
   $('fToken').addEventListener('submit', ev => { ev.preventDefault(); desaToken($('token').value.trim()); $('token').value = ''; entra(); });
   $('bRefresca').addEventListener('click', accio(refresca));
   $('bIdees').addEventListener('click', demanaIdees);
-  $('bMenu').addEventListener('click', menu);
-  $('bMenys').addEventListener('click', () => { lletra = Math.max(0, lletra - 1); aplicaLletra(); });
-  $('bMes').addEventListener('click', () => { lletra = Math.min(MIDES.length - 1, lletra + 1); aplicaLletra(); });
+  $('bConfig').addEventListener('click', menu);
   // Cada minut es torna a carregar; amb un diàleg obert, no (no es perdria el que s'hi escriu), llevat dels Detalls.
   setInterval(() => { if (token && !document.hidden && (!$('dlg').open || $('dlg').dataset.vista === 'treballador')) refresca().catch(() => {}); }, 60000);
   $('dlg').addEventListener('close', () => { $('dlg').dataset.vista = ''; });
