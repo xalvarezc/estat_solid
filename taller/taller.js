@@ -114,10 +114,37 @@
     for (const f of fills) if (f !== null && f !== undefined && f !== false) e.append(f.nodeType ? f : document.createTextNode(f));
     return e;
   }
-  function markdown(text) {
+  // Converteix Markdown en HTML. Els enllaços i les imatges que apunten a fitxers del repositori
+  // (github.com/…/blob|tree/main/…, o relatius al fitxer «base» que es mostra) s'obren dins del taulell
+  // amb el token: el repositori és privat, i al mòbil GitHub dona 404 si no s'hi ha iniciat sessió.
+  const RE_REPO = new RegExp('^https://github\\.com/' + REPO + '/(blob|tree|raw)/main/([^?#]+)');
+  function camiRepo(href, base) {
+    const m = RE_REPO.exec(href || '');
+    if (m) return { cami: decodeURIComponent(m[2]).replace(/\/$/, ''), carpeta: m[1] === 'tree' };
+    if (base && href && !/^([a-z][a-z0-9+.-]*:|#|\/)/i.test(href)) {
+      const u = new URL(href, 'https://repo/' + base.split('/').slice(0, -1).map(encodeURIComponent).join('/') + '/');
+      return { cami: decodeURIComponent(u.pathname.slice(1)).replace(/\/$/, ''), carpeta: href.endsWith('/') };
+    }
+    return null;
+  }
+  function markdown(text, base) {
     const div = el('div', { class: 'cos' });
     div.innerHTML = DOMPurify.sanitize(marked.parse(text || ''));
-    div.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+    div.querySelectorAll('a').forEach(a => {
+      const r = camiRepo(a.getAttribute('href'), base);
+      if (!r) { a.target = '_blank'; a.rel = 'noopener'; return; }
+      a.title = 'Obre al taulell';
+      a.addEventListener('click', ev => {
+        ev.preventDefault();
+        obreRepo(r, a.closest('.fitxer-vista')).catch(e => alert('No s\'ha pogut obrir ' + r.cami + ': ' + e.message));
+      });
+    });
+    div.querySelectorAll('img').forEach(img => {
+      const r = camiRepo(img.getAttribute('src'), base);
+      if (!r) return;
+      img.removeAttribute('src'); img.alt = img.alt || r.cami;
+      descarrega(r.cami).then(b => { img.src = URL.createObjectURL(b); }).catch(() => { img.alt = '(no s\'ha pogut carregar ' + r.cami + ')'; });
+    });
     return div;
   }
   function quan(data) {
@@ -275,7 +302,20 @@
     const text = await blob.text();
     const cap = el('div', { class: 'fitxer-cap' }, el('span', { class: 'nota' }, cami),
       EDITABLE.test(cami) ? el('button', { onclick: () => editaFitxer(cami, on).catch(e => on.replaceChildren(el('p', { class: 'error' }, e.message))) }, '✎ Edita') : null);
-    on.replaceChildren(cap, ext === 'md' ? markdown(text) : el('pre', {}, text));
+    on.replaceChildren(cap, ext === 'md' ? markdown(text, cami) : el('pre', {}, text));
+  }
+  // Obre un fitxer o una carpeta del repositori dins del taulell: a la mateixa vista si l'enllaç és dins
+  // d'un fitxer que ja es mostra, o en una finestra nova si ve d'un comentari.
+  async function obreRepo(r, vista) {
+    const tots = await carregaArbre(true);
+    const carpeta = r.carpeta || (!tots.includes(r.cami) && tots.some(p => p.startsWith(r.cami + '/')));
+    if (!carpeta && vista) return mostraFitxer(r.cami, vista);
+    const v = el('div', { class: 'fitxer-vista' });
+    if (!carpeta) { obreDialeg(r.cami.split('/').pop(), v); return mostraFitxer(r.cami, v); }
+    const llista = el('ul', { class: 'fitxers' }, ...tots.filter(p => p.startsWith(r.cami + '/') && !p.endsWith('.gitkeep')).map(p =>
+      el('li', {}, el('button', { onclick: () => mostraFitxer(p, v).catch(e => v.replaceChildren(el('p', { class: 'error' }, e.message))) },
+        p.slice(r.cami.length + 1)))));
+    obreDialeg(r.cami, llista, v);
   }
   // Edició directa d'un fitxer de text: es desa com a commit al repositori.
   async function editaFitxer(cami, on) {
