@@ -83,6 +83,27 @@ main { padding: .8rem 1rem 3rem; }
 .xifra span { font-size: .75rem; color: var(--apagat); }
 .panell .botons { grid-column: 1 / -1; margin-top: .2rem; }
 @media (max-width: 600px) { .xifres { grid-template-columns: repeat(2, 1fr); } }
+.dlg-cos .panell { box-shadow: none; }
+.subtitol { font-size: .9rem; color: var(--tinta-2); margin: 1rem 0 .4rem; }
+.passades { list-style: none; padding: 0; margin: 0; }
+.passades li { border-top: 1px solid var(--vora); padding: .5rem 0; }
+.passada-cap { font-size: .95rem; }
+.passada-xifres { color: var(--tinta-2); font-size: .9rem; }
+
+/* ---- barra d'estat de la pantalla principal (sense informació tècnica: és a «Detalls») ---- */
+.barra { display: flex; align-items: center; gap: .7rem; background: var(--superficie); border: 1px solid var(--vora);
+  border-left: 7px solid var(--apagat); border-radius: 10px; padding: .55rem .8rem; margin-bottom: .8rem; box-shadow: var(--ombra); }
+.barra.lliure { border-left-color: var(--verd); }
+.barra.treballant { border-left-color: var(--ambre); }
+.barra.pausa { border-left-color: var(--blau); }
+.barra .semafor { margin-top: 0; flex: none; }
+.barra.lliure .semafor { background: var(--verd); }
+.barra.treballant .semafor { background: var(--ambre); animation: batec 1.6s ease-in-out infinite; }
+.barra.pausa .semafor { background: var(--blau); }
+.barra-text { flex: 1; min-width: 0; }
+.barra-titol { font-weight: 700; font-size: 1.05rem; line-height: 1.25; }
+.barra-curt { color: var(--tinta-2); font-size: .9rem; overflow-wrap: anywhere; }
+.barra > button { flex: none; }
 
 /* ---- accés directe a les seccions ---- */
 .salts { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .4rem; margin-bottom: .4rem; scrollbar-width: thin; }

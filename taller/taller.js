@@ -160,8 +160,9 @@
   // ---------- diàleg ----------
   function obreDialeg(titol, ...contingut) {
     $('dlgTitol').textContent = titol;
+    $('dlg').dataset.vista = '';   // la posa obreTreballador(); qualsevol altre diàleg l'esborra
     const cos = $('dlgCos'); cos.replaceChildren(...contingut);
-    $('dlg').showModal();
+    if (!$('dlg').open) $('dlg').showModal();
     return cos;
   }
   const tancaDialeg = () => $('dlg').close();
@@ -331,52 +332,75 @@
     return { issue: i, dades, pausa: noms(i).includes('pausa'), atura: noms(i).includes('atura') };
   }
   const xifra = (v, t) => el('div', { class: 'xifra' }, el('b', {}, String(v)), el('span', {}, t));
+  const llistaIssues = ns => ns.map(n => '#' + n).join(ns.length === 2 ? ' i ' : ', ');
 
-  function dibuixaPanell() {
-    const p = $('panell'); p.replaceChildren();
+  // Estat del treballador: «titol» i «curt» per a la pantalla principal; «detall» (agents, notes) per a Detalls.
+  function resumTreballador() {
     const e = estatTreballador();
     const d = e && e.dades;
     const cua = issues.filter(i => i.state === 'open' && !esEstat(i) && feina(i));
     const vist = d ? minutsDes(d.vist) : null;
-    let classe, titol, detall;
+    let classe, titol, curt, detall;
     if (!d) {
-      classe = 'apagat'; titol = 'Vigilant no engegat';
-      detall = 'Encara no ha publicat cap estat. A l\'ordinador cal instal·lar el cron (vegeu el README del repositori).';
+      classe = 'apagat'; titol = 'Treballador apagat'; curt = 'Encara no ha donat senyal.';
+      detall = 'El vigilant encara no ha publicat cap estat. A l\'ordinador cal instal·lar el cron (vegeu el README del repositori).';
     } else if (vist > 10) {
-      classe = 'apagat'; titol = 'Sense senyal del vigilant';
+      classe = 'apagat'; titol = 'Sense senyal'; curt = `L'ordinador no respon des de fa ${durada(vist)}. La cua espera.`;
       detall = `No s'ha vist des de fa ${durada(vist)}: l'ordinador és apagat o el cron no corre. La cua s'atendrà quan torni.`;
     } else if (e.pausa) {
       classe = 'pausa'; titol = 'En pausa';
-      detall = 'No comença cap feina nova' + (d.estat === 'treballant' ? '; acaba la que té en marxa' : '') + '.' + (d.nota ? ' ' + d.nota : '');
+      curt = d.estat === 'treballant' ? 'Acaba la feina en marxa i no en comença cap més.' : 'No comença cap feina nova.';
+      detall = curt + (d.nota ? ' ' + d.nota : '');
     } else if (d.estat === 'treballant' && d.feina) {
       classe = 'treballant'; titol = 'Treballant';
-      detall = d.feina.issues.map(n => '#' + n).join(', ') + ' · des de fa ' + durada(minutsDes(d.feina.inici)) + (d.feina.ara ? ' · ' + d.feina.ara : '');
+      curt = `En ${llistaIssues(d.feina.issues)} · fa ${durada(minutsDes(d.feina.inici))}`;
+      detall = curt + (d.feina.ara ? ' · ' + d.feina.ara : '');
     } else {
       classe = 'lliure'; titol = cua.length ? 'En espera' : 'Lliure';
-      detall = (cua.length ? `${cua.length} a la cua: comença en menys d'un minut.` : 'Cua buida.') + (d.nota ? ' ' + d.nota : '');
+      curt = cua.length ? `${cua.length} a la cua: comença en menys d'un minut.` : 'Res a la cua.';
+      detall = curt + (d.nota ? ' ' + d.nota : '');
     }
+    return { e, d, cua, vist, classe, titol, curt, detall };
+  }
+
+  // Pantalla principal: només l'estat en una línia i el botó «Detalls».
+  function dibuixaPanell() {
+    const r = resumTreballador();
+    $('panell').replaceChildren(el('div', { class: 'barra ' + r.classe },
+      el('div', { class: 'semafor' }),
+      el('div', { class: 'barra-text' }, el('div', { class: 'barra-titol' }, r.titol), el('div', { class: 'barra-curt' }, r.curt)),
+      el('button', { onclick: obreTreballador }, 'Detalls ›')));
+    if ($('dlg').open && $('dlg').dataset.vista === 'treballador') obreTreballador();   // es manté al dia mentre és obert
+  }
+
+  // «Detalls»: la informació tècnica (agents, model, consum, últimes passades) i els controls.
+  function obreTreballador() {
+    const { e, d, cua, vist, classe, titol, detall } = resumTreballador();
     const avui = d && d.avui;
-    const xifres = el('div', { class: 'xifres' },
-      xifra(cua.length, 'a la cua'),
-      xifra(avui ? `${avui.feines} / ${avui.limit}` : '—', 'feines avui'),
-      xifra(avui ? k(avui.tokens_nous) : '—', 'tokens nous avui'),
-      xifra(avui ? avui.cost_usd.toFixed(2) + ' $' : '—', 'equivalent API avui'));
+    const iTorna = fn => accio(async () => { await fn(); obreTreballador(); });
     const botons = el('div', { class: 'botons' });
     if (e) {
       botons.append(el('button', { class: e.pausa ? 'primari' : '',
-        onclick: accio(async () => posaEtiquetes(e.issue, e.pausa ? ['pausa'] : [], e.pausa ? [] : ['pausa'])) }, e.pausa ? '▶ Reprèn' : '⏸ Pausa'));
+        onclick: iTorna(() => posaEtiquetes(e.issue, e.pausa ? ['pausa'] : [], e.pausa ? [] : ['pausa'])) }, e.pausa ? '▶ Reprèn' : '⏸ Pausa'));
       if (d && d.estat === 'treballant') botons.append(el('button', { class: 'perill', disabled: e.atura,
-        onclick: accio(async () => posaEtiquetes(e.issue, [], ['atura'])) }, e.atura ? '⏹ Aturant…' : '⏹ Atura'));
+        onclick: iTorna(() => posaEtiquetes(e.issue, [], ['atura'])) }, e.atura ? '⏹ Aturant…' : '⏹ Atura'));
     }
     botons.append(el('button', { onclick: () => configuracio().catch(x => alert(x.message)) }, '⚙ Topalls'));
-    if (d && d.ultimes && d.ultimes.length) botons.append(el('button', { onclick: () => registre(d) }, '📋 Registre'));
-    p.append(el('div', { class: 'panell ' + classe },
+    const parts = [el('div', { class: 'panell ' + classe },
       el('div', { class: 'semafor' }),
       el('div', { class: 'panell-text' },
         el('div', { class: 'panell-titol' }, titol, d ? el('span', { class: 'vist' }, ' · vist fa ' + durada(vist) +
           ' · ' + nomModel((d.feina && d.feina.model) || (d.config && d.config.model))) : null),
         el('div', { class: 'panell-detall' }, detall)),
-      xifres, botons));
+      el('div', { class: 'xifres' },
+        xifra(cua.length, 'a la cua'),
+        xifra(avui ? `${avui.feines} / ${avui.limit}` : '—', 'feines avui'),
+        xifra(avui ? k(avui.tokens_nous) : '—', 'tokens nous avui'),
+        xifra(avui ? avui.cost_usd.toFixed(2) + ' $' : '—', 'equivalent API avui')),
+      botons)];
+    if (d && d.ultimes && d.ultimes.length) parts.push(el('h3', { class: 'subtitol' }, 'Últimes passades'), llistaPassades(d));
+    obreDialeg('Treballador', ...parts);
+    $('dlg').dataset.vista = 'treballador';
   }
 
   async function configuracio() {
@@ -393,28 +417,31 @@
     const form = el('form', {},
       el('p', { class: 'nota' }, 'El vigilant els llegeix abans de cada passada. Els agents (explorador, documentalista, presentador) tenen el seu propi model, als seus fitxers; el cost de cada passada surt al Registre.'),
       el('label', {}, 'Model del treballador', sel),
-      l1, l2, l3, el('div', { class: 'botons' }, el('button', { class: 'primari' }, 'Desa')));
+      l1, l2, l3, el('div', { class: 'botons' }, el('button', { class: 'primari' }, 'Desa'),
+        el('button', { type: 'button', onclick: obreTreballador }, '‹ Torna')));
     form.addEventListener('submit', ev => ev.preventDefault());
     form.addEventListener('submit', accio(async () => {
       // Es parteix de la configuració que hi ha, perquè no es perdi cap clau que aquest formulari no mostri.
       const nou = { ...cfg, max_per_passada: +i1.value || 1, max_feines_dia: +i2.value || 1, max_minuts_passada: +i3.value || 30, model: sel.value };
       await api(`/repos/${REPO}/contents/config_taller.json`, json('PUT', {
         message: 'Topalls editats des del taulell', content: b64(JSON.stringify(nou, null, 2) + '\n'), sha: f.sha }));
-      tancaDialeg();
+      obreTreballador();
     }));
     cos.replaceChildren(form);
   }
 
   const RESULTATS = { ok: '✅ fet', error: '⚠️ error', aturat: '⏹ aturat', temps: '⏱ temps esgotat', tallat: '✂️ tallat' };
-  function registre(d) {
-    const t = el('table', {}, el('tr', {}, ...['Inici', 'Issues', 'Model', 'Min', 'Tokens nous', 'Escrits', 'Cost (API)', 'Resultat'].map(x => el('th', {}, x))));
-    for (const r of d.ultimes) t.append(el('tr', {},
-      el('td', {}, r.inici ? quan(r.inici) : '?'), el('td', {}, (r.issues || []).map(n => '#' + n).join(', ')),
-      el('td', {}, r.model ? nomModel(r.model) : '—'),
-      el('td', {}, r.minuts == null ? '—' : String(r.minuts)), el('td', {}, k(r.tokens_nous)), el('td', {}, k(r.sortida)),
-      el('td', {}, r.cost_usd == null ? '—' : r.cost_usd.toFixed(2) + ' $'),
-      el('td', {}, (RESULTATS[r.resultat] || r.resultat || '') + (r.nota ? ' — ' + r.nota : ''))));
-    obreDialeg('Últimes passades', el('p', { class: 'nota' }, 'Tokens nous: entrada que no és a la memòria cau, més el que escriu. El cost és l\'equivalent en API (es paga amb la subscripció).'), t);
+  // Una targeta per passada (es llegeix millor al mòbil que una taula).
+  function llistaPassades(d) {
+    const ul = el('ul', { class: 'passades' });
+    for (const r of d.ultimes) ul.append(el('li', {},
+      el('div', { class: 'passada-cap' }, el('b', {}, RESULTATS[r.resultat] || r.resultat || ''), ' ',
+        (r.issues || []).map(n => '#' + n).join(', '), el('span', { class: 'nota' }, ' · ' + (r.inici ? quan(r.inici) : '?'))),
+      el('div', { class: 'passada-xifres' }, [r.model ? nomModel(r.model) : null, r.minuts == null ? null : r.minuts + ' min',
+        k(r.tokens_nous) + ' tokens nous', r.cost_usd == null ? null : r.cost_usd.toFixed(2) + ' $'].filter(Boolean).join(' · ')),
+      r.nota ? el('div', { class: 'nota' }, r.nota) : null));
+    return el('div', {}, ul,
+      el('p', { class: 'nota' }, 'Tokens nous: entrada que no és a la memòria cau, més el que escriu. El cost és l\'equivalent en API (es paga amb la subscripció).'));
   }
 
   // ---------- peticions i idees ----------
@@ -632,8 +659,8 @@
       return;
     }
     $('porta').hidden = true; $('taulell').hidden = false; $('accions').hidden = false;
-    $('panell').replaceChildren(el('div', { class: 'panell apagat' }, el('div', { class: 'semafor' }),
-      el('div', { class: 'panell-text' }, el('div', { class: 'panell-titol' }, 'Carregant…'), el('div', { class: 'panell-detall' }, 'Llegint les issues del repositori.'))));
+    $('panell').replaceChildren(el('div', { class: 'barra apagat' }, el('div', { class: 'semafor' }),
+      el('div', { class: 'barra-text' }, el('div', { class: 'barra-titol' }, 'Carregant…'), el('div', { class: 'barra-curt' }, 'Llegint les issues del repositori.'))));
     try { await asseguraEtiquetes(); } catch (e) { console.warn('etiquetes:', e.message); }
     try { await refresca(); }
     catch (e) { avisa('No s\'ha pogut carregar el taulell: ' + e.message + '. Prova de recarregar la pàgina (Ctrl+Maj+R).'); console.error(e); }
@@ -645,7 +672,9 @@
   $('bMenu').addEventListener('click', menu);
   $('bMenys').addEventListener('click', () => { lletra = Math.max(0, lletra - 1); aplicaLletra(); });
   $('bMes').addEventListener('click', () => { lletra = Math.min(MIDES.length - 1, lletra + 1); aplicaLletra(); });
-  setInterval(() => { if (token && !document.hidden && !$('dlg').open) refresca().catch(() => {}); }, 60000);
+  // Cada minut es torna a carregar; amb un diàleg obert, no (no es perdria el que s'hi escriu), llevat dels Detalls.
+  setInterval(() => { if (token && !document.hidden && (!$('dlg').open || $('dlg').dataset.vista === 'treballador')) refresca().catch(() => {}); }, 60000);
+  $('dlg').addEventListener('close', () => { $('dlg').dataset.vista = ''; });
 
   aplicaLletra();
   token = llegeixToken();
