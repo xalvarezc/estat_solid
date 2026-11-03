@@ -1215,12 +1215,12 @@ var ACTIVITY_SETS = [
       {
         title: 'Pas 3 de 5 — Ona de la banda inferior',
         instruction: 'Mantén k=G/2 i selecciona la <strong>Banda 0</strong> (botó "0"). Mira la gràfica |&#x3C8;|&#xB2; a la secció inferior central.',
-        observe: 'La densitat |&#x3C8;|&#xB2; s\'acumula a les posicions atòmiques (coincidint amb els màxims del potencial cosinus). L\'electró viu on el potencial és més atractiu → energia mínima.'
+        observe: 'La densitat |&#x3C8;|&#xB2; s\'acumula als mínims del potencial (amb V₁ > 0, a x = a/2, 3a/2, …). L\'electró viu on el potencial és més atractiu → energia mínima.'
       },
       {
         title: 'Pas 4 de 5 — Ona de la banda superior',
         instruction: 'Selecciona ara la <strong>Banda 1</strong>. Compara la distribució de |&#x3C8;|&#xB2; amb el pas anterior.',
-        observe: 'La densitat |&#x3C8;|&#xB2; s\'acumula entre àtoms, evitant les posicions atòmiques. L\'electró viu on el potencial és menys atractiu → energia més alta. Aquí rau l\'origen físic del gap.'
+        observe: 'La densitat |&#x3C8;|&#xB2; s\'acumula als màxims del potencial (x = 0, a, 2a, …) i evita els mínims. L\'electró viu on el potencial és menys atractiu → energia més alta. Aquí rau l\'origen físic del gap.'
       },
       {
         title: 'Pas 5 de 5 — Connexió amb la matriu',

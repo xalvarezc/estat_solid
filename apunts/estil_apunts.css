@@ -29,7 +29,7 @@ body {
   background: #fff; color: var(--ink);
   font-family: var(--font-body); font-size: 17px; line-height: 1.62;
 }
-img, svg { max-width: 100%; }
+img, svg:not(.katex svg) { max-width: 100%; }
 
 /* ---- Capçalera única del curs (idèntica a totes les pàgines; el logo UAB no es toca) ---- */
 .capcalera-uab{

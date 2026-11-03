@@ -33,7 +33,7 @@ html,body{ margin:0; padding:0; max-width:100%; }
 body{
   background:var(--bg); color:var(--ink); font-family:var(--font-body);
 }
-img, svg{ max-width:100%; }
+img, svg:not(.katex svg){ max-width:100%; }
 
 /* ---- Capçalera única del curs (idèntica a totes les pàgines; el logo UAB no es toca) ---- */
 .capcalera-uab{
