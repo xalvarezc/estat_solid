@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Comptar modes: la densitat d'estats en 1D, 2D i 3D</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./fonons.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+  .bloc-ample, .formules{ max-width:890px; }
+  .grup-btn.mode .btn-opcio{ font-size:.86rem; padding:8px 4px; }
+  #canvasQ, #canvasDisp{ cursor:crosshair; touch-action:none; }
+  #canvasQ.gira{ cursor:grab; }
+  #canvasG{ cursor:pointer; }
+  .info-q{ font-size:.78rem; color:var(--text); text-align:center; margin-top:4px; min-height:1.3em; max-width:460px; }
+  .info-q b{ color:var(--uab-dark); }
+  .llegenda i.ratlla{ border-top:3px solid; }
+  .llegenda i.discont{ border-top:2px dashed; }
+  .llegenda i.franja{ height:10px; width:16px; border:none; }
+  .llegenda i.quadre{ width:10px; height:10px; border:none; }
+  [hidden]{ display:none !important; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12 C4.5 4, 7.5 4, 10 12 C12.5 20, 15.5 20, 18 12 C19.5 7.5, 21 7.5, 22 10.5"/></svg>Tema 5: Fonons</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../#index">Índex del curs</a>
+    <a class="actiu" href="../index.html">Simuladors</a>
+  </nav>
+</header>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Comptar modes: la densitat d'estats en 1D, 2D i 3D</h1>
+  <p class="sub">Cada vector d'ona permès ocupa un quadre de costat 2π/L a l'espai q, i cada quadre és un mode. Per saber quants modes tenen la freqüència entre ω i ω + dω es dibuixa la closca on cau aquesta freqüència i es compten els quadres que hi queden dins. La dimensió decideix la forma de la closca (dos trossos, un anell o una closca esfèrica); la relació de dispersió, el seu gruix. Canvia la mida dels quadres i mira quan el recompte es converteix en la funció contínua g(ω).</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Dimensió</div>
+      <div class="grup-btn tres mode" id="grupDim">
+        <button type="button" class="btn-opcio" data-v="1">1D</button>
+        <button type="button" class="btn-opcio" data-v="2">2D</button>
+        <button type="button" class="btn-opcio" data-v="3">3D</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Relació de dispersió</div>
+      <div class="grup-btn" id="grupDisp">
+        <button type="button" class="btn-opcio" data-v="einstein">Einstein</button>
+        <button type="button" class="btn-opcio" data-v="debye">Debye (so)</button>
+        <button type="button" class="btn-opcio" data-v="xarxa">Xarxa (molles)</button>
+        <button type="button" class="btn-opcio" data-v="lliure">Lliure (ω ∝ q²)</button>
+      </div>
+      <p class="hint" id="notaDisp"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">La mida del quadre</div>
+      <div class="control-group">
+        <label class="control-label" for="slQ">Costat 2π/L <span class="val" id="valQ"></span></label>
+        <input type="range" class="slider" id="slQ" min="0" max="20" step="1" value="10">
+      </div>
+      <p class="hint" id="notaQ"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">La closca</div>
+      <div class="control-group">
+        <label class="control-label" for="slW">Freqüència ω <span class="val" id="valW"></span></label>
+        <input type="range" class="slider" id="slW" min="0" max="0.999" step="0.001" value="0.55">
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slDW">Gruix dω <span class="val" id="valDW"></span></label>
+        <input type="range" class="slider" id="slDW" min="0.01" max="0.25" step="0.005" value="0.08">
+      </div>
+      <p class="hint">També pots triar ω fent clic o arrossegant sobre l'espai q (1D i 2D), la relació de dispersió o l'histograma.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Visualització</div>
+      <label class="check-row"><input type="checkbox" id="chkComp"> Compara amb les corbes dels altres models</label>
+      <label class="check-row" id="filaTalla"><input type="checkbox" id="chkTalla" checked> 3D: talla la closca per veure'n el gruix</label>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title" id="titQ">L'espai q</div>
+        <canvas id="canvasQ" width="460" height="460" aria-label="Espai q amb els quadres i la closca"></canvas>
+        <div class="info-q" id="infoQ"></div>
+        <p class="plot-desc" id="descQ" style="max-width:460px;"></p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title">Relació de dispersió ω(q)</div>
+        <canvas id="canvasDisp" width="420" height="460" aria-label="Relació de dispersió"></canvas>
+        <div class="llegenda" id="llegDisp" style="max-width:420px;"></div>
+        <p class="plot-desc" id="descDisp" style="max-width:420px;"></p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">La densitat d'estats: quadres a cada closca de gruix dω</div>
+        <canvas id="canvasG" width="890" height="300" aria-label="Histograma de modes per interval de freqüència"></canvas>
+        <div class="llegenda" id="llegG"></div>
+        <p class="plot-desc" style="max-width:890px;">Cada barra és el nombre de quadres que cauen en una closca de gruix dω; la de color és la closca dibuixada a l'espai q. La corba és la previsió contínua g(ω)·dω, la que surt de dividir la mida de la closca per la d'un quadre. Passa el ratolí per sobre d'una barra per veure'n els valors; fes-hi clic per dibuixar aquella closca.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què calcula</div>
+      <p>Amb condicions de contorn periòdiques en un cristall de costat <strong>L = Na</strong>, els vectors d'ona permesos formen una graella, <strong>q = (2π/L)(m₁, m₂, …)</strong>. Cada punt ocupa un quadre (un cub en 3D) de costat 2π/L, i cada quadre és un mode d'una branca. A la zona de Brillouin hi caben N<sup>d</sup> quadres, tants com àtoms.</p>
+      <p>Per comptar els modes amb freqüència entre ω i ω + dω es dibuixa la closca de l'espai q on la freqüència és dins d'aquest interval i es compten els quadres que tenen el punt central a dins. Si els quadres són petits comparats amb la closca, el recompte és la mida de la closca dividida per la d'un quadre: <strong>dN = (L/2π)<sup>d</sup> S<sub>d</sub>(q) dq</strong>, amb S<sub>d</sub> = 2, 2πq o 4πq².</p>
+      <p>La relació de dispersió en decideix el gruix: <strong>dq = dω/v<sub>g</sub></strong>. On la corba ω(q) és plana, la closca és gruixuda i hi caben molts quadres. D'aquí <strong>g(ω) = (L/2π)<sup>d</sup> S<sub>d</sub>(q)/v<sub>g</sub></strong>: la dimensió hi entra per S<sub>d</sub>, i el material, per v<sub>g</sub>.</p>
+      <p>Aquí es compta una sola branca. Un cristall de d dimensions en té d per àtom, i cal sumar-les.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> 2D, Debye, quadres grans: mou ω. El recompte salta i no s'assembla a la previsió. Fes els quadres petits: el recompte s'enganxa a (L/2π)²·2πq dq. g(ω) només és una funció contínua quan el cristall és gran.</p>
+          <p><strong>2.</strong> Fes la closca més prima que un quadre (dω petit): el recompte torna a ser irregular. La previsió contínua només val quan la closca conté molts quadres.</p>
+          <p><strong>3.</strong> Debye en 1D, 2D i 3D: la closca té el mateix gruix a tot arreu (v<sub>g</sub> constant), però la seva mida és 2, 2πq o 4πq². L'histograma és pla, una recta o una paràbola: g ∝ ω<sup>d−1</sup>.</p>
+          <p><strong>4.</strong> Xarxa en 1D: prop de la vora de zona la corba s'aplana, dq creix i la closca s'eixampla. La densitat d'estats divergeix a ω<sub>màx</sub>, on v<sub>g</sub> = 0.</p>
+          <p><strong>5.</strong> Xarxa en 2D: a ω = ω₁ la corba d'isofreqüència és un quadrat girat 45° que toca els punts X de la vora de zona, i la densitat d'estats hi té un pic (singularitat de van Hove). Per sobre, les closques es tanquen al voltant de les cantonades.</p>
+          <p><strong>6.</strong> Einstein: la relació de dispersió és plana, v<sub>g</sub> = 0, i tota la zona cau dins una sola closca. L'histograma és una única barra amb tots els modes: g(ω) = N<sup>d</sup> δ(ω − ω<sub>E</sub>).</p>
+          <p><strong>7.</strong> Debye talla al cercle (o l'esfera) que té la mateixa mida que la zona de Brillouin. Compara'ls en 2D: hi caben gairebé els mateixos quadres.</p>
+          <p><strong>8.</strong> Partícula lliure, ω ∝ q² (com els electrons del Tema 6): en 2D la densitat d'estats és constant, perquè la mida de l'anell i la velocitat de grup creixen totes dues com q.</p>
+          <p><strong>9.</strong> En 3D, arrossega per girar la closca. Tallada per la meitat, se'n veu el gruix.</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./fonons_comu.js"></script>
+<script src="./densitat_estats.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>
