@@ -75,7 +75,7 @@ var TEMES = [
   ]},
   {num:"05", nom:"Fonons", carpeta:"05_fonons", simuladors:[
     {nom:"Einstein i Debye a l'espai de fases: oscil·ladors independents o correlacionats", href:"05_fonons/einstein_debye_correlacio.html",
-     desc:"Dues cadenes amb la mateixa energia: a dalt, oscil·ladors d'Einstein independents; a sota, un mode normal de la cadena (Debye). Tria el nombre d'àtoms, l'energia i el mode, i mira a l'espai de fases (x, p) com els punts d'Einstein queden desordenats mentre que els de Debye es segueixen; la posició de cada àtom contra la del següent (r ≈ 0 o r = cos qd) i la funció de correlació C(k)."},
+     desc:"Dues cadenes amb la mateixa energia: a dalt, oscil·ladors d'Einstein independents; a sota, un mode normal de la cadena (Debye). Tria el nombre d'àtoms, l'energia i el mode, i mira a l'espai de fases (x, p) com els punts d'Einstein queden desordenats mentre que els de Debye es segueixen; la posició de cada àtom contra la del següent (r ≈ 0 o r = cos qd) i la funció de correlació C(k). Amb el botó «Quàntica»: energia en quàntums, estats estacionaris on res no es mou (núvols, mesures i probabilitat conjunta de dos veïns) i estats coherents."},
     {nom:"La calor específica d'un cristall: fonons, Einstein i Debye", href:"05_fonons/calor_especifica.html",
      desc:"Densitat d'estats de nou materials reals (diamant, Si, Ge, Cu, Al, W, NaCl, Ar, c-BN), calculada amb la dinàmica de xarxa del Tema 4: quins modes estan actius a cada temperatura (Planck), la calor específica que en surt, i com la reprodueixen els models d'Einstein i de Debye, des de la llei T³ fins a Dulong-Petit."},
     {nom:"La conductivitat tèrmica d'un aïllant: el recorregut lliure mitjà dels fonons", href:"05_fonons/conductivitat_termica.html",

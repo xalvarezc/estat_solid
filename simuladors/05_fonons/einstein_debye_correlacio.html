@@ -20,6 +20,9 @@
   .llegenda i.ratlla{ border-top:3px solid; }
   .llegenda i.discont{ border-top:2px dashed; }
   .llegenda i.franja{ height:10px; width:16px; background:rgba(60,66,80,0.10); border:none; }
+  .llegenda i.buit{ width:9px; height:9px; border:1.5px solid #555; border-radius:50%; }
+  [hidden]{ display:none !important; }
+  .grup-btn.mode .btn-opcio{ font-size:.86rem; padding:8px 4px; }
 </style>
 <link rel="stylesheet" href="../incrustat.css">
 <script src="../incrustat.js"></script>
@@ -46,13 +49,40 @@
     Vídeo d'introducció
   </a>
   <h1>Einstein i Debye a l'espai de fases: oscil·ladors independents o correlacionats</h1>
-  <p class="sub">Dues cadenes iguals que reben la mateixa energia. A dalt, el model d'Einstein: cada àtom vibra pel seu compte, amb la seva pròpia fase. A sota, un mode normal de la cadena, com els que fa servir Debye: tots els àtoms vibren junts i la fase avança el mateix d'un àtom al següent. A l'espai de fases (x, p) la diferència salta a la vista: els punts d'Einstein estan desordenats; els de Debye es segueixen l'un a l'altre. I si es representa la posició de cada àtom contra la del següent, a Einstein no hi ha cap relació, mentre que a Debye tots els parells cauen sobre la mateixa corba.</p>
+  <p class="sub">Dues cadenes iguals que reben la mateixa energia. A dalt, el model d'Einstein: cada àtom vibra pel seu compte, amb la seva pròpia fase. A sota, un mode normal de la cadena, com els que fa servir Debye: tots els àtoms vibren junts i la fase avança el mateix d'un àtom al següent. A l'espai de fases (x, p) la diferència salta a la vista: els punts d'Einstein estan desordenats; els de Debye es segueixen l'un a l'altre. I si es representa la posició de cada àtom contra la del següent, a Einstein no hi ha cap relació, mentre que a Debye tots els parells cauen sobre la mateixa corba. Amb el botó «Quàntica», el mateix en mecànica quàntica: l'energia entra en quàntums, en un estat estacionari res no es mou, i la correlació es veu en les mesures i en la probabilitat conjunta de dos veïns.</p>
 </div>
 
 <main class="main-content">
 
   <!-- ═══ Esquerra: controls ═══ -->
   <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Descripció</div>
+      <div class="grup-btn mode" id="grupMode">
+        <button type="button" class="btn-opcio" data-v="classic">Clàssica</button>
+        <button type="button" class="btn-opcio" data-v="quantic">Quàntica</button>
+      </div>
+      <p class="hint" id="notaMode"></p>
+    </div>
+
+    <div class="card" id="cardQuantic" hidden>
+      <div class="card-title">Estat quàntic</div>
+      <div class="grup-btn una" id="grupEstat">
+        <button type="button" class="btn-opcio" data-v="fock">Estacionari: n quàntums, res no es mou</button>
+        <button type="button" class="btn-opcio" data-v="coherent">Coherent: el pont amb el cas clàssic</button>
+      </div>
+      <div id="blocMesures">
+        <button type="button" class="btn" id="btnMesura">Mesura la posició de tots els àtoms</button>
+        <div class="control-group" style="margin-top:8px;">
+          <label class="check-row"><input type="checkbox" id="chkAuto" checked> Fes una mesura nova cada segon</label>
+          <label class="check-row"><input type="checkbox" id="chkAcum"> Acumula les mesures</label>
+        </div>
+        <p class="hint">Cada mesura és un sorteig nou de |Ψ|², no un instant posterior: en un estat estacionari res no es mou.</p>
+      </div>
+      <p class="hint" id="notaCoherent" hidden>Les mitjanes fan exactament el moviment clàssic; al voltant hi ha el núvol del punt zero, que no canvia de mida.</p>
+      <p class="hint" style="margin-top:6px;">Només hi ha el mode triat: la resta de modes de la cadena de Debye no hi són.</p>
+    </div>
+
     <div class="card">
       <div class="card-title">Cadena</div>
       <div class="control-group">
@@ -66,7 +96,7 @@
       <div class="card-title">Energia</div>
       <div class="control-group">
         <label class="control-label" for="slEps">Energia per àtom, ε = E/N <span class="val" id="valEps"></span></label>
-        <input type="range" class="slider" id="slEps" min="1" max="100" step="0.5" value="25">
+        <input type="range" class="slider" id="slEps" min="0" max="100" step="0.5" value="25">
       </div>
       <p class="hint" id="notaEnergia"></p>
     </div>
@@ -136,33 +166,33 @@
   <div class="center-panel">
     <div class="fila-canvas">
       <div class="bloc-canvas bloc-ample">
-        <div class="plot-title">Les dues cadenes</div>
+        <div class="plot-title"><span id="titCad">Les dues cadenes</span></div>
         <canvas id="canvasCadenes" width="880" height="420"></canvas>
-        <p class="plot-desc" style="max-width:880px;">A dalt, cada àtom està tancat entre dues parets fixes, que fan el paper dels veïns quiets. A sota, els àtoms estan units entre ells per molles, i l'últim està unit al primer. Sota de cada cadena hi ha el desplaçament u<sub>n</sub> de cada àtom dibuixat en vertical. Els desplaçaments de les cadenes estan exagerats, amb el mateix factor per a totes dues, excepte quan s'ha de reduire perquè els àtoms no surtin de la seva cel·la (ho diu el quadre de valors). Les gràfiques de desplaçament tenen l'escala real, en Å.</p>
+        <p class="plot-desc" id="descCad" style="max-width:880px;">A dalt, cada àtom està tancat entre dues parets fixes, que fan el paper dels veïns quiets. A sota, els àtoms estan units entre ells per molles, i l'últim està unit al primer. Sota de cada cadena hi ha el desplaçament u<sub>n</sub> de cada àtom dibuixat en vertical. Els desplaçaments de les cadenes estan exagerats, amb el mateix factor per a totes dues, excepte quan s'ha de reduire perquè els àtoms no surtin de la seva cel·la (ho diu el quadre de valors). Les gràfiques de desplaçament tenen l'escala real, en Å.</p>
       </div>
     </div>
     <div class="fila-canvas">
       <div class="bloc-canvas">
-        <div class="plot-title"><span class="punt" style="background:#b26a00"></span>Espai de fases: Einstein</div>
+        <div class="plot-title"><span class="punt" style="background:#b26a00"></span><span id="titFaseE">Espai de fases: Einstein</span></div>
         <canvas id="canvasFaseE" width="430" height="420"></canvas>
-        <p class="plot-desc" style="max-width:430px;">Cada punt és un àtom: desplaçament x i moment p, dividit per Mω<sub>E</sub> perquè l'òrbita sigui una circumferència. Tots giren en sentit horari amb la mateixa freqüència. El color diu la posició de l'àtom a la cadena, i la línia grisa uneix cada àtom amb el següent.</p>
+        <p class="plot-desc" id="descFaseE" style="max-width:430px;">Cada punt és un àtom: desplaçament x i moment p, dividit per Mω<sub>E</sub> perquè l'òrbita sigui una circumferència. Tots giren en sentit horari amb la mateixa freqüència. El color diu la posició de l'àtom a la cadena, i la línia grisa uneix cada àtom amb el següent.</p>
       </div>
       <div class="bloc-canvas">
-        <div class="plot-title"><span class="punt" style="background:#1f6feb"></span>Espai de fases: Debye</div>
+        <div class="plot-title"><span class="punt" style="background:#1f6feb"></span><span id="titFaseD">Espai de fases: Debye</span></div>
         <canvas id="canvasFaseD" width="430" height="420"></canvas>
-        <p class="plot-desc" style="max-width:430px;">El mateix per al mode de Debye, amb p dividit per Mω(q). Cada àtom va desfasat qd respecte de l'anterior: els punts es segueixen al llarg de la circumferència. Cada diagrama té la seva escala, en Å.</p>
+        <p class="plot-desc" id="descFaseD" style="max-width:430px;">El mateix per al mode de Debye, amb p dividit per Mω(q). Cada àtom va desfasat qd respecte de l'anterior: els punts es segueixen al llarg de la circumferència. Cada diagrama té la seva escala, en Å.</p>
       </div>
     </div>
     <div class="fila-canvas">
       <div class="bloc-canvas">
-        <div class="plot-title"><span class="punt" style="background:#b26a00"></span>Cada àtom contra el següent: Einstein</div>
+        <div class="plot-title"><span class="punt" style="background:#b26a00"></span><span id="titVeiE">Cada àtom contra el següent: Einstein</span></div>
         <canvas id="canvasVeiE" width="430" height="420"></canvas>
-        <p class="plot-desc" style="max-width:430px;">Un punt per a cada parell de veïns: el desplaçament de l'àtom n en horitzontal i el de l'àtom n + 1 en vertical. Cada parell té el seu desfasament, així que cada un recorre la seva el·lipse i els punts omplen el quadrat: r fluctua al voltant de 0.</p>
+        <p class="plot-desc" id="descVeiE" style="max-width:430px;">Un punt per a cada parell de veïns: el desplaçament de l'àtom n en horitzontal i el de l'àtom n + 1 en vertical. Cada parell té el seu desfasament, així que cada un recorre la seva el·lipse i els punts omplen el quadrat: r fluctua al voltant de 0.</p>
       </div>
       <div class="bloc-canvas">
-        <div class="plot-title"><span class="punt" style="background:#1f6feb"></span>Cada àtom contra el següent: Debye</div>
+        <div class="plot-title"><span class="punt" style="background:#1f6feb"></span><span id="titVeiD">Cada àtom contra el següent: Debye</span></div>
         <canvas id="canvasVeiD" width="430" height="420"></canvas>
-        <p class="plot-desc" style="max-width:430px;">El mateix per al mode de Debye. Tots els parells tenen el mateix desfasament qd i recorren la mateixa el·lipse: sabent on és un àtom, se sap on és el següent. Amb m petit, l'el·lipse s'aprima sobre la diagonal (en fase); a la vora de zona, sobre l'altra (en oposició). r = cos qd.</p>
+        <p class="plot-desc" id="descVeiD" style="max-width:430px;">El mateix per al mode de Debye. Tots els parells tenen el mateix desfasament qd i recorren la mateixa el·lipse: sabent on és un àtom, se sap on és el següent. Amb m petit, l'el·lipse s'aprima sobre la diagonal (en fase); a la vora de zona, sobre l'altra (en oposició). r = cos qd.</p>
       </div>
     </div>
     <div class="fila-canvas">
@@ -174,8 +204,9 @@
           <span><i class="ratlla" style="border-color:#1f6feb"></i>Debye (mode m)</span>
           <span><i class="discont" style="border-color:#1f6feb"></i>cos(qkd)</span>
           <span><i class="franja"></i>marge de l'atzar amb N àtoms independents</span>
+          <span id="llegMesura" hidden><i class="buit"></i>estimació amb l'última mesura</span>
         </div>
-        <p class="plot-desc" style="max-width:880px;">C(k) és la mitjana, sobre tota la cadena, del cosinus del desfasament entre l'àtom n i l'àtom n + k (ponderada per les amplituds): 1 vol dir en fase, −1 en oposició de fase, 0 sense cap relació. C(1) és el coeficient r de les gràfiques de sobre, fent la mitjana en el temps. Passa el ratolí per sobre per llegir els valors.</p>
+        <p class="plot-desc" id="descCorr" style="max-width:880px;">C(k) és la mitjana, sobre tota la cadena, del cosinus del desfasament entre l'àtom n i l'àtom n + k (ponderada per les amplituds): 1 vol dir en fase, −1 en oposició de fase, 0 sense cap relació. C(1) és el coeficient r de les gràfiques de sobre, fent la mitjana en el temps. Passa el ratolí per sobre per llegir els valors.</p>
       </div>
     </div>
     <div class="fila-canvas">
@@ -213,6 +244,19 @@
           <p><strong>8.</strong> Compara les freqüències. Tots els oscil·ladors d'Einstein giren a ν<sub>E</sub>, però el mode de Debye amb m petit gira molt més a poc a poc i, amb la mateixa energia, té més amplitud (mira els eixos, en Å). En el tractament quàntic, aquests modes de freqüència baixa són els únics que s'exciten a temperatura baixa: d'aquí surt la llei T³.</p>
           <p><strong>9.</strong> «Tota en un sol àtom» és, literalment, un sol mode d'Einstein: només es mou un àtom. Un sol mode de Debye, amb la mateixa energia, mou tots els àtoms.</p>
           <p><strong>10.</strong> Passa a ona estacionària. Els punts de Debye queden sobre una recta que gira a l'espai de fases, i sobre rectes per l'origen a la gràfica de veïns: els àtoms van en fase o en oposició, amb amplituds diferents. Continua sent un moviment perfectament correlacionat, amb C(k) = cos(qkd).</p>
+        </div>
+      </details>
+      <p style="margin-top:10px;"><strong>En la descripció quàntica</strong>, l'energia d'un mode només pot créixer a salts de ħω. En un <strong>estat estacionari</strong> la densitat de probabilitat |Ψ|² no canvia amb el temps: no hi ha cap moviment per veure. El que sí que es pot fer és mesurar a la vegada la posició de tots els àtoms. A Einstein, |Ψ|² és un producte i cada mesura és soroll. A Debye no ho és: cada mesura és una ona del mode, amb una amplitud i una fase a l'atzar, però sempre amb el mateix desfasament qd entre veïns. Un <strong>estat coherent</strong> és la superposició d'estats amb diferent n que es comporta de manera més clàssica: el núvol segueix l'òrbita clàssica.</p>
+      <details class="obs">
+        <summary>Què has d'observar (quàntica)</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Mira el núvol de cada àtom: no es mou. Fes mesures: a Einstein surt soroll; a Debye, cada mesura és una sinusoide de vector q, cada vegada amb una amplitud i una fase diferents. La fase absoluta no està definida; la relativa entre veïns, sí.</p>
+          <p><strong>2.</strong> L'espai de fases d'un sol àtom és un anell als dos models: la fase s'ha perdut. Mirant un àtom sol, Einstein i Debye no es distingeixen. La correlació no és en cap àtom: és entre àtoms.</p>
+          <p><strong>3.</strong> La distribució conjunta de dos veïns ho mostra. A Einstein és el producte de les dues individuals (sense inclinació); a Debye és un anell el·líptic inclinat sobre la diagonal, i totes les mesures hi cauen a sobre. Activa «Acumula les mesures» per veure com l'omplen.</p>
+          <p><strong>4.</strong> Baixa l'energia fins a ε = 0: tots dos queden a l'estat fonamental. Els núvols d'Einstein continuen sent independents, però el punt zero del mode de Debye segueix correlacionat (C(k) = cos qkd): la correlació la posa el mode, no l'energia.</p>
+          <p><strong>5.</strong> Amb N = 16 i ε = 1 meV, Einstein no pot absorbir ni un quàntum (ħω<sub>E</sub> = 22,3 meV) i es queda a l'estat fonamental, mentre que el mode de Debye amb m = 1 (ħω = 6,2 meV) n'agafa dos. A baixa temperatura només els modes col·lectius lents poden guardar energia: és l'origen de la llei T³.</p>
+          <p><strong>6.</strong> Ona estacionària amb un sol fonó (N = 16, m = 1, ε = 0,5 meV): els núvols són amples als ventres i nuls als nodes, i amb el fonó cada núvol es parteix en dos. No és que l'àtom vagi i vingui: les dues taques hi són alhora.</p>
+          <p><strong>7.</strong> Passa a l'estat coherent: els núvols fan el moviment clàssic. Puja l'energia i el núvol es fa petit comparat amb l'òrbita (límit clàssic); baixa-la i el núvol tapa el moviment.</p>
         </div>
       </details>
     </div>
