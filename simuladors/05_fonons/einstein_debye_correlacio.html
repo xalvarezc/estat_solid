@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador — Einstein i Debye a l'espai de fases</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="../estil_comu.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="./fonons.css">
+<link rel="stylesheet" href="../caixes_plegables.css">
+<style>
+  .intro-sim{ max-width:1500px; margin:0 auto; padding:20px 20px 0; }
+  .intro-sim h1{ font-size:1.3rem; margin:0 0 6px; color:var(--ink); }
+  .intro-sim p.sub{ color:var(--muted); font-size:.88rem; max-width:950px; margin:0 0 14px; }
+  .bloc-ample, .formules{ max-width:880px; }
+  .grup-btn.una{ grid-template-columns:1fr; }
+  #canvasCadenes, #canvasFaseE, #canvasFaseD, #canvasVeiE, #canvasVeiD{ cursor:pointer; }
+  #canvasCorr{ cursor:crosshair; }
+  .llegenda i.ratlla{ border-top:3px solid; }
+  .llegenda i.discont{ border-top:2px dashed; }
+  .llegenda i.franja{ height:10px; width:16px; background:rgba(60,66,80,0.10); border:none; }
+</style>
+<link rel="stylesheet" href="../incrustat.css">
+<script src="../incrustat.js"></script>
+</head>
+<body>
+<header class="capcalera-uab">
+  <div class="cap-esq">
+    <a class="cap-logo" href="../../" title="Portada del curs"><img src="../imatges/logotip-versio-3-verd.png" alt="Universitat Autònoma de Barcelona"></a>
+    <a class="cap-marca" href="../../">Física de l&#8217;Estat Sòlid<small>Grau en Física · UAB</small></a>
+  </div>
+  <div class="cap-pagina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12 C4.5 4, 7.5 4, 10 12 C12.5 20, 15.5 20, 18 12 C19.5 7.5, 21 7.5, 22 10.5"/></svg>Tema 5: Fonons</div>
+  <nav class="cap-nav" aria-label="Seccions del curs">
+    <a href="../../#index">Índex del curs</a>
+    <a class="actiu" href="../index.html">Simuladors</a>
+  </nav>
+</header>
+
+<div class="intro-sim">
+  <a href="#" class="boto-pill video-link" title="Enllaç pendent — s'afegirà quan el vídeo estigui publicat" style="margin-bottom:14px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5"/>
+      <path d="M10 8.3l6 3.7-6 3.7V8.3z" fill="currentColor" stroke="none"/>
+    </svg>
+    Vídeo d'introducció
+  </a>
+  <h1>Einstein i Debye a l'espai de fases: oscil·ladors independents o correlacionats</h1>
+  <p class="sub">Dues cadenes iguals que reben la mateixa energia. A dalt, el model d'Einstein: cada àtom vibra pel seu compte, amb la seva pròpia fase. A sota, un mode normal de la cadena, com els que fa servir Debye: tots els àtoms vibren junts i la fase avança el mateix d'un àtom al següent. A l'espai de fases (x, p) la diferència salta a la vista: els punts d'Einstein estan desordenats; els de Debye es segueixen l'un a l'altre. I si es representa la posició de cada àtom contra la del següent, a Einstein no hi ha cap relació, mentre que a Debye tots els parells cauen sobre la mateixa corba.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- ═══ Esquerra: controls ═══ -->
+  <aside class="controls-panel">
+    <div class="card">
+      <div class="card-title">Cadena</div>
+      <div class="control-group">
+        <label class="control-label" for="slN">Nombre d'àtoms, N <span class="val" id="valN"></span></label>
+        <input type="range" class="slider" id="slN" min="4" max="80" step="1" value="16">
+      </div>
+      <p class="hint">Plans (100) de coure amb ones longitudinals, com al Tema 4: M = 63.5 u, d = 1.81 Å, C = 60.7 N/m. Condicions periòdiques: l'últim àtom és veí del primer.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Energia</div>
+      <div class="control-group">
+        <label class="control-label" for="slEps">Energia per àtom, ε = E/N <span class="val" id="valEps"></span></label>
+        <input type="range" class="slider" id="slEps" min="1" max="100" step="0.5" value="25">
+      </div>
+      <p class="hint" id="notaEnergia"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Einstein: repartiment de l'energia</div>
+      <div class="grup-btn una" id="grupEin">
+        <button type="button" class="btn-opcio" data-v="igual">La mateixa energia a cada àtom</button>
+        <button type="button" class="btn-opcio" data-v="termic">Energies a l'atzar (equilibri tèrmic)</button>
+        <button type="button" class="btn-opcio" data-v="un">Tota en un sol àtom (un mode d'Einstein)</button>
+      </div>
+      <button type="button" class="btn" id="btnSorteja">Torna a sortejar les fases</button>
+      <p class="hint" style="margin-top:6px;">Les fases d'Einstein sempre surten a l'atzar: és el que vol dir que els oscil·ladors són independents.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Debye: el mode</div>
+      <div class="control-group">
+        <label class="control-label" for="slM">Mode m, amb q = 2πm/(Nd) <span class="val" id="valM"></span></label>
+        <input type="range" class="slider" id="slM" min="1" max="8" step="1" value="1">
+      </div>
+      <div class="grup-btn tres">
+        <button type="button" class="btn-opcio" data-mq="1">m = 1</button>
+        <button type="button" class="btn-opcio" data-mq="quart">m ≈ N/4</button>
+        <button type="button" class="btn-opcio" data-mq="max">vora de zona</button>
+      </div>
+      <div class="control-label">Tipus d'ona</div>
+      <div class="grup-btn" id="grupOna">
+        <button type="button" class="btn-opcio" data-v="viatgera">Viatgera</button>
+        <button type="button" class="btn-opcio" data-v="estacionaria">Estacionària</button>
+      </div>
+      <div class="control-label">Freqüència del mode</div>
+      <div class="grup-btn" id="grupDisp">
+        <button type="button" class="btn-opcio" data-v="cadena">Cadena exacta</button>
+        <button type="button" class="btn-opcio" data-v="debye">Debye, ω = v<sub>s</sub>q</button>
+      </div>
+      <p class="hint">Debye substitueix la relació de dispersió de la cadena per la del so, ω = v<sub>s</sub>q. Només canvia la freqüència (la velocitat de gir) i, amb ella, l'amplitud: la forma del mode és la mateixa.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Animació i visualització</div>
+      <button type="button" class="btn" id="btnPlay">❚❚ Atura l'animació</button>
+      <div class="control-group" style="margin-top:8px;">
+        <label class="control-label" for="slVel">Velocitat de l'animació <span class="val" id="valVel"></span></label>
+        <input type="range" class="slider" id="slVel" min="0.1" max="4" step="0.05" value="1">
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="slExag">Exageració dels desplaçaments <span class="val" id="valExag"></span></label>
+        <input type="range" class="slider" id="slExag" min="1" max="20" step="0.5" value="5">
+      </div>
+      <div class="control-group">
+        <label class="check-row"><input type="checkbox" id="chkUneix" checked> Uneix cada àtom amb el següent a l'espai de fases</label>
+        <label class="check-row"><input type="checkbox" id="chkOrbites" checked> Mostra les òrbites</label>
+        <label class="check-row"><input type="checkbox" id="chkColors" checked> Un color per a cada àtom, segons la posició</label>
+      </div>
+      <p class="hint">Clica un àtom (a les cadenes o als diagrames) per ressaltar-lo amb els seus dos veïns. Torna-hi a clicar per treure el ressalt.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Compartir</div>
+      <button type="button" class="btn" id="btnEnllac" title="Copia un enllaç que obre el simulador exactament amb aquesta configuració">Copia l'enllaç a aquesta configuració</button>
+      <div class="hint" id="msgEnllac" style="min-height:1em;"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ Centre ═══ -->
+  <div class="center-panel">
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Les dues cadenes</div>
+        <canvas id="canvasCadenes" width="880" height="420"></canvas>
+        <p class="plot-desc" style="max-width:880px;">A dalt, cada àtom està tancat entre dues parets fixes, que fan el paper dels veïns quiets. A sota, els àtoms estan units entre ells per molles, i l'últim està unit al primer. Sota de cada cadena hi ha el desplaçament u<sub>n</sub> de cada àtom dibuixat en vertical. Els desplaçaments de les cadenes estan exagerats, amb el mateix factor per a totes dues, excepte quan s'ha de reduire perquè els àtoms no surtin de la seva cel·la (ho diu el quadre de valors). Les gràfiques de desplaçament tenen l'escala real, en Å.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title"><span class="punt" style="background:#b26a00"></span>Espai de fases: Einstein</div>
+        <canvas id="canvasFaseE" width="430" height="420"></canvas>
+        <p class="plot-desc" style="max-width:430px;">Cada punt és un àtom: desplaçament x i moment p, dividit per Mω<sub>E</sub> perquè l'òrbita sigui una circumferència. Tots giren en sentit horari amb la mateixa freqüència. El color diu la posició de l'àtom a la cadena, i la línia grisa uneix cada àtom amb el següent.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title"><span class="punt" style="background:#1f6feb"></span>Espai de fases: Debye</div>
+        <canvas id="canvasFaseD" width="430" height="420"></canvas>
+        <p class="plot-desc" style="max-width:430px;">El mateix per al mode de Debye, amb p dividit per Mω(q). Cada àtom va desfasat qd respecte de l'anterior: els punts es segueixen al llarg de la circumferència. Cada diagrama té la seva escala, en Å.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas">
+        <div class="plot-title"><span class="punt" style="background:#b26a00"></span>Cada àtom contra el següent: Einstein</div>
+        <canvas id="canvasVeiE" width="430" height="420"></canvas>
+        <p class="plot-desc" style="max-width:430px;">Un punt per a cada parell de veïns: el desplaçament de l'àtom n en horitzontal i el de l'àtom n + 1 en vertical. Cada parell té el seu desfasament, així que cada un recorre la seva el·lipse i els punts omplen el quadrat: r fluctua al voltant de 0.</p>
+      </div>
+      <div class="bloc-canvas">
+        <div class="plot-title"><span class="punt" style="background:#1f6feb"></span>Cada àtom contra el següent: Debye</div>
+        <canvas id="canvasVeiD" width="430" height="420"></canvas>
+        <p class="plot-desc" style="max-width:430px;">El mateix per al mode de Debye. Tots els parells tenen el mateix desfasament qd i recorren la mateixa el·lipse: sabent on és un àtom, se sap on és el següent. Amb m petit, l'el·lipse s'aprima sobre la diagonal (en fase); a la vora de zona, sobre l'altra (en oposició). r = cos qd.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="bloc-canvas bloc-ample">
+        <div class="plot-title">Correlació entre àtoms separats k posicions</div>
+        <canvas id="canvasCorr" width="880" height="270"></canvas>
+        <div class="llegenda">
+          <span><i class="ratlla" style="border-color:#b26a00"></i>Einstein</span>
+          <span><i class="ratlla" style="border-color:#1f6feb"></i>Debye (mode m)</span>
+          <span><i class="discont" style="border-color:#1f6feb"></i>cos(qkd)</span>
+          <span><i class="franja"></i>marge de l'atzar amb N àtoms independents</span>
+        </div>
+        <p class="plot-desc" style="max-width:880px;">C(k) és la mitjana, sobre tota la cadena, del cosinus del desfasament entre l'àtom n i l'àtom n + k (ponderada per les amplituds): 1 vol dir en fase, −1 en oposició de fase, 0 sense cap relació. C(1) és el coeficient r de les gràfiques de sobre, fent la mitjana en el temps. Passa el ratolí per sobre per llegir els valors.</p>
+      </div>
+    </div>
+    <div class="fila-canvas">
+      <div class="card formules">
+        <div class="card-title">Expressions</div>
+        <div id="formules"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Dreta ═══ -->
+  <aside class="right-panel">
+    <div class="card">
+      <div class="card-title">Valors</div>
+      <div class="lectura" id="lectura"></div>
+      <div class="estat" id="estat"></div>
+    </div>
+    <div class="card theory-box">
+      <div class="card-title">Què mostra</div>
+      <p>Totes dues cadenes tenen els mateixos àtoms i reben la mateixa energia. El que canvia és <strong>com es reparteix el moviment</strong> entre els àtoms.</p>
+      <p><strong>Einstein</strong> tracta cada àtom com un oscil·lador independent que vibra entre els seus veïns quiets, amb ω<sub>E</sub> = √(2C/M). Tots tenen la mateixa freqüència, però la fase de cadascun és la que sigui: res no lliga un àtom amb el del costat.</p>
+      <p><strong>Debye</strong> parteix dels modes normals de la cadena: ones en què <em>tots</em> els àtoms vibren alhora i la fase avança qd d'un àtom al següent. Un sol mode ja és un moviment col·lectiu: la fase d'un àtom fixa la de tots els altres.</p>
+      <p>A l'espai de fases, cada àtom és un punt (x, p/Mω) que dona voltes en sentit horari, i l'angle és la seva fase. La gràfica de <strong>cada àtom contra el següent</strong> mostra directament la correlació de posicions entre veïns, amb el coeficient r. La <strong>funció de correlació</strong> C(k) ho estén a àtoms que són k posicions més enllà.</p>
+      <p>En un cristall a temperatura T s'exciten tots els modes alhora, cadascun amb la seva fase. Aquí n'aïllem un per veure'n l'estructura. Les conseqüències per a la calor específica són al simulador <a href="calor_especifica.html">La calor específica d'un cristall</a>.</p>
+      <details class="obs">
+        <summary>Què has d'observar</summary>
+        <div class="obs-body">
+          <p><strong>1.</strong> Amb m = 1, a Debye els colors donen la volta a la circumferència en ordre, i el polígon que uneix els veïns és regular. A Einstein hi ha els mateixos colors sobre la mateixa circumferència, però barrejats: el polígon és una estrella embolicada.</p>
+          <p><strong>2.</strong> Clica un àtom. A Debye els seus veïns són just al costat, a ±qd. A Einstein poden ser a qualsevol lloc. Torna a sortejar les fases: Einstein canvia, Debye no, perquè les seves fases no són lliures.</p>
+          <p><strong>3.</strong> Mira la gràfica de cada àtom contra el següent. A Debye tots els punts són sobre una sola el·lipse, estreta al voltant de la diagonal amb m = 1: la posició d'un àtom gairebé fixa la del veí, i r = cos qd no canvia amb el temps. A Einstein els punts omplen el quadrat, cada parell amb la seva el·lipse, i r va fluctuant al voltant de 0.</p>
+          <p><strong>4.</strong> Puja N amb m = 1. A Debye els veïns s'acosten encara més (desfasament 2π/N) i l'el·lipse es tanca sobre la diagonal; a Einstein no canvia res: el desordre no depèn de la mida de la cadena.</p>
+          <p><strong>5.</strong> Porta el mode a la vora de zona. Els punts de Debye queden en dos grups oposats a l'espai de fases, i sobre la diagonal u<sub>n+1</sub> = −u<sub>n</sub> a la gràfica de veïns. r = C(1) = −1: correlació no vol dir «moure's igual», vol dir que la fase del veí està fixada.</p>
+          <p><strong>6.</strong> Mira C(k). A Einstein queda dins de la franja grisa de l'atzar; a Debye segueix cos(qkd) fins a l'altra punta de la cadena, sense esmorteir-se: un mode està correlacionat a qualsevol distància.</p>
+          <p><strong>7.</strong> Canvia l'energia. Als diagrames només canvia la mida; l'ordre es manté. Clàssicament l'energia d'un mode pot prendre qualsevol valor: més energia és el mateix mode amb més amplitud.</p>
+          <p><strong>8.</strong> Compara les freqüències. Tots els oscil·ladors d'Einstein giren a ν<sub>E</sub>, però el mode de Debye amb m petit gira molt més a poc a poc i, amb la mateixa energia, té més amplitud (mira els eixos, en Å). En el tractament quàntic, aquests modes de freqüència baixa són els únics que s'exciten a temperatura baixa: d'aquí surt la llei T³.</p>
+          <p><strong>9.</strong> «Tota en un sol àtom» és, literalment, un sol mode d'Einstein: només es mou un àtom. Un sol mode de Debye, amb la mateixa energia, mou tots els àtoms.</p>
+          <p><strong>10.</strong> Passa a ona estacionària. Els punts de Debye queden sobre una recta que gira a l'espai de fases, i sobre rectes per l'origen a la gràfica de veïns: els àtoms van en fase o en oposició, amb amplituds diferents. Continua sent un moviment perfectament correlacionat, amb C(k) = cos(qkd).</p>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+</main>
+
+<div class="peu-uab">F. Xavier Àlvarez — Física de l'Estat Sòlid</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="./fonons_comu.js"></script>
+<script src="./einstein_debye_correlacio.js"></script>
+<script src="../caixes_plegables.js"></script>
+</body>
+</html>
