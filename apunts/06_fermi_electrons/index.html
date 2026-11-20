@@ -442,13 +442,38 @@ El terme de frontera s'anul·la: a \(-\infty\) perquè <span class="nw">\(\Phi=0
 Multiplicant per \(-\partial f/\partial\epsilon\) i integrant,
 \[I = \Phi(\mu) + \frac12\, \Phi''(\mu)\int_{-\infty}^{\infty}(\epsilon-\mu)^2\left(-\frac{\partial f}{\partial\epsilon}\right)d\epsilon + \dots\]
 El terme d'ordre <span class="nw">\(1\),</span> i tots els d'ordre senar, s'anul·len perquè \(-\partial f/\partial\epsilon\) és una funció parella de <span class="nw">\(\epsilon-\mu\).</span></p></aside>
-<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Els moments de la finestra tèrmica</div><p>Les integrals que queden són els moments de <span class="nw">\(-\partial f/\partial\epsilon\):</span>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Pas 4: el valor dels moments</div><p>Les integrals que queden són els moments de <span class="nw">\(-\partial f/\partial\epsilon\).</span> Amb la variable <span class="nw">\(x=(\epsilon-\mu)/k_BT\),</span> que mesura l'energia des de \(\mu\) en unitats de <span class="nw">\(k_BT\),</span> la finestra tèrmica és
+\[-\frac{\partial f}{\partial\epsilon}=\frac{1}{k_BT}\,\frac{e^x}{(e^x+1)^2},\]
+i, com que <span class="nw">\(d\epsilon=k_BT\,dx\),</span>
+\[\int_{-\infty}^{\infty}(\epsilon-\mu)^{2n}\left(-\frac{\partial f}{\partial\epsilon}\right)d\epsilon
+=(k_BT)^{2n}\underbrace{\int_{-\infty}^{\infty}\frac{x^{2n}\,e^x}{(e^x+1)^2}\,dx}_{c_n} .\]
+El factor \((k_BT)^{2n}\) surt només del canvi de variable: la finestra té una amplada de l'ordre de <span class="nw">\(k_BT\),</span> i dins seu \((\epsilon-\mu)^{2n}\) val de l'ordre de <span class="nw">\((k_BT)^{2n}\).</span> El que queda, <span class="nw">\(c_n\),</span> és un nombre pur, el mateix per a qualsevol metall i qualsevol temperatura. Per a \(n=0\) és l'àrea de la finestra, <span class="nw">\(c_0=1\).</span></p>
+<p>Per calcular-lo, fem servir que l'integrand és parell i que \(e^x/(e^x+1)^2\) és la derivada de <span class="nw">\(-1/(e^x+1)\),</span> i integrem per parts. El terme de frontera s'anul·la als dos extrems, i queda
+\[c_n=2\int_0^\infty x^{2n}\,\frac{e^x}{(e^x+1)^2}\,dx=4n\int_0^\infty\frac{x^{2n-1}}{e^x+1}\,dx .\]
+Per a <span class="nw">\(x&gt;0\),</span> la fracció és una sèrie geomètrica de raó <span class="nw">\(-e^{-x}\),</span>
+\[\frac{1}{e^x+1}=e^{-x}-e^{-2x}+e^{-3x}-\dots,\]
+i cada terme s'integra amb <span class="nw">\(\int_0^\infty x^{2n-1}e^{-kx}\,dx=(2n-1)!/k^{2n}\).</span> Com que <span class="nw">\(4n\,(2n-1)!=2\,(2n)!\),</span>
+\[c_n=2\,(2n)!\left(1-\frac{1}{2^{2n}}+\frac{1}{3^{2n}}-\frac{1}{4^{2n}}+\dots\right) .\]
+Les dues primeres sumes són conegudes. Surten de \(\sum 1/k^2=\pi^2/6\) i de <span class="nw">\(\sum 1/k^4=\pi^4/90\),</span> restant-hi dues vegades els termes parells: \(1-\frac14+\frac19-\dots=\frac{\pi^2}{12}\) i <span class="nw">\(1-\frac1{16}+\frac1{81}-\dots=\frac{7\pi^4}{720}\).</span> Per tant,
+\[c_1=2\cdot2!\cdot\frac{\pi^2}{12}=\frac{\pi^2}{3},\qquad
+c_2=2\cdot4!\cdot\frac{7\pi^4}{720}=\frac{7\pi^4}{15} .\]</p></aside>
+<aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Els moments de la finestra tèrmica</div><p>Els moments de \(-\partial f/\partial\epsilon\) són, doncs,
 \[\int_{-\infty}^{\infty}(\epsilon-\mu)^{2n}\left(-\frac{\partial f}{\partial\epsilon}\right)d\epsilon = (k_BT)^{2n}\,c_n,
 \qquad c_1=\frac{\pi^2}{3},\quad c_2=\frac{7\pi^4}{15}, \ \dots\]
-Com que \(\Phi'=H\) i <span class="nw">\(\Phi''=H'\),</span> s'obté la sèrie de Sommerfeld:
+El terme d'ordre \(2n\) de la sèrie de Taylor de \(\Phi\) és <span class="nw">\(\Phi^{(2n)}(\mu)\,(\epsilon-\mu)^{2n}/(2n)!\),</span> i en integrar-lo dona <span class="nw">\(\frac{c_n}{(2n)!}\,(k_BT)^{2n}\,\Phi^{(2n)}(\mu)\).</span> Com que <span class="nw">\(\Phi'=H\),</span> les derivades de \(\Phi\) són les de \(H\) amb un ordre menys, \(\Phi''=H'\) i <span class="nw">\(\Phi''''=H'''\),</span> i els coeficients són \(c_1/2!=\pi^2/6\) i <span class="nw">\(c_2/4!=7\pi^4/360\).</span> S'obté la sèrie de Sommerfeld:
 \[I = \int_{-\infty}^{\mu}H(\epsilon)\,d\epsilon + \frac{\pi^2}{6}(k_BT)^2\,H'(\mu) + \frac{7\pi^4}{360}(k_BT)^4\,H'''(\mu) + \dots\]
-Cada terme és \((k_BT/\epsilon_F)^2\) vegades més petit que l'anterior.</p></aside>
-<aside class="caixa avis"><div class="caixa-cap"><span class="caixa-tipus">Compte</span> De \(\mu\) a \(\epsilon_F\)</div><p>Aquesta sèrie està escrita al voltant de <span class="nw">\(\mu\),</span> no de <span class="nw">\(\epsilon_F\).</span> Com que \(\mu=\epsilon_F+\delta\mu\) amb \(\delta\mu\) d'ordre <span class="nw">\(T^2\),</span> es pot reescriure al voltant de <span class="nw">\(\epsilon_F\):</span> el primer terme dona <span class="nw">\(\int_{-\infty}^{\epsilon_F}H\,d\epsilon+\delta\mu\,H(\epsilon_F)\),</span> i al segon, canviar \(H'(\mu)\) per \(H'(\epsilon_F)\) només introdueix termes d'ordre <span class="nw">\(T^4\).</span> És l'equació <a href="#eq:sommerfeld">(16)</a> del text.</p></aside>
+Cada terme té dues potències més de \(k_BT\) i dues derivades més de \(H\) que l'anterior. Si \(H\) varia a l'escala de <span class="nw">\(\epsilon_F\),</span> com la densitat d'estats <span class="nw">\(g\propto\sqrt\epsilon\),</span> cada derivada hi aporta un factor de l'ordre d'<span class="nw">\(1/\epsilon_F\).</span> Per això cada terme és \((k_BT/\epsilon_F)^2=(T/T_F)^2\) vegades més petit que l'anterior: unes \(10^{-5}\) vegades en un metall a temperatura ambient.</p></aside>
+<aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Pas 5: de \(\mu\) a \(\epsilon_F\)</div><p>La sèrie està escrita al voltant de <span class="nw">\(\mu\),</span> que depèn de la temperatura, i no de <span class="nw">\(\epsilon_F\),</span> que és el valor de \(\mu\) a <span class="nw">\(T=0\).</span> Per comparar amb \(T=0\) convé reescriure-la al voltant de <span class="nw">\(\epsilon_F\).</span> Posem <span class="nw">\(\mu=\epsilon_F+\delta\mu\).</span> El desplaçament \(\delta\mu\) és petit: és zero a \(T=0\) i, com que les correccions de la sèrie comencen a l'ordre <span class="nw">\(T^2\),</span> ha de ser d'ordre <span class="nw">\(T^2\).</span> Ho confirma el resultat de la secció <a href="#sec:sommerfeld">7</a>, <span class="nw">\(\delta\mu/\epsilon_F=-\frac{\pi^2}{12}(T/T_F)^2\).</span> Guardem només els termes fins a l'ordre <span class="nw">\(T^2\).</span></p>
+<p><em>El primer terme.</em> Partim la integral a <span class="nw">\(\epsilon_F\):</span>
+\[\int_{-\infty}^{\mu}H(\epsilon)\,d\epsilon
+=\int_{-\infty}^{\epsilon_F}H(\epsilon)\,d\epsilon+\int_{\epsilon_F}^{\epsilon_F+\delta\mu}H(\epsilon)\,d\epsilon
+\simeq\int_{-\infty}^{\epsilon_F}H(\epsilon)\,d\epsilon+\delta\mu\,H(\epsilon_F) .\]
+L'aproximació és prendre \(H\) constant, igual a <span class="nw">\(H(\epsilon_F)\),</span> dins de l'interval estret que va de \(\epsilon_F\) a <span class="nw">\(\epsilon_F+\delta\mu\).</span> El que es negligeix és <span class="nw">\(\frac12\,\delta\mu^2\,H'(\epsilon_F)\),</span> d'ordre <span class="nw">\(T^4\).</span></p>
+<p><em>El segon terme.</em> Desenvolupem la derivada al voltant de <span class="nw">\(\epsilon_F\),</span> <span class="nw">\(H'(\mu)\simeq H'(\epsilon_F)+\delta\mu\,H''(\epsilon_F)\).</span> Com que ja va multiplicada per <span class="nw">\((k_BT)^2\),</span> el terme en \(\delta\mu\) és d'ordre \(T^4\) i es negligeix:
+\[\frac{\pi^2}{6}(k_BT)^2\,H'(\mu)\simeq\frac{\pi^2}{6}(k_BT)^2\,H'(\epsilon_F) .\]
+Sumant els dos termes, amb <span class="nw">\(\delta\mu=\mu-\epsilon_F\),</span>
+\[I\simeq\int_{-\infty}^{\epsilon_F}H(\epsilon)\,d\epsilon+(\mu-\epsilon_F)\,H(\epsilon_F)+\frac{\pi^2}{6}(k_BT)^2\,H'(\epsilon_F),\]
+que és l'equació <a href="#eq:sommerfeld">(16)</a> del text. Tot el que s'ha negligit és d'ordre <span class="nw">\(T^4\):</span> un factor \((T/T_F)^2\sim10^{-5}\) més petit que les correccions que hem guardat.</p></aside>
 <aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Els dos casos que fem servir</div><p>Per al nombre d'electrons, <span class="nw">\(H=g(\epsilon)\):</span>
 \[N = \int_{0}^{\epsilon_F} g(\epsilon)\,d\epsilon + (\mu-\epsilon_F)\,g(\epsilon_F) + \frac{\pi^2}{6}(k_BT)^2\,g'(\epsilon_F) .\]
 Per a l'energia, <span class="nw">\(H=\epsilon\,g(\epsilon)\):</span>
