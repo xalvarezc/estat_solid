@@ -205,10 +205,16 @@ Aquesta relació apareixerà sovint, perquè les propietats tèrmiques i de tran
 <p>Amb la densitat d'estats, el nombre d'electrons i la seva energia total són integrals:
 \[N = \int_0^{\epsilon_F} g(\epsilon)\,d\epsilon, \qquad
 U_0 = \int_0^{\epsilon_F} \epsilon\,g(\epsilon)\,d\epsilon.\]
-La primera, amb l'equació <a href="#eq:g3d">(8)</a>, torna a donar l'energia de Fermi de l'equació <a href="#eq:eF">(7)</a>. La segona dona
-<span class="eq" id="eq:U0">\[U_0 = \frac{V}{5\pi^2}\left(\frac{2m}{\hbar^2}\right)^{3/2}\epsilon_F^{5/2}
-\quad\Longrightarrow\quad
-\frac{U_0}{N} = \frac{3}{5}\,\epsilon_F . \tag{10}\]</span>
+La primera, amb l'equació <a href="#eq:g3d">(8)</a>, torna a donar l'energia de Fermi de l'equació <a href="#eq:eF">(7)</a>:
+\[N=\frac{V}{2\pi^2}\left(\frac{2m}{\hbar^2}\right)^{3/2}\int_0^{\epsilon_F}\epsilon^{1/2}\,d\epsilon
+=\frac{V}{3\pi^2}\left(\frac{2m}{\hbar^2}\right)^{3/2}\epsilon_F^{3/2} .\]
+La segona es fa igual, amb una potència més de <span class="nw">\(\epsilon\):</span>
+\[U_0=\frac{V}{2\pi^2}\left(\frac{2m}{\hbar^2}\right)^{3/2}\int_0^{\epsilon_F}\epsilon^{3/2}\,d\epsilon
+=\frac{V}{5\pi^2}\left(\frac{2m}{\hbar^2}\right)^{3/2}\epsilon_F^{5/2} .\]
+Dividint l'una per l'altra, els prefactors se simplifiquen i queda
+<span class="eq" id="eq:U0">\[\frac{U_0}{N} = \frac{3}{5}\,\epsilon_F
+\qquad\Longleftrightarrow\qquad
+U_0=\frac35\,N\,\epsilon_F . \tag{10}\]</span>
 L'energia mitjana d'un electró és tres cinquenes parts de la de Fermi, i no la meitat, perquè hi ha més estats a prop de \(\epsilon_F\) que a prop de zero. Per al coure són \(4.2\) eV per electró, a temperatura zero.</p>
 <h3 id="sec:pressio"><span class="num">5.4</span> La pressió i el mòdul de compressibilitat</h3>
 <p>L'energia \(U_0\) no és una constant del metall: depèn del volum on estan tancats els electrons. Si es comprimeix el metall sense canviar el nombre d'electrons, la densitat \(n=N/V\) creix, i amb ella \(\epsilon_F\propto n^{2/3}\) i l'energia de tots els electrons. Substituint l'equació <a href="#eq:eF">(7)</a> a l'equació <a href="#eq:U0">(10)</a>,
@@ -216,12 +222,21 @@ L'energia mitjana d'un electró és tres cinquenes parts de la de Fermi, i no la
 \qquad
 A=\frac35\,N\,\frac{\hbar^2}{2m}\left(3\pi^2N\right)^{2/3}, \tag{11}\]</span>
 on la constant \(A\) només depèn de <span class="nw">\(N\).</span> Tota la dependència en el volum és el factor <span class="nw">\(V^{-2/3}\),</span> i té un origen senzill: els vectors d'ona permesos són múltiples de <span class="nw">\(2\pi/L\),</span> i per tant l'energia de cada estat, <span class="nw">\(\hbar^2k^2/2m\),</span> és proporcional a <span class="nw">\(L^{-2}=V^{-2/3}\).</span> En comprimir la caixa, tots els nivells pugen alhora en la mateixa proporció, i els electrons pugen amb ells.</p>
-<p><strong>La pressió.</strong> Si l'energia creix en disminuir el volum, el gas empeny cap a fora. A \(T=0\) no hi ha terme d'entropia, i la pressió és la derivada de l'energia respecte del volum amb \(N\) constant, com al Tema 3:
-<span class="eq" id="eq:pressio">\[P=-\left(\frac{\partial U_0}{\partial V}\right)_N=\frac23\,A\,V^{-5/3}=\frac23\,\frac{U_0}{V}=\frac25\,n\,\epsilon_F . \tag{12}\]</span>
+<p><strong>La pressió.</strong> Si l'energia creix en disminuir el volum, el gas empeny cap a fora. A \(T=0\) no hi ha terme d'entropia, i la pressió és la derivada de l'energia respecte del volum amb \(N\) constant, com al Tema 3: <span class="nw">\(P=-(\partial U_0/\partial V)_N\).</span> A l'equació <a href="#eq:U0V">(11)</a>, \(A\) és constant i només cal derivar la potència de <span class="nw">\(V\):</span>
+\[\left(\frac{\partial U_0}{\partial V}\right)_N=A\,\frac{d}{dV}V^{-2/3}=-\frac23\,A\,V^{-5/3} .\]
+Canviant-la de signe,
+<span class="eq" id="eq:pressio">\[P=\frac23\,A\,V^{-5/3}=\frac23\,\frac{A\,V^{-2/3}}{V}=\frac23\,\frac{U_0}{V}=\frac23\cdot\frac35\,\frac NV\,\epsilon_F=\frac25\,n\,\epsilon_F . \tag{12}\]</span>
 La relació \(P=\frac23U/V\) és la mateixa del gas ideal clàssic, on \(U=\frac32Nk_BT\) dona <span class="nw">\(P=nk_BT\):</span> només depèn que l'energia de cada partícula sigui <span class="nw">\(\propto k^2\).</span> La diferència és el valor de <span class="nw">\(U\).</span> En el gas clàssic l'energia, i amb ella la pressió, s'anul·len a <span class="nw">\(T=0\).</span> En el gas de Fermi, no: la pressió no ve de l'agitació tèrmica sinó del principi d'exclusió, i s'anomena <strong>pressió de degeneració</strong>.</p>
-<p><strong>El mòdul de compressibilitat.</strong> La pressió de l'equació <a href="#eq:pressio">(12)</a> depèn del volum com <span class="nw">\(V^{-5/3}\).</span> Amb la definició del Tema 3, <span class="nw">\(B=-V\,dP/dV\),</span>
-<span class="eq" id="eq:B">\[B=-V\left(\frac{\partial P}{\partial V}\right)_N=\frac53\cdot\frac23\,A\,V^{-5/3}=\frac53\,P=\frac{10}{9}\,\frac{U_0}{V}=\frac23\,n\,\epsilon_F . \tag{13}\]</span>
-Les tres magnituds, per unitat de volum, són el mateix producte \(n\,\epsilon_F\) amb un factor numèric diferent,
+<p><strong>El mòdul de compressibilitat.</strong> El mòdul de compressibilitat mesura quant creix la pressió en reduir el volum. Amb la definició del Tema 3,
+\[B=-V\left(\frac{\partial P}{\partial V}\right)_N ,\]
+cal derivar ara la pressió, <span class="nw">\(P(V)=\frac23\,A\,V^{-5/3}\),</span> una altra vegada respecte del volum:
+\[\left(\frac{\partial P}{\partial V}\right)_N=\frac23\,A\,\frac{d}{dV}V^{-5/3}=\frac23\,A\left(-\frac53\right)V^{-8/3}=-\frac{10}{9}\,A\,V^{-8/3} .\]
+Multiplicant per <span class="nw">\(-V\),</span>
+\[B=-V\left(-\frac{10}{9}\,A\,V^{-8/3}\right)=\frac{10}{9}\,A\,V^{-5/3} .\]
+Només queda escriure-ho amb magnituds conegudes. Comparant amb <span class="nw">\(P=\frac23AV^{-5/3}\),</span> es veu que <span class="nw">\(B=\frac53P\).</span> Com que <span class="nw">\(A\,V^{-5/3}=U_0/V\),</span> també és <span class="nw">\(B=\frac{10}{9}\,U_0/V\).</span> I substituint-hi <span class="nw">\(U_0/V=\frac35\,n\,\epsilon_F\),</span>
+<span class="eq" id="eq:B">\[B=\frac53\,P=\frac{10}{9}\,\frac{U_0}{V}=\frac{10}{9}\cdot\frac35\,n\,\epsilon_F=\frac23\,n\,\epsilon_F . \tag{13}\]</span>
+És el mateix que dona la segona derivada de l'energia, <span class="nw">\(B=V\,\partial^2U_0/\partial V^2\),</span> que és la forma que vam fer servir al Tema 3 amb la corba de cohesió.</p>
+<p>Les tres magnituds, per unitat de volum, són el mateix producte \(n\,\epsilon_F\) amb un factor numèric diferent,
 \[\frac{U_0}{V}=\frac35\,n\,\epsilon_F,\qquad P=\frac25\,n\,\epsilon_F,\qquad B=\frac23\,n\,\epsilon_F ,\]
 i totes tres creixen amb la densitat com <span class="nw">\(n^{5/3}\):</span> només depenen de \(n\) i de la massa de l'electró.</p>
 <aside class="caixa calculs"><div class="caixa-cap"><span class="caixa-tipus">Càlcul</span> Energia, pressió i mòdul de compressibilitat al sodi</div><p>Amb \(n=2.65\times10^{28}\) m\(^{-3}\) i \(\epsilon_F=3.24\) eV,
@@ -277,7 +292,11 @@ amb \(H(\epsilon)=g(\epsilon)\) per al nombre d'electrons i \(H(\epsilon)=\epsil
 El primer terme és el valor a <span class="nw">\(T=0\);</span> el segon, el que canvia en moure <span class="nw">\(\mu\),</span> i el tercer, el que canvia en arrodonir l'esglaó. Les correccions següents són d'ordre <span class="nw">\(T^4\).</span></p>
 <aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Quan és vàlida aquesta expansió</div><p>La hipòtesi clau és <span class="nw">\(T\ll T_F\):</span> la temperatura només remou una franja estreta d'electrons al voltant de <span class="nw">\(\epsilon_F\),</span> on \(H(\epsilon)\) es pot aproximar per una recta. En aquest règim, les correccions dominants són d'ordre <span class="nw">\(T^2\).</span> Per a un metall a temperatura ambient, <span class="nw">\((T/T_F)^2\sim10^{-5}\).</span></p></aside>
 <h3 id="s7-1"><span class="num">7.1</span> El desplaçament del potencial químic</h3>
-<p>Aplicant l'equació <a href="#eq:sommerfeld">(16)</a> amb <span class="nw">\(H=g\),</span> i imposant que \(N\) sigui el mateix que a <span class="nw">\(T=0\),</span>
+<p>El nombre d'electrons de conducció no depèn de la temperatura. El fixen el nombre d'àtoms del metall i la seva valència (equació <a href="#eq:n">(1)</a>), i en escalfar-lo no n'hi entra ni en surt cap: el metall continua sent neutre. A qualsevol temperatura, doncs, la integral <a href="#eq:Nmu">(15)</a> ha de donar el mateix \(N\) que a <span class="nw">\(T=0\),</span> i aquesta és la condició que determina <span class="nw">\(\mu\).</span> Aplicant-hi l'equació <a href="#eq:sommerfeld">(16)</a> amb <span class="nw">\(H=g\),</span>
+\[N=\int_0^\infty g(\epsilon)\,f(\epsilon)\,d\epsilon
+=\underbrace{\int_0^{\epsilon_F} g(\epsilon)\,d\epsilon}_{N}
++(\mu-\epsilon_F)\,g(\epsilon_F)+\frac{\pi^2}{6}(k_BT)^2\,g'(\epsilon_F) .\]
+El primer terme de la dreta és el nombre d'electrons a <span class="nw">\(T=0\),</span> amb tots els estats plens fins a \(\epsilon_F\) (secció <a href="#sec:dos">5</a>). És el mateix \(N\) que hi ha a l'esquerra, perquè l'energia de Fermi es defineix precisament amb aquesta condició, i, si ignorem la dilatació tèrmica, ni el volum ni \(g(\epsilon)\) no canvien amb la temperatura. Els dos \(N\) se simplifiquen, i els dos termes que queden s'han de compensar:
 \[(\mu-\epsilon_F)\,g(\epsilon_F) + \frac{\pi^2}{6}(k_BT)^2\,g'(\epsilon_F) = 0
 \quad\Longrightarrow\quad
 \boxed{\mu = \epsilon_F - \frac{\pi^2}{6}(k_BT)^2\,\frac{g'(\epsilon_F)}{g(\epsilon_F)}}\]
@@ -287,9 +306,20 @@ Per al coure a \(300\) K, <span class="nw">\(T/T_F=0.0037\),</span> i el poten
 <figure class="tikz"><img src="figures/fig_09.svg" alt="" loading="lazy"></figure>
 <aside class="caixa avis"><div class="caixa-cap"><span class="caixa-tipus">Compte</span> Contraintuïtiu? \(\mu\) <em>baixa</em> en escalfar</div><p>La primera reacció sol ser pensar que escalfar el gas hauria d'<em>apujar</em> <span class="nw">\(\mu\).</span> És just al revés: com que \(g(\epsilon)\) creix amb <span class="nw">\(\epsilon\),</span> hi ha més estats disponibles per ocupar-se just per sobre de \(\epsilon_F\) que per buidar-se just per sota. Si \(\mu\) es quedés a <span class="nw">\(\epsilon_F\),</span> el gas guanyaria electrons en escalfar-se, cosa que no pot passar amb \(N\) fix. L'única manera de compensar-ho és que \(\mu\) baixi i redueixi una mica l'ocupació de tots els estats. En dues dimensions, on \(g\) és constant, el desplaçament és zero a aquest ordre (exercici 6.3).</p></aside>
 <h3 id="s7-2"><span class="num">7.2</span> La correcció a l'energia</h3>
-<p>Aplicant el mateix desenvolupament amb <span class="nw">\(H(\epsilon)=\epsilon\,g(\epsilon)\),</span> i fent servir el desplaçament de \(\mu\) que acabem de trobar perquè els termes en \(g'(\epsilon_F)\) s'anul·lin,
+<p>Per a l'energia, el mateix desenvolupament s'aplica amb <span class="nw">\(H(\epsilon)=\epsilon\,g(\epsilon)\),</span> que a l'energia de Fermi val \(H(\epsilon_F)=\epsilon_F\,g(\epsilon_F)\) i té derivada <span class="nw">\(H'(\epsilon_F)=g(\epsilon_F)+\epsilon_F\,g'(\epsilon_F)\):</span>
+\[\begin{aligned}
+U&amp;=\int_0^\infty \epsilon\,g(\epsilon)\,f(\epsilon)\,d\epsilon\\
+&amp;=\underbrace{\int_0^{\epsilon_F}\epsilon\,g(\epsilon)\,d\epsilon}_{U_0}
++(\mu-\epsilon_F)\,\epsilon_F\,g(\epsilon_F)
++\frac{\pi^2}{6}(k_BT)^2\big[g(\epsilon_F)+\epsilon_F\,g'(\epsilon_F)\big] .
+\end{aligned}\]
+El primer terme és l'energia a <span class="nw">\(T=0\),</span> \(U_0\) (equació <a href="#eq:U0">(10)</a>). Al segon hi substituïm el desplaçament del potencial químic que acabem de trobar:
+\[(\mu-\epsilon_F)\,\epsilon_F\,g(\epsilon_F)
+=\left[-\frac{\pi^2}{6}(k_BT)^2\,\frac{g'(\epsilon_F)}{g(\epsilon_F)}\right]\epsilon_F\,g(\epsilon_F)
+=-\frac{\pi^2}{6}(k_BT)^2\,\epsilon_F\,g'(\epsilon_F) .\]
+És el terme en \(g'(\epsilon_F)\) del claudàtor, amb el signe contrari. Tots dos s'anul·len, i queda
 <span class="eq" id="eq:UT">\[\boxed{U = U_0 + \frac{\pi^2}{6}(k_BT)^2\,g(\epsilon_F)} \tag{18}\]</span>
-L'energia que guanya el gas només depèn de la densitat d'estats a l'energia de Fermi.</p>
+La cancel·lació té sentit: en baixar, el potencial químic treu del gas, a l'energia <span class="nw">\(\epsilon_F\),</span> exactament els electrons de més que hi hauria afegit l'arrodoniment de l'esglaó. L'energia que guanya el gas només depèn, doncs, de la densitat d'estats a l'energia de Fermi.</p>
 <aside class="caixa ideaclau"><div class="caixa-cap"><span class="caixa-tipus">Idea clau</span> Per què \(T^2\) i no \(T\)</div><p>En un gas de Fermi degenerat, només una fracció \(\sim T/T_F\) dels electrons, els que són a menys de \(\sim k_BT\) de <span class="nw">\(\epsilon_F\),</span> pot canviar d'estat, i cadascun guanya una energia <span class="nw">\(\sim k_BT\).</span> El producte dels dos factors dona la dependència quadràtica <span class="nw">\((k_BT)^2\),</span> en lloc de la lineal \(\frac32Nk_BT\) d'un gas clàssic. Els electrons de sota no poden pujar perquè els estats a una distància \(k_BT\) per sobre ja estan plens.</p></aside>
 <aside class="caixa alsimulador"><div class="caixa-cap"><span class="caixa-tipus">Simulador</span> L'expansió de Sommerfeld</div><div class="sim-incrustat" data-src="../../simuladors/06_fermi_electrons/simulador_sommerfeld.html?incrustat=1&amp;costat=1&amp;c.tslider=20&amp;mostra=chartProd,chartHist,tslider,modes,badge-conserv" style="min-height:620px"><div class="sim-carregant">Carregant la simulació…</div></div><p><strong>Exploració proposada.</strong></p>
 <ol><li>Els cinc panells corresponen a les magnituds d'aquesta secció: <span class="nw">\(g(\epsilon)\),</span> <span class="nw">\(f(\epsilon)\),</span> la franja tèrmica <span class="nw">\(-\partial f/\partial\epsilon\),</span> el producte \(g(\epsilon)f(\epsilon)\) amb l'excés i el dèficit acolorits, i les barres que comparen l'excés i el dèficit.</li><li>En pujar <span class="nw">\(T/T_F\),</span> la franja tèrmica s'eixampla i s'abaixa, però la seva àrea es manté igual a <span class="nw">\(1\).</span></li><li>Amb \(\mu\) fixat a <span class="nw">\(\epsilon_F\),</span> la barra de l'excés supera la del dèficit: el nombre d'electrons no es conserva. Amb \(\mu\) ajustat, les dues barres són iguals, i \(\mu\) baixa segons l'equació <a href="#eq:muT">(17)</a>.</li></ol></aside>
